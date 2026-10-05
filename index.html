@@ -40,12 +40,15 @@
         </div>
         <h1 class="text-base sm:text-xl font-bold leading-tight">Pediatric & Adolescent Dosing</h1>
       </div>
-      <div class="flex space-x-1.5 sm:space-x-2">
-        <button onclick="toggleModal('weech-modal')" class="bg-teal-500 hover:bg-teal-600 px-2.5 py-1.5 rounded-lg text-xs font-semibold shadow transition flex items-center gap-1">
-          <i class="fa-solid fa-weight-scale"></i> Weech's Formula
+      <div class="flex space-x-1 sm:space-x-1.5">
+        <button onclick="toggleModal('weech-modal')" class="bg-teal-500 hover:bg-teal-600 px-2 py-1.5 rounded-lg text-xs font-semibold shadow transition flex items-center gap-1">
+          <i class="fa-solid fa-weight-scale"></i> <span class="hidden sm:inline">Weech's</span> Formula
         </button>
-        <button onclick="toggleModal('equip-modal')" class="bg-white/20 hover:bg-white/30 px-2.5 py-1.5 rounded-lg text-xs font-semibold backdrop-blur-sm transition flex items-center gap-1">
-          <i class="fa-solid fa-toolbox"></i> กู้ชีพเด็ก (PALS)
+        <button onclick="toggleModal('equip-modal')" class="bg-rose-600 hover:bg-rose-700 px-2 py-1.5 rounded-lg text-xs font-semibold shadow transition flex items-center gap-1">
+          <i class="fa-solid fa-toolbox"></i> <span class="hidden sm:inline">กู้ชีพ</span> (PALS)
+        </button>
+        <button onclick="toggleModal('fluid-modal')" class="bg-cyan-600 hover:bg-cyan-700 px-2 py-1.5 rounded-lg text-xs font-semibold shadow transition flex items-center gap-1 text-white">
+          <i class="fa-solid fa-droplet"></i> สารน้ำ (IV)
         </button>
       </div>
     </div>
@@ -143,6 +146,24 @@
           </span>
         </div>
       </div>
+
+      <!-- Quick Maintenance Fluid Banner -->
+      <div class="mt-2 bg-gradient-to-r from-blue-50 via-cyan-50 to-teal-50 border border-blue-200/80 rounded-xl p-2 flex items-center justify-between flex-wrap gap-1.5 text-xs">
+        <div class="flex items-center gap-2">
+          <div class="bg-blue-600 text-white p-1.5 rounded-lg text-xs">
+            <i class="fa-solid fa-droplet"></i>
+          </div>
+          <div>
+            <span class="font-bold text-blue-950">Maintenance Rate: </span>
+            <span class="font-black text-blue-700 text-sm" id="dash-maint-rate">40 mL/hr</span>
+            <span class="text-[10px] text-slate-500 block">D5 NSS หรือ D5 Acetar (กฎ 4-2-1)</span>
+          </div>
+        </div>
+        <button onclick="toggleModal('fluid-modal')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-2.5 py-1 rounded-lg text-[11px] shadow-2xs flex items-center gap-1">
+          <span>คำนวณสารน้ำ</span>
+          <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+        </button>
+      </div>
     </section>
 
     <!-- MAIN SCOPE TABS: OPD vs ADOLESCENT vs IPD/ER -->
@@ -212,6 +233,368 @@
     </footer>
 
   </main>
+
+  <!-- Pediatric IV Fluid Calculator Modal -->
+  <div id="fluid-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 z-50 hidden">
+    <div class="bg-white rounded-2xl max-w-3xl w-full p-4 sm:p-5 shadow-2xl max-h-[92vh] overflow-y-auto">
+      <!-- Modal Header -->
+      <div class="flex justify-between items-center border-b pb-3 mb-3">
+        <div>
+          <h3 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
+            <i class="fa-solid fa-droplet text-blue-600"></i> เครื่องมือคำนวณสารน้ำในเด็ก (Pediatric IV Fluid Navigator)
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">
+            Holliday-Segar • ท้องเสียขาดน้ำ • ช็อกฉุกเฉิน • ไข้เลือดออก (DHF) • ทารกแรกเกิด & GIR
+          </p>
+        </div>
+        <button onclick="toggleModal('fluid-modal')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Live Patient Quick Reference Bar -->
+      <div class="bg-blue-50 border border-blue-200 rounded-xl p-2.5 mb-3 flex items-center justify-between flex-wrap gap-2 text-xs">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-blue-900"><i class="fa-solid fa-child text-blue-600 mr-1"></i>เคสปัจจุบัน:</span>
+          <span>น้ำหนัก <strong><span id="fluid-wt">10.0</span> kg</strong></span>
+          <span class="text-slate-300">|</span>
+          <span>อายุ <strong><span id="fluid-age">1 ปี</span></strong></span>
+        </div>
+        <div class="text-[11px] text-blue-800 font-semibold bg-white/80 px-2 py-0.5 rounded border border-blue-200">
+          Maintenance Rate: <span id="fluid-badge-rate" class="font-black text-blue-700">40 mL/hr</span> (<span id="fluid-badge-daily">1,000 mL/วัน</span>)
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="flex gap-1.5 border-b border-slate-200 pb-2 mb-3 overflow-x-auto text-xs font-bold no-scrollbar">
+        <button onclick="switchFluidTab('fluid-maint')" id="tab-btn-fluid-maint" class="fluid-tab-btn px-3 py-1.5 rounded-lg bg-blue-600 text-white shrink-0">
+          <i class="fa-solid fa-calculator mr-1"></i> 1. สารน้ำพื้นฐาน (Maintenance)
+        </button>
+        <button onclick="switchFluidTab('fluid-dehydration')" id="tab-btn-fluid-dehydration" class="fluid-tab-btn px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">
+          <i class="fa-solid fa-toilet mr-1"></i> 2. ท้องเสียขาดน้ำ (Dehydration)
+        </button>
+        <button onclick="switchFluidTab('fluid-shock')" id="tab-btn-fluid-shock" class="fluid-tab-btn px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">
+          <i class="fa-solid fa-bolt mr-1"></i> 3. ช็อกฉุกเฉิน (Resuscitation)
+        </button>
+        <button onclick="switchFluidTab('fluid-dhf')" id="tab-btn-fluid-dhf" class="fluid-tab-btn px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">
+          <i class="fa-solid fa-chart-line mr-1"></i> 4. ไข้เลือดออก (DHF)
+        </button>
+        <button onclick="switchFluidTab('fluid-neonate')" id="tab-btn-fluid-neonate" class="fluid-tab-btn px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0">
+          <i class="fa-solid fa-baby mr-1"></i> 5. ทารกแรกเกิด & GIR
+        </button>
+      </div>
+
+      <!-- TAB 1: MAINTENANCE FLUID (HOLLIDAY-SEGAR & 4-2-1) -->
+      <div id="fluid-tab-maint" class="fluid-tab-content space-y-3 text-xs">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <!-- Card 1: Calculated Rate Box -->
+          <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-3.5 space-y-2">
+            <div class="font-bold text-blue-900 text-sm flex items-center justify-between">
+              <span>อัตราสารน้ำพื้นฐาน (Maintenance Rate)</span>
+              <span class="text-[10px] bg-blue-600 text-white px-1.5 py-0.5 rounded font-mono">กฎ 4-2-1</span>
+            </div>
+            
+            <div class="bg-white rounded-lg p-2.5 border border-blue-100 text-center">
+              <div class="text-[11px] text-slate-500 font-medium">อัตราการหยดที่แนะนำ (Drip Rate)</div>
+              <div class="text-3xl font-black text-blue-700 my-1">
+                <span id="calc-maint-rate">40</span> <span class="text-base font-bold">mL/hr</span>
+              </div>
+              <div class="text-[11px] text-slate-600">
+                หรือ ~<strong id="calc-maint-micro">40</strong> drop/นาที (เมื่อใช้ชุด Microdrip 60 drop/mL)
+              </div>
+            </div>
+
+            <div class="flex justify-between items-center text-[11px] text-slate-600 border-t border-blue-100 pt-2">
+              <span>ปริมาณสารน้ำรวมต่อวัน:</span>
+              <strong class="text-blue-900 text-sm"><span id="calc-maint-daily">1,000</span> mL/วัน</strong>
+            </div>
+
+            <div class="text-[10px] text-slate-500 leading-snug">
+              *สูตร Holliday-Segar: 10 kg แรกคิด 100 mL/kg (4 mL/kg/hr), 11-20 kg ถัดไปคิด 50 mL/kg (+2 mL/kg/hr), ส่วนเกิน 20 kg คิด 20 mL/kg (+1 mL/kg/hr)
+            </div>
+          </div>
+
+          <!-- Card 2: Fluid Selection & Safety Gate -->
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2.5">
+            <div class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+              <i class="fa-solid fa-flask text-teal-600"></i> ชนิดสารน้ำมาตรฐานที่แนะนำ
+            </div>
+
+            <div class="bg-white p-2.5 rounded-lg border border-slate-200 space-y-1">
+              <div class="font-bold text-teal-900 text-xs">
+                สารน้ำ Isotonic มาตรฐาน (AAP 2018 / ราชวิทยาลัยกุมารแพทย์):
+              </div>
+              <p class="text-[11px] text-slate-700 leading-relaxed">
+                • <strong>D5 in 0.9% NaCl (D5 NSS)</strong> หรือ <strong>D5 in Acetar / D5 Ringer's</strong><br>
+                • หรือ <strong>D5 in 0.45% NaCl (D5 N/2)</strong> ในเด็กโต<br>
+                <span class="text-rose-600 font-semibold">*หลีกเลี่ยง D5 N/5, D5 N/4 ในเด็กนอน รพ. เพื่อป้องกัน Hyponatremia สมองบวม</span>
+              </p>
+            </div>
+
+            <!-- Potassium Safety Gate -->
+            <div class="bg-amber-50/80 border border-amber-200 rounded-lg p-2.5 space-y-1.5">
+              <div class="font-bold text-amber-900 text-xs flex items-center gap-1">
+                <i class="fa-solid fa-triangle-exclamation text-amber-600"></i> เกณฑ์ความปลอดภัยการเติม Potassium (KCl Gate)
+              </div>
+              <div class="space-y-1 text-[11px] text-slate-700">
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" id="k-pee-check" onchange="updateKGateAdvice()" class="rounded text-blue-600">
+                  <span>ผู้ป่วยปัสสาวะออกแล้ว (Urine output &ge; 1 mL/kg/hr)</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" id="k-npo-check" onchange="updateKGateAdvice()" class="rounded text-blue-600">
+                  <span>งดน้ำงดอาหารต่อเนื่องเกิน 24 ชั่วโมง (NPO &gt; 24 hr)</span>
+                </label>
+              </div>
+
+              <div id="k-gate-advice" class="mt-1 text-[11px] font-bold p-1.5 rounded border leading-snug bg-rose-50 text-rose-800 border-rose-200">
+                <i class="fa-solid fa-ban text-rose-600 mr-1"></i> กฎ "No Pee, No K": ยังไม่ปัสสาวะ ห้ามเติม KCl เด็ดขาด (เสี่ยงหัวใจหยุดเต้น)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: DEHYDRATION & DIARRHEA (DEFICIT REPLACEMENT) -->
+      <div id="fluid-tab-dehydration" class="fluid-tab-content space-y-3 text-xs hidden">
+        <div class="bg-teal-50 border border-teal-200 rounded-xl p-3 space-y-2">
+          <div class="flex justify-between items-center flex-wrap gap-2">
+            <span class="font-bold text-teal-900 text-sm">เลือกระดับความรุนแรงของภาวะขาดน้ำ (Dehydration Severity):</span>
+            <div class="flex gap-1">
+              <button onclick="setDehydrationLevel(0.05)" id="btn-dehy-mild" class="dehy-btn px-2.5 py-1 rounded text-xs font-bold bg-teal-600 text-white shadow-2xs">
+                Mild (5%)
+              </button>
+              <button onclick="setDehydrationLevel(0.10)" id="btn-dehy-mod" class="dehy-btn px-2.5 py-1 rounded text-xs font-bold bg-white text-teal-800 border border-teal-300 hover:bg-teal-100">
+                Moderate (10%)
+              </button>
+              <button onclick="setDehydrationLevel(0.15)" id="btn-dehy-sev" class="dehy-btn px-2.5 py-1 rounded text-xs font-bold bg-white text-teal-800 border border-teal-300 hover:bg-teal-100">
+                Severe (15%)
+              </button>
+            </div>
+          </div>
+          <p class="text-[11px] text-teal-800">
+            • <strong>Mild:</strong> กระหายน้ำ เยื่อบุชุ่มชื้นปกติ ชีพจรปกติ (เด็กโตคิด 3%, ทารกคิด 5%)<br>
+            • <strong>Moderate:</strong> ตาโหล กระหม่อมบุ๋ม ผิวหนังคืนตัวช้า ปัสสาวะน้อย (เด็กโต 6%, ทารก 10%)<br>
+            • <strong>Severe:</strong> ซึม ปลายมือเท้าเย็น ชีพจรเบาเร็ว ความดันต่ำ ผิวหนังคืนตัวช้ามาก &gt;2 วิ (เด็กโต 9%, ทารก 15%)
+          </p>
+        </div>
+
+        <!-- Dehydration Plan Breakdown -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="bg-white border border-slate-200 rounded-xl p-3 space-y-2">
+            <div class="font-bold text-slate-800 text-xs border-b pb-1.5 flex justify-between">
+              <span>สรุปปริมาณสารน้ำชดเชยใน 24 ชั่วโมง</span>
+              <span class="text-teal-700 font-bold" id="dehy-pct-label">Deficit 5%</span>
+            </div>
+            <div class="space-y-1 text-[11px] text-slate-600">
+              <div class="flex justify-between">
+                <span>ปริมาณสารน้ำที่ขาด (Deficit Volume):</span>
+                <strong class="text-slate-800"><span id="dehy-deficit-vol">500</span> mL</strong>
+              </div>
+              <div class="flex justify-between">
+                <span>สารน้ำพื้นฐานปกติ (Maintenance 24 hr):</span>
+                <strong class="text-slate-800"><span id="dehy-maint-vol">1,000</span> mL</strong>
+              </div>
+              <div class="flex justify-between border-t pt-1 text-xs">
+                <span class="font-bold text-slate-800">รวมสารน้ำต้องให้ทั้งหมด (Total 24 hr):</span>
+                <strong class="text-teal-700 text-sm"><span id="dehy-total-vol">1,500</span> mL</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
+            <div class="font-bold text-slate-800 text-xs border-b pb-1.5">
+              แผนการบริหารสารน้ำแบบแบ่ง 2 ช่วงเวลา (Two-Phase Plan)
+            </div>
+            <div class="space-y-2 text-[11px]">
+              <div class="bg-white p-2 rounded border border-slate-200">
+                <div class="font-bold text-blue-900 flex justify-between">
+                  <span>ช่วงที่ 1: ใน 8 ชั่วโมงแรก</span>
+                  <span class="text-blue-700 font-black text-xs" id="dehy-rate-phase1">73 mL/hr</span>
+                </div>
+                <div class="text-[10px] text-slate-500 mt-0.5">
+                  สูตร: (½ Deficit + ⅓ Maint) = <span id="dehy-vol-phase1">583</span> mL ใน 8 ชม.
+                </div>
+              </div>
+
+              <div class="bg-white p-2 rounded border border-slate-200">
+                <div class="font-bold text-teal-900 flex justify-between">
+                  <span>ช่วงที่ 2: ใน 16 ชั่วโมงถัดมา</span>
+                  <span class="text-teal-700 font-black text-xs" id="dehy-rate-phase2">57 mL/hr</span>
+                </div>
+                <div class="text-[10px] text-slate-500 mt-0.5">
+                  สูตร: (½ Deficit + ⅔ Maint) = <span id="dehy-vol-phase2">917</span> mL ใน 16 ชม.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-200 rounded-lg p-2 text-[11px] text-amber-900 leading-relaxed">
+          <strong>สารน้ำที่ใช้:</strong> เริ่มต้นด้วย <strong>D5 in 0.45% NaCl (D5 N/2)</strong> หรือ <strong>D5 NSS</strong> และเติม <strong>KCl 20 mEq/L</strong> หลังจากคนไข้ปัสสาวะแล้ว<br>
+          <strong>ชดเชยอุจจาระ/อาเจียน (Ongoing Loss):</strong> ให้ดื่ม ORS 10 mL/kg ทุกครั้งที่ถ่ายเหลว หรือ 2 mL/kg ทุกครั้งที่อาเจียน
+        </div>
+      </div>
+
+      <!-- TAB 3: RESUSCITATION & SHOCK (EMERGENCY BOLUS) -->
+      <div id="fluid-tab-shock" class="fluid-tab-content space-y-3 text-xs hidden">
+        <div class="bg-rose-50 border border-rose-200 rounded-xl p-3.5 space-y-2">
+          <div class="font-bold text-rose-950 text-sm flex items-center gap-1.5">
+            <i class="fa-solid fa-heart-pulse text-rose-600"></i> การกู้ชีพภาวะช็อกในเด็ก (Septic & Hypovolemic Shock Resuscitation)
+          </div>
+          <p class="text-[11px] text-rose-900 leading-relaxed">
+            • <strong>ชนิดสารน้ำ:</strong> ใช้ <strong>Isotonic Crystalloid เท่านั้น (0.9% NSS หรือ Acetar / Ringer's)</strong> <span class="font-bold underline text-rose-700">ห้ามมี Dextrose และห้ามมี KCl เด็ดขาด</span><br>
+            • <strong>ขนาดและอัตราให้:</strong> <strong>10 – 20 mL/kg IV push หรือ free flow ภายใน 5 – 20 นาที</strong>
+          </p>
+
+          <div class="grid grid-cols-2 gap-2 mt-2">
+            <div class="bg-white p-2.5 rounded-lg border border-rose-200 text-center">
+              <span class="text-[10px] text-slate-500 font-semibold block">ขนาดเริ่มต้น (10 mL/kg)</span>
+              <strong class="text-xl font-black text-rose-700"><span id="shock-calc-10">100</span> mL</strong>
+              <span class="text-[10px] text-slate-400 block">IV push ใน 10–20 นาที</span>
+            </div>
+            <div class="bg-white p-2.5 rounded-lg border border-rose-200 text-center">
+              <span class="text-[10px] text-slate-500 font-semibold block">ขนาดเต็มที่ (20 mL/kg)</span>
+              <strong class="text-xl font-black text-rose-700"><span id="shock-calc-20">200</span> mL</strong>
+              <span class="text-[10px] text-slate-400 block">IV push ใน 5–20 นาที</span>
+            </div>
+          </div>
+
+          <div class="text-[10px] text-rose-800 bg-white/80 p-2 rounded border border-rose-200 leading-snug">
+            <strong>Checklist ตรวจสอบ:</strong> ประเมินซ้ำหลัง bolus ทุกครั้ง (ตรวจชีพจร, ความดัน, Capillary refill, ฟังปอด Rales, คลำตับโต) สามารถให้ซ้ำได้ถึง 40–60 mL/kg ในชั่วโมงแรก หากสงสัย Cardiogenic shock หรือ Severe DHF ให้ลดเหลือ 5–10 mL/kg ช้าๆ
+          </div>
+        </div>
+
+        <!-- DKA Fluid Summary -->
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-1.5">
+          <div class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+            <i class="fa-solid fa-droplet text-indigo-600"></i> แนวทางสารน้ำใน Diabetic Ketoacidosis (DKA)
+          </div>
+          <p class="text-[11px] text-slate-700 leading-relaxed">
+            1. <strong>ชั่วโมงแรก:</strong> 0.9% NSS 10–20 mL/kg ใน 1 ชม. (ห้ามให้เร็วเกินไป ระวัง Cerebral edema)<br>
+            2. <strong>ชั่วโมงที่ 2 เป็นต้นไป:</strong> คำนวณ Deficit + Maintenance ทยอยคืนช้าๆ ในเวลา <strong>36–48 ชั่วโมง</strong> (อัตรา ~ 1.5 เท่าของ Maintenance)<br>
+            3. <strong>เมื่อ DTX &lt; 250–300 mg/dL:</strong> ต้องเปลี่ยนเป็นสารน้ำที่มีน้ำตาล <strong>D5 in 0.45% NaCl (D5 N/2) ทันที</strong> เพื่อป้องกันน้ำตาลตกและสมองบวม
+          </p>
+        </div>
+      </div>
+
+      <!-- TAB 4: DENGUE HEMORRHAGIC FEVER (DHF TITRATION) -->
+      <div id="fluid-tab-dhf" class="fluid-tab-content space-y-3 text-xs hidden">
+        <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-3 space-y-2">
+          <div class="font-bold text-indigo-950 text-sm flex items-center justify-between">
+            <span>ตารางปรับสารน้ำขั้นบันไดในไข้เลือดออก (DHF Step-down Titration)</span>
+            <span class="text-[10px] bg-indigo-600 text-white px-2 py-0.5 rounded font-mono">เคส นน. <span class="pals-wt-val">10</span> kg</span>
+          </div>
+          <p class="text-[11px] text-indigo-900 leading-relaxed">
+            ให้สารน้ำเฉพาะช่วงวิกฤตพลาสมาพาสารน้ำรั่ว (Plasma Leakage Phase 24–48 ชม.) โดยใช้ <strong>0.9% NSS</strong> หรือ <strong>Acetar</strong> และปรับลดอัตราตามค่า <strong>Hct</strong> และ <strong>Urine Output (คุมที่ 0.5–1 mL/kg/hr)</strong>:
+          </p>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse border border-slate-200 text-slate-700 text-[11px]">
+            <thead>
+              <tr class="bg-slate-100 text-slate-800 font-bold">
+                <th class="border border-slate-200 p-2">สภาวะทางคลินิก (Clinical Stage)</th>
+                <th class="border border-slate-200 p-2">เกณฑ์อัตรา (mL/kg/hr)</th>
+                <th class="border border-slate-200 p-2 bg-indigo-50 text-indigo-950 font-bold">อัตราหยดสำหรับเคสนี้</th>
+                <th class="border border-slate-200 p-2">ระยะเวลาและการปรับ</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+              <tr class="hover:bg-slate-50">
+                <td class="p-2 font-bold text-rose-700">Dengue Shock Syndrome (DSS)</td>
+                <td class="p-2">10 – 20 mL/kg Free Flow</td>
+                <td class="p-2 font-black text-rose-700 bg-rose-50/50"><span id="dhf-calc-shock">100 – 200</span> mL</td>
+                <td class="p-2 text-slate-600">IV free flow ใน 10–15 นาที ถ้าไม่ดีขึ้นพิจารณา Dextran-40 หรือ Colloids</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-2 font-bold text-amber-700">เริ่มเข้าสู่ระยะวิกฤต / Hct พุ่ง</td>
+                <td class="p-2">5 – 7 mL/kg/hr</td>
+                <td class="p-2 font-black text-amber-800 bg-amber-50/50"><span id="dhf-calc-step1">50 – 70</span> mL/hr</td>
+                <td class="p-2 text-slate-600">ให้ 1–2 ชม. แล้วตรวจ Hct และสัญญาณชีพซ้ำ</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-2 font-bold text-blue-700">ชีพจรเริ่มคงที่ / Hct คงที่</td>
+                <td class="p-2">3 – 5 mL/kg/hr</td>
+                <td class="p-2 font-black text-blue-800 bg-blue-50/50"><span id="dhf-calc-step2">30 – 50</span> mL/hr</td>
+                <td class="p-2 text-slate-600">ให้ 2–4 ชม. เมื่อปัสสาวะออกดี (&ge;0.5-1 mL/kg/hr)</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-2 font-bold text-teal-700">ระยะฟื้นตัว / ใกล้หยุดสารน้ำ</td>
+                <td class="p-2">1.5 – 3 mL/kg/hr</td>
+                <td class="p-2 font-black text-teal-800 bg-teal-50/50"><span id="dhf-calc-step3">15 – 30</span> mL/hr</td>
+                <td class="p-2 text-slate-600">อัตราคุมก่อนหยุดสารน้ำ รีบหยุดก่อนครบ 48 ชม. ป้องกันปอดบวมน้ำ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 5: NEONATAL FLUID & GIR CALCULATOR -->
+      <div id="fluid-tab-neonate" class="fluid-tab-content space-y-3 text-xs hidden">
+        <div class="bg-purple-50 border border-purple-200 rounded-xl p-3 space-y-2">
+          <div class="flex justify-between items-center flex-wrap gap-2">
+            <span class="font-bold text-purple-950 text-sm">การให้สารน้ำทารกแรกเกิด (Neonatal Fluid by Day of Life):</span>
+            <div class="flex gap-1">
+              <button onclick="setNeoGest('term')" id="btn-neo-term" class="neo-btn px-2.5 py-1 rounded text-xs font-bold bg-purple-600 text-white shadow-2xs">ทารกครบกำหนด (Term)</button>
+              <button onclick="setNeoGest('preterm')" id="btn-neo-preterm" class="neo-btn px-2.5 py-1 rounded text-xs font-bold bg-white text-purple-800 border border-purple-300 hover:bg-purple-100">คลอดก่อนกำหนด (Preterm)</button>
+            </div>
+          </div>
+          <p class="text-[11px] text-purple-900 leading-relaxed">
+            • <strong>Day 1–2:</strong> ใช้ <strong>10% Dextrose in Water (10% D/W)</strong> เท่านั้น (ยังไม่ต้องเติมเกลือแร่)<br>
+            • <strong>Day 3 เป็นต้นไป:</strong> ใช้ <strong>10% D/N/5</strong> หรือเติม Na/K เมื่อทารกปัสสาวะออกแล้ว
+          </p>
+        </div>
+
+        <!-- Neonatal Days Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse border border-slate-200 text-slate-700 text-[11px]">
+            <thead>
+              <tr class="bg-slate-100 text-slate-800 font-bold">
+                <th class="border border-slate-200 p-2">วันหลังคลอด (Day of Life)</th>
+                <th class="border border-slate-200 p-2">เกณฑ์สารน้ำ (mL/kg/วัน)</th>
+                <th class="border border-slate-200 p-2 bg-purple-50 text-purple-950">ปริมาณรวมต่อวัน</th>
+                <th class="border border-slate-200 p-2 bg-purple-50 text-purple-950">อัตราหยด (mL/hr)</th>
+                <th class="border border-slate-200 p-2">ชนิดสารน้ำมาตรฐาน</th>
+              </tr>
+            </thead>
+            <tbody id="neo-table-body" class="divide-y divide-slate-200">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Interactive GIR Calculator -->
+        <div class="bg-white border border-slate-200 rounded-xl p-3 space-y-2">
+          <div class="font-bold text-slate-800 text-xs border-b pb-1.5 flex items-center justify-between">
+            <span>คำนวณอัตรากลูโคส (Glucose Infusion Rate - GIR Calculator)</span>
+            <span class="text-[10px] text-slate-400 font-mono">สูตร: (%Dex &times; Rate) &divide; (6 &times; Wt)</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div>
+              <label class="block text-[11px] text-slate-600 font-semibold mb-0.5">ความเข้มข้น Dextrose (%):</label>
+              <input type="number" id="gir-dex-input" value="10" step="0.5" min="2.5" max="20" class="w-full p-1.5 border rounded bg-slate-50 text-slate-800 font-bold text-center" oninput="recalcGIR()">
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-600 font-semibold mb-0.5">อัตราหยด (mL/hr):</label>
+              <input type="number" id="gir-rate-input" value="10" step="0.5" min="0.5" max="200" class="w-full p-1.5 border rounded bg-slate-50 text-slate-800 font-bold text-center" oninput="recalcGIR()">
+            </div>
+          </div>
+
+          <div class="bg-slate-50 rounded-lg p-2.5 border text-center mt-1">
+            <span class="text-[11px] text-slate-500 font-semibold block">ค่า GIR ที่ได้รับจริง:</span>
+            <div class="text-2xl font-black my-0.5" id="gir-result-val">
+              <span class="text-purple-700">--</span> <span class="text-xs font-bold text-slate-500">mg/kg/min</span>
+            </div>
+            <div class="text-[11px]" id="gir-status-msg">
+              ระดับปกติในทารกแรกเกิด: <strong>4 – 6 mg/kg/min</strong> (ภาวะน้ำตาลต่ำ keep 6–8)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Credits & References Modal -->
   <div id="credit-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 z-50 hidden">
@@ -2315,6 +2698,7 @@
       const age = getChildAgeYears();
       updateWeightMetrics();
       updatePALSValues(abw, age);
+      updateFluidCalculatorAll(abw, age);
       renderDrugCards();
     }
 
@@ -2493,7 +2877,13 @@
     }
 
     function toggleModal(id) {
-      document.getElementById(id).classList.toggle('hidden');
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.toggle('hidden');
+        if (id === 'fluid-modal' && !el.classList.contains('hidden')) {
+          updateFluidCalculatorAll();
+        }
+      }
     }
 
     function setScope(scope) {
@@ -3133,6 +3523,260 @@
     }
 
     // Initialize application
+    
+    // ==========================================
+    // PEDIATRIC IV FLUID CALCULATOR LOGIC
+    // ==========================================
+    let currentDehyRatio = 0.05;
+    let currentNeoGest = 'term';
+
+    function calculateMaintenanceFluid(wt, ageYears) {
+      if (wt <= 0) return { daily: 0, hourly: 0 };
+      let totalDaily = 0;
+      let rate = 0;
+
+      if (ageYears < 0.5) {
+        totalDaily = wt * 120;
+        rate = Math.round(totalDaily / 24);
+      } else if (ageYears < 1.0) {
+        totalDaily = wt * 110;
+        rate = Math.round(totalDaily / 24);
+      } else {
+        if (wt <= 10) {
+          totalDaily = wt * 100;
+          rate = Math.round(wt * 4);
+        } else if (wt <= 20) {
+          totalDaily = 1000 + (wt - 10) * 50;
+          rate = Math.round(40 + (wt - 10) * 2);
+        } else {
+          totalDaily = Math.min(2400, 1500 + (wt - 20) * 20);
+          rate = Math.min(100, Math.round(60 + (wt - 20) * 1));
+        }
+      }
+      return { daily: Math.round(totalDaily), hourly: Math.max(1, rate) };
+    }
+
+    function switchFluidTab(tabId) {
+      document.querySelectorAll('.fluid-tab-content').forEach(c => c.classList.add('hidden'));
+      document.querySelectorAll('.fluid-tab-btn').forEach(b => {
+        b.className = 'fluid-tab-btn px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 shrink-0';
+      });
+
+      const activeContent = document.getElementById(tabId.replace('tab-btn-', '').replace('fluid-', 'fluid-tab-'));
+      if (activeContent) activeContent.classList.remove('hidden');
+
+      const activeBtn = document.getElementById(`tab-btn-${tabId.replace('tab-btn-', '')}`);
+      if (activeBtn) activeBtn.className = 'fluid-tab-btn px-3 py-1.5 rounded-lg bg-blue-600 text-white shrink-0 font-bold';
+    }
+
+    function updateKGateAdvice() {
+      const peeChecked = document.getElementById('k-pee-check')?.checked;
+      const npoChecked = document.getElementById('k-npo-check')?.checked;
+      const adviceBox = document.getElementById('k-gate-advice');
+      if (!adviceBox) return;
+
+      if (!peeChecked) {
+        adviceBox.className = 'mt-1 text-[11px] font-bold p-1.5 rounded border leading-snug bg-rose-50 text-rose-800 border-rose-200';
+        adviceBox.innerHTML = '<i class="fa-solid fa-ban text-rose-600 mr-1"></i> กฎ "No Pee, No K": ยังไม่ปัสสาวะ ห้ามเติม KCl เด็ดขาด (เสี่ยงหัวใจหยุดเต้น)';
+      } else if (npoChecked) {
+        adviceBox.className = 'mt-1 text-[11px] font-bold p-1.5 rounded border leading-snug bg-emerald-50 text-emerald-800 border-emerald-200';
+        adviceBox.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> ปัสสาวะออกแล้ว และ NPO &gt; 24 ชม.: แนะนำผสม KCl 20 mEq/L (10 mEq ใน 500 mL) เพื่อทดแทนการสูญเสียทางไต';
+      } else {
+        adviceBox.className = 'mt-1 text-[11px] font-bold p-1.5 rounded border leading-snug bg-slate-100 text-slate-700 border-slate-200';
+        adviceBox.innerHTML = '<i class="fa-solid fa-circle-info text-blue-600 mr-1"></i> ปัสสาวะออกแล้ว แต่ NPO ระยะสั้น (&lt;24 ชม.): ให้น้ำเกลือปกติได้ ไม่จำเป็นต้องเติม KCl';
+      }
+    }
+
+    function setDehydrationLevel(ratio) {
+      currentDehyRatio = ratio;
+      document.querySelectorAll('.dehy-btn').forEach(b => {
+        b.className = 'dehy-btn px-2.5 py-1 rounded text-xs font-bold bg-white text-teal-800 border border-teal-300 hover:bg-teal-100';
+      });
+      const btnId = ratio === 0.05 ? 'btn-dehy-mild' : (ratio === 0.10 ? 'btn-dehy-mod' : 'btn-dehy-sev');
+      const activeBtn = document.getElementById(btnId);
+      if (activeBtn) activeBtn.className = 'dehy-btn px-2.5 py-1 rounded text-xs font-bold bg-teal-600 text-white shadow-2xs';
+
+      const wt = parseFloat(document.getElementById('weight-input')?.value) || 10;
+      const age = getChildAgeYears();
+      updateDehydrationCalc(wt, age);
+    }
+
+    function updateDehydrationCalc(wt, age) {
+      const maint = calculateMaintenanceFluid(wt, age);
+      const deficit = Math.round(wt * currentDehyRatio * 1000);
+      const total = deficit + maint.daily;
+
+      const phase1Vol = Math.round((deficit / 2) + (maint.daily / 3));
+      const phase1Rate = Math.round(phase1Vol / 8);
+
+      const phase2Vol = Math.round((deficit / 2) + (maint.daily * 2 / 3));
+      const phase2Rate = Math.round(phase2Vol / 16);
+
+      const elPctLabel = document.getElementById('dehy-pct-label');
+      if (elPctLabel) elPctLabel.innerText = `Deficit ${Math.round(currentDehyRatio * 100)}% (${deficit} mL)`;
+
+      const elDef = document.getElementById('dehy-deficit-vol');
+      if (elDef) elDef.innerText = deficit;
+      const elMaint = document.getElementById('dehy-maint-vol');
+      if (elMaint) elMaint.innerText = maint.daily;
+      const elTot = document.getElementById('dehy-total-vol');
+      if (elTot) elTot.innerText = total;
+
+      const elV1 = document.getElementById('dehy-vol-phase1');
+      if (elV1) elV1.innerText = phase1Vol;
+      const elR1 = document.getElementById('dehy-rate-phase1');
+      if (elR1) elR1.innerText = `${phase1Rate} mL/hr`;
+
+      const elV2 = document.getElementById('dehy-vol-phase2');
+      if (elV2) elV2.innerText = phase2Vol;
+      const elR2 = document.getElementById('dehy-rate-phase2');
+      if (elR2) elR2.innerText = `${phase2Rate} mL/hr`;
+    }
+
+    function setNeoGest(gest) {
+      currentNeoGest = gest;
+      const btnTerm = document.getElementById('btn-neo-term');
+      const btnPre = document.getElementById('btn-neo-preterm');
+      if (gest === 'term') {
+        if (btnTerm) btnTerm.className = 'neo-btn px-2.5 py-1 rounded text-xs font-bold bg-purple-600 text-white shadow-2xs';
+        if (btnPre) btnPre.className = 'neo-btn px-2.5 py-1 rounded text-xs font-bold bg-white text-purple-800 border border-purple-300 hover:bg-purple-100';
+      } else {
+        if (btnTerm) btnTerm.className = 'neo-btn px-2.5 py-1 rounded text-xs font-bold bg-white text-purple-800 border border-purple-300 hover:bg-purple-100';
+        if (btnPre) btnPre.className = 'neo-btn px-2.5 py-1 rounded text-xs font-bold bg-purple-600 text-white shadow-2xs';
+      }
+      const wt = parseFloat(document.getElementById('weight-input')?.value) || 10;
+      updateNeonateTable(wt);
+    }
+
+    function updateNeonateTable(wt) {
+      const tbody = document.getElementById('neo-table-body');
+      if (!tbody) return;
+
+      const termRates = [
+        { day: 'Day 1', mlKg: 65, fluid: '10% D/W (ห้ามมีเกลือแร่)' },
+        { day: 'Day 2', mlKg: 75, fluid: '10% D/W (ตรวจเกลือแร่)' },
+        { day: 'Day 3', mlKg: 90, fluid: '10% D/N/5 หรือเติม Na/K' },
+        { day: 'Day 4', mlKg: 110, fluid: '10% D/N/5 + KCl' },
+        { day: 'Day 5+', mlKg: 135, fluid: '10% D/N/5 + KCl' }
+      ];
+
+      const pretermRates = [
+        { day: 'Day 1', mlKg: 70, fluid: '10% D/W (ห้ามมีเกลือแร่)' },
+        { day: 'Day 2', mlKg: 90, fluid: '10% D/W (ตรวจเกลือแร่)' },
+        { day: 'Day 3', mlKg: 110, fluid: '10% D/N/5 หรือเติม Na/K' },
+        { day: 'Day 4', mlKg: 130, fluid: '10% D/N/5 + KCl' },
+        { day: 'Day 5+', mlKg: 150, fluid: '10% D/N/5 + KCl' }
+      ];
+
+      const rates = currentNeoGest === 'term' ? termRates : pretermRates;
+      tbody.innerHTML = rates.map(r => {
+        const daily = Math.round(wt * r.mlKg);
+        const hourly = Math.max(1, Math.round(daily / 24));
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="p-2 font-bold">${r.day}</td>
+            <td class="p-2 font-mono">${r.mlKg} mL/kg</td>
+            <td class="p-2 font-bold text-purple-900 bg-purple-50/40">${daily} mL</td>
+            <td class="p-2 font-black text-purple-700 bg-purple-50/40">${hourly} mL/hr</td>
+            <td class="p-2 text-slate-600">${r.fluid}</td>
+          </tr>
+        `;
+      }).join('');
+
+      // sync GIR default rate input with Day 1 rate if sensible
+      const girRateInput = document.getElementById('gir-rate-input');
+      if (girRateInput && !girRateInput.dataset?.userEdited) {
+        girRateInput.value = Math.max(1, Math.round((wt * rates[0].mlKg) / 24));
+      }
+      recalcGIR();
+    }
+
+    function recalcGIR() {
+      const wt = parseFloat(document.getElementById('weight-input')?.value) || 10;
+      const dex = parseFloat(document.getElementById('gir-dex-input')?.value) || 10;
+      const rate = parseFloat(document.getElementById('gir-rate-input')?.value) || 10;
+
+      const gir = wt > 0 ? Number(((dex * rate) / (6 * wt)).toFixed(1)) : 0;
+      const resVal = document.getElementById('gir-result-val');
+      const resMsg = document.getElementById('gir-status-msg');
+
+      if (resVal) {
+        let color = 'text-purple-700';
+        if (gir < 4) color = 'text-amber-600';
+        else if (gir > 8) color = 'text-rose-600';
+        else color = 'text-emerald-700';
+        resVal.innerHTML = `<span class="${color}">${gir}</span> <span class="text-xs font-bold text-slate-500">mg/kg/min</span>`;
+      }
+
+      if (resMsg) {
+        if (gir < 4) {
+          resMsg.innerHTML = '<span class="text-amber-700 font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i>ต่ำกว่าเกณฑ์ปกติ (&lt;4) เสี่ยงภาวะน้ำตาลในเลือดต่ำ</span>';
+        } else if (gir > 8) {
+          resMsg.innerHTML = '<span class="text-rose-700 font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i>สูงกว่าเกณฑ์ปกติ (&gt;8) ระวังน้ำตาลในเลือดสูง</span>';
+        } else {
+          resMsg.innerHTML = '<span class="text-emerald-700 font-bold"><i class="fa-solid fa-circle-check mr-1"></i>อยู่ในเกณฑ์มาตรฐานทารกแรกเกิด (4 – 6 mg/kg/min)</span>';
+        }
+      }
+    }
+
+    function updateFluidCalculatorAll(wt, ageYears) {
+      if (wt === undefined || wt === null || isNaN(wt)) {
+        wt = parseFloat(document.getElementById('weight-input')?.value) || 10;
+      }
+      if (ageYears === undefined || ageYears === null || isNaN(ageYears)) {
+        ageYears = getChildAgeYears();
+      }
+      // Live patient banner
+      const elWt = document.getElementById('fluid-wt');
+      if (elWt) elWt.innerText = wt.toFixed(1);
+      const elAge = document.getElementById('fluid-age');
+      if (elAge) {
+        const years = parseFloat(document.getElementById('age-input')?.value) || 0;
+        const months = parseFloat(document.getElementById('age-months-input')?.value) || 0;
+        if (years > 0 && months > 0) elAge.innerText = `${years} ปี ${months} ด.`;
+        else if (years > 0) elAge.innerText = `${years} ปี`;
+        else elAge.innerText = `${months} เดือน`;
+      }
+
+      // 1. Maintenance
+      const maint = calculateMaintenanceFluid(wt, ageYears);
+      const elBadgeRate = document.getElementById('fluid-badge-rate');
+      if (elBadgeRate) elBadgeRate.innerText = `${maint.hourly} mL/hr`;
+      const elBadgeDaily = document.getElementById('fluid-badge-daily');
+      if (elBadgeDaily) elBadgeDaily.innerText = `${maint.daily} mL/วัน`;
+      const elDashMaint = document.getElementById('dash-maint-rate');
+      if (elDashMaint) elDashMaint.innerText = `${maint.hourly} mL/hr`;
+
+      const elCalcRate = document.getElementById('calc-maint-rate');
+      if (elCalcRate) elCalcRate.innerText = maint.hourly;
+      const elCalcMicro = document.getElementById('calc-maint-micro');
+      if (elCalcMicro) elCalcMicro.innerText = maint.hourly;
+      const elCalcDaily = document.getElementById('calc-maint-daily');
+      if (elCalcDaily) elCalcDaily.innerText = maint.daily;
+
+      // 2. Dehydration
+      updateDehydrationCalc(wt, ageYears);
+
+      // 3. Shock
+      const elS10 = document.getElementById('shock-calc-10');
+      if (elS10) elS10.innerText = Math.round(wt * 10);
+      const elS20 = document.getElementById('shock-calc-20');
+      if (elS20) elS20.innerText = Math.round(wt * 20);
+
+      // 4. DHF
+      const elDhfShock = document.getElementById('dhf-calc-shock');
+      if (elDhfShock) elDhfShock.innerText = `${Math.round(wt * 10)} – ${Math.round(wt * 20)}`;
+      const elDhfStep1 = document.getElementById('dhf-calc-step1');
+      if (elDhfStep1) elDhfStep1.innerText = `${Math.round(wt * 5)} – ${Math.round(wt * 7)}`;
+      const elDhfStep2 = document.getElementById('dhf-calc-step2');
+      if (elDhfStep2) elDhfStep2.innerText = `${Math.round(wt * 3)} – ${Math.round(wt * 5)}`;
+      const elDhfStep3 = document.getElementById('dhf-calc-step3');
+      if (elDhfStep3) elDhfStep3.innerText = `${Math.round(wt * 1.5)} – ${Math.round(wt * 3)}`;
+
+      // 5. Neonatal Table
+      updateNeonateTable(wt);
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       updateScopeButtons();
       updateBadgeCounts();
