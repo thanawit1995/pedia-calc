@@ -40,7 +40,7 @@
 
   <main class="max-w-6xl mx-auto px-3 sm:px-4 mt-3 space-y-3">
 
-    <!-- Weight & Age Dashboard (Compact 2-Column) -->
+    <!-- Weight & Age Dashboard (Compact 2-Column, No Quick Chips) -->
     <section class="bg-white rounded-xl shadow-xs border border-slate-200 p-2.5 sm:p-3">
       <div class="grid grid-cols-2 gap-2 sm:gap-3">
         <!-- Left: Weight (BW) -->
@@ -67,7 +67,7 @@
           </div>
         </div>
 
-        <!-- Right: Age (yr) -->
+        <!-- Right: Age (Years + Months) -->
         <div>
           <div class="flex justify-between items-center mb-0.5">
             <label class="block text-[11px] font-bold text-slate-600">
@@ -77,41 +77,46 @@
               ใส่น้ำหนักเกณฑ์
             </button>
           </div>
-          <div class="relative flex items-center">
-            <input 
-              type="number" 
-              id="age-input" 
-              step="0.5" 
-              min="0.1" 
-              max="18" 
-              value="1" 
-              class="w-full pl-7 pr-8 py-1.5 text-base sm:text-lg font-bold bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 transition"
-              oninput="handleInputsChange()"
-            />
-            <span class="absolute left-2 text-slate-400 text-xs">
-              <i class="fa-solid fa-child"></i>
-            </span>
-            <span class="absolute right-2 font-semibold text-slate-400 text-xs">ปี</span>
+          <div class="grid grid-cols-2 gap-1.5">
+            <!-- Years Input -->
+            <div class="relative flex items-center">
+              <input 
+                type="number" 
+                id="age-input" 
+                min="0" 
+                max="18" 
+                step="1" 
+                value="1" 
+                placeholder="1"
+                class="w-full pl-5 pr-6 py-1.5 text-sm sm:text-base font-bold bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 transition text-center"
+                oninput="handleInputsChange()"
+              />
+              <span class="absolute left-1.5 text-slate-400 text-xs">
+                <i class="fa-solid fa-child"></i>
+              </span>
+              <span class="absolute right-2 font-semibold text-slate-400 text-xs">ปี</span>
+            </div>
+            <!-- Months Input -->
+            <div class="relative flex items-center">
+              <input 
+                type="number" 
+                id="age-months-input" 
+                min="0" 
+                max="11" 
+                step="1" 
+                value="0" 
+                placeholder="0"
+                class="w-full pl-2 pr-10 py-1.5 text-sm sm:text-base font-bold bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 transition text-center"
+                oninput="handleInputsChange()"
+              />
+              <span class="absolute right-2 font-semibold text-slate-400 text-xs">เดือน</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Quick Weight Chips -->
-      <div class="flex items-center gap-1 overflow-x-auto py-1 mt-1.5 no-scrollbar text-xs">
-        <span class="text-[10px] text-slate-400 font-semibold shrink-0">ลัด:</span>
-        <button onclick="setWeight(5)" class="px-1.5 py-0.5 text-[11px] font-medium bg-slate-100 hover:bg-blue-100 rounded border border-slate-200 shrink-0">5k</button>
-        <button onclick="setWeight(8)" class="px-1.5 py-0.5 text-[11px] font-medium bg-slate-100 hover:bg-blue-100 rounded border border-slate-200 shrink-0">8k</button>
-        <button onclick="setWeight(10)" class="px-1.5 py-0.5 text-[11px] font-medium bg-slate-100 hover:bg-blue-100 rounded border border-slate-200 shrink-0">10k</button>
-        <button onclick="setWeight(12)" class="px-1.5 py-0.5 text-[11px] font-medium bg-slate-100 hover:bg-blue-100 rounded border border-slate-200 shrink-0">12k</button>
-        <button onclick="setWeight(15)" class="px-1.5 py-0.5 text-[11px] font-medium bg-slate-100 hover:bg-blue-100 rounded border border-slate-200 shrink-0">15k</button>
-        <button onclick="setWeight(20)" class="px-1.5 py-0.5 text-[11px] font-medium bg-slate-100 hover:bg-blue-100 rounded border border-slate-200 shrink-0">20k</button>
-        <button onclick="setWeight(30)" class="px-1.5 py-0.5 text-[11px] font-medium bg-slate-100 hover:bg-blue-100 rounded border border-slate-200 shrink-0">30k</button>
-        <button onclick="setWeight(40)" class="px-1.5 py-0.5 text-[11px] font-medium bg-slate-100 hover:bg-blue-100 rounded border border-slate-200 shrink-0">40k</button>
-        <button onclick="setWeight(50)" class="px-1.5 py-0.5 text-[11px] font-medium bg-slate-100 hover:bg-blue-100 rounded border border-slate-200 shrink-0">50k</button>
-      </div>
-
       <!-- Small IBW & AdjBW bar under Weight & Age -->
-      <div class="flex items-center justify-between text-[11px] text-slate-500 pt-1.5 mt-1 border-t border-slate-100 flex-wrap gap-1">
+      <div class="flex items-center justify-between text-[11px] text-slate-500 pt-1.5 mt-1.5 border-t border-slate-100 flex-wrap gap-1">
         <div class="flex items-center gap-2">
           <span>IBW เกณฑ์: <strong id="metric-ibw" class="text-teal-700 font-bold">10.0</strong> kg</span>
           <span class="text-slate-300">|</span>
@@ -1006,18 +1011,19 @@
       },
       {
         id: 'paracetamol',
-        name: 'Paracetamol (พาราเซตามอลยาน้ำ/หยด)',
+        name: 'Paracetamol (พาราเซตามอลยาน้ำ/หยด/เม็ด)',
         category: 'symptomatic',
-        scopes: ['opd'],
+        scopes: ['opd', 'adolescent'],
         diseases: ['uri', 'aom', 'hfmd', 'covid'],
-        weightBasis: 'ABW_OR_IBW',
-        weightNote: 'ปกติใช้ ABW (หากเด็กอ้วนมาก >120% IBW แนะนำใช้ IBW ป้องกันพิษต่อตับ)',
-        bottleVolume: 60,
+        weightBasis: 'ABW',
+        weightNote: '10–15 mg/kg/dose prn q 4–6 hr (Max single dose 1,000 mg, Max 4,000 mg/day)',
         defaultDays: 3,
         strengths: [
           { label: '120 mg / 5 ml (60 ml/ขวด)', mgPerMl: 24, vol: 60, isDrop: false },
           { label: '250 mg / 5 ml (60 ml/ขวด)', mgPerMl: 50, vol: 60, isDrop: false },
-          { label: 'Drop 60 mg / 0.6 ml (15 ml/ขวด)', mgPerMl: 100, isDrop: true, vol: 15 }
+          { label: 'Drop 60 mg / 0.6 ml (15 ml/ขวด)', mgPerMl: 100, vol: 15, isDrop: true },
+          { label: '325 mg / เม็ด (Tab)', mgPerTab: 325, isTab: true },
+          { label: '500 mg / เม็ด (Tab)', mgPerTab: 500, isTab: true }
         ],
         selectedStrength: 0,
         type: 'mkdose',
@@ -1583,7 +1589,25 @@
         instruction: 'รับประทานพร้อมอาหารทันทีเพื่อลดอาการคลื่นไส้ แน่นท้อง'
       },
       {
-        id: 'paracetamol_tab',
+              {
+        id: 'paracetamol_325_tab',
+        name: 'Paracetamol Tablet 325 mg (เด็กโต 20–35 kg)',
+        category: 'symptomatic',
+        scopes: ['opd', 'adolescent'],
+        diseases: ['uri', 'aom', 'hfmd', 'covid'],
+        weightBasis: 'ABW',
+        weightNote: '10–15 mg/kg/dose prn q 4–6 hr (นน. 20–25 kg ทาน 1 เม็ด, 26–35 kg ทาน 1½ เม็ด)',
+        defaultDays: 3,
+        minAge: 6,
+        strengths: [{ label: '325 mg / เม็ด', mgPerTab: 325 }],
+        selectedStrength: 0,
+        type: 'mkdose',
+        defaultDose: 10,
+        maxSingleDose: 650,
+        freqText: 'ทุก 4 - 6 ชั่วโมง เวลามีไข้หรือปวด (ไม่เกินวันละ 2,600 mg)',
+        instruction: 'ยาเม็ด 325 mg เหมาะสำหรับเด็กโตที่กลืนยาเม็ดได้ (อายุ ≥6 ปี หรือ นน. 20-35 kg) ไม่ต้องหักแบ่งเม็ด 500 mg'
+      },
+      id: 'paracetamol_tab',
         name: 'Paracetamol Tablet 500 mg (เด็กโต/วัยรุ่น)',
         category: 'symptomatic',
         scopes: ['adolescent'],
@@ -1591,7 +1615,11 @@
         weightBasis: 'ABW',
         weightNote: '10–15 mg/kg/dose prn q 4–6 hr (นน. 34–50 kg = 1 เม็ด, >50 kg = 1-2 เม็ด)',
         defaultDays: 3,
-        strengths: [{ label: '500 mg / เม็ด', mgPerTab: 500 }],
+        minAge: 6,
+        strengths: [
+          { label: '500 mg / เม็ด', mgPerTab: 500 },
+          { label: '325 mg / เม็ด', mgPerTab: 325 }
+        ],
         selectedStrength: 0,
         type: 'mkdose',
         defaultDose: 10,
@@ -2135,7 +2163,22 @@
     let searchQuery = '';
     const openDrugDetails = new Set();
 
+        function getChildAgeYears() {
+      const years = parseFloat(document.getElementById('age-input')?.value) || 0;
+      const months = parseFloat(document.getElementById('age-months-input')?.value) || 0;
+      const total = years + (months / 12);
+      return total > 0 ? Number(total.toFixed(2)) : 0.08;
+    }
+
     function calculateIBW(ageYears) {
+      const monthsInput = parseFloat(document.getElementById('age-months-input')?.value);
+      const yearsInput = parseFloat(document.getElementById('age-input')?.value) || 0;
+
+      if (yearsInput === 0 && !isNaN(monthsInput) && monthsInput > 0) {
+        const m = Math.max(3, Math.min(12, monthsInput));
+        return Number(((m + 9) / 2).toFixed(1));
+      }
+
       if (ageYears < 1) {
         const months = Math.max(3, Math.round(ageYears * 12));
         return Number(((months + 9) / 2).toFixed(1));
@@ -2146,6 +2189,7 @@
       } else {
         return Number((50 + (ageYears - 12) * 2).toFixed(1));
       }
+    }
     }
 
     function calculateAdjBW(abw, ibw) {
@@ -2161,14 +2205,14 @@
     }
 
     function applyWeechWeight() {
-      const age = parseFloat(document.getElementById('age-input').value) || 1;
+      const age = getChildAgeYears();
       const ibw = calculateIBW(age);
       setWeight(ibw);
     }
 
     function handleInputsChange() {
       const abw = parseFloat(document.getElementById('weight-input').value) || 0;
-      const age = parseFloat(document.getElementById('age-input').value) || 1;
+      const age = getChildAgeYears();
       updateWeightMetrics();
       updatePALSValues(abw, age);
       renderDrugCards();
@@ -2193,8 +2237,18 @@
       wtElements.forEach(el => el.innerText = wt.toFixed(1));
       const palsWt = document.getElementById('pals-wt');
       if (palsWt) palsWt.innerText = wt.toFixed(1);
+      const years = parseFloat(document.getElementById('age-input')?.value) || 0;
+      const months = parseFloat(document.getElementById('age-months-input')?.value) || 0;
+      let ageText = '';
+      if (years > 0 && months > 0) {
+        ageText = `${years} ปี ${months} ด.`;
+      } else if (years > 0) {
+        ageText = `${years} ปี`;
+      } else {
+        ageText = `${months} เดือน`;
+      }
       const palsAge = document.getElementById('pals-age');
-      if (palsAge) palsAge.innerText = age;
+      if (palsAge) palsAge.innerText = ageText;
 
       // ETT formulas
       const uncuffed = Math.max(2.5, Number(((age / 4) + 4).toFixed(1)));
@@ -2312,7 +2366,7 @@
 
     function updateWeightMetrics() {
       const abw = parseFloat(document.getElementById('weight-input').value) || 0;
-      const age = parseFloat(document.getElementById('age-input').value) || 1;
+      const age = getChildAgeYears();
       const ibw = calculateIBW(age);
       const adjbw = calculateAdjBW(abw, ibw);
       const ratio = ibw > 0 ? (abw / ibw) * 100 : 100;
@@ -2471,7 +2525,7 @@
 
     function renderDrugCards() {
       const abw = parseFloat(document.getElementById('weight-input').value) || 0;
-      const age = parseFloat(document.getElementById('age-input').value) || 1;
+      const age = getChildAgeYears();
       const ibw = calculateIBW(age);
       const adjbw = calculateAdjBW(abw, ibw);
       const isObese = (ibw > 0) && ((abw / ibw) > 1.2);
@@ -2484,7 +2538,7 @@
         const matchSearch = !searchQuery || 
                             drug.name.toLowerCase().includes(searchQuery) || 
                             (drug.instruction && drug.instruction.toLowerCase().includes(searchQuery)) ||
-                            (drug.weightNote && drug.weightNote.toLowerCase().includes(searchQuery));
+                            (drug.weightNote && drug.weightNote.toLowerCase().includes(searchQuery)) || (drug.strengths && drug.strengths.some(s => s.label.toLowerCase().includes(searchQuery)));
         return matchScope && matchSearch;
       });
 
