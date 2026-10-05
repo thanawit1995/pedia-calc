@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Pediatric Drug Dose & Disease Navigator</title>
+  <title>Pediatric Drug Dose & Dispensing Navigator</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,19 +22,19 @@
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center space-x-3">
         <div class="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
-          <i class="fa-solid fa-notes-medical text-2xl"></i>
+          <i class="fa-solid fa-prescription-bottle-medical text-2xl"></i>
         </div>
         <div>
-          <h1 class="text-base sm:text-lg font-bold leading-tight">Pediatric Dose & Disease Navigator</h1>
-          <p class="text-xs text-blue-100">ชัยนาทนเรนทร • อ่างทอง • ปากพนัง • MIMS/Medscape Evidence-based</p>
+          <h1 class="text-base sm:text-lg font-bold leading-tight">Pediatric Dosing & Dispensing</h1>
+          <p class="text-xs text-blue-100">Suggest Dose สวยงาม • สรุปยอดจ่ายเวชภัณฑ์ (ขวด/เม็ด)</p>
         </div>
       </div>
       <div class="flex space-x-1.5 sm:space-x-2">
         <button onclick="toggleModal('weech-modal')" class="bg-teal-500 hover:bg-teal-600 px-2.5 py-1.5 rounded-lg text-xs font-semibold shadow transition flex items-center gap-1">
-          <i class="fa-solid fa-weight-scale"></i> <span class="hidden sm:inline">Weech's</span> Formula
+          <i class="fa-solid fa-weight-scale"></i> Weech's Formula
         </button>
         <button onclick="toggleModal('equip-modal')" class="bg-white/20 hover:bg-white/30 px-2.5 py-1.5 rounded-lg text-xs font-semibold backdrop-blur-sm transition flex items-center gap-1">
-          <i class="fa-solid fa-toolbox"></i> <span class="hidden sm:inline">อุปกรณ์</span>กู้ชีพ
+          <i class="fa-solid fa-toolbox"></i> กู้ชีพเด็ก
         </button>
       </div>
     </div>
@@ -42,7 +42,7 @@
 
   <main class="max-w-6xl mx-auto px-3 sm:px-4 mt-3 space-y-3">
 
-    <!-- Weight & Metrics Control Dashboard -->
+    <!-- Weight & Age Dashboard -->
     <section class="bg-white rounded-2xl shadow-sm border border-slate-200/90 p-4 transition-all">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-center">
         
@@ -84,7 +84,7 @@
         <!-- Input Child Age -->
         <div class="lg:col-span-3">
           <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">
-            อายุเด็ก (คำนวณ IBW อัตโนมัติ) <span class="text-rose-500">*</span>
+            อายุเด็ก (คิด IBW อัตโนมัติ) <span class="text-rose-500">*</span>
           </label>
           <div class="relative flex items-center">
             <input 
@@ -108,10 +108,10 @@
           </div>
         </div>
 
-        <!-- Weight Metrics (ABW / IBW / AdjBW) Summary -->
+        <!-- Weight Metrics Summary Card -->
         <div class="lg:col-span-4 bg-gradient-to-br from-slate-50 to-blue-50/60 rounded-xl p-3 border border-blue-100">
           <div class="flex justify-between items-center mb-1">
-            <span class="text-xs font-bold text-slate-600">ฐานน้ำหนักสำหรับคำนวณ</span>
+            <span class="text-xs font-bold text-slate-600">สัดส่วนน้ำหนักสำหรับยา NTI</span>
             <span id="obese-status-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
               สมส่วน
             </span>
@@ -142,10 +142,10 @@
       </div>
     </section>
 
-    <!-- Common Diseases Preset Navigator (ปุ่มทางลัดตามโรค) -->
+    <!-- Common Diseases Quick Presets -->
     <section class="bg-white rounded-xl shadow-xs border border-slate-200 p-2.5">
       <div class="flex items-center gap-1.5 mb-1.5 text-xs font-bold text-slate-600">
-        <i class="fa-solid fa-stethoscope text-indigo-600"></i> ทางลัดกรองยาตามโรคที่พบบ่อย (Clinical Presets):
+        <i class="fa-solid fa-stethoscope text-indigo-600"></i> ทางลัดกรองตามกลุ่มโรคที่พบบ่อย:
       </div>
       <div class="flex flex-wrap gap-1.5">
         <button onclick="filterDisease('all')" id="btn-dis-all" class="disease-btn px-2.5 py-1 text-xs font-semibold rounded-lg bg-indigo-600 text-white shadow-xs">
@@ -164,7 +164,7 @@
           <i class="fa-solid fa-virus-covid mr-1 text-emerald-600"></i> โควิด-19 (COVID-19)
         </button>
         <button onclick="filterDisease('ge')" id="btn-dis-ge" class="disease-btn px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200">
-          <i class="fa-solid fa-toilet mr-1 text-teal-600"></i> ถ่ายเหลว / คลื่นไส้ (AGE/Vomit)
+          <i class="fa-solid fa-toilet mr-1 text-teal-600"></i> ถ่ายเหลว / อาเจียน (AGE/Vomit)
         </button>
         <button onclick="filterDisease('asthma')" id="btn-dis-asthma" class="disease-btn px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200">
           <i class="fa-solid fa-lungs mr-1 text-blue-600"></i> หอบหืด / หลอดลมหดเกร็ง
@@ -178,14 +178,14 @@
         <button onclick="filterCategory('all')" id="btn-cat-all" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-xs">ทั้งหมด (<span id="count-all">0</span>)</button>
         <button onclick="filterCategory('antibiotic')" id="btn-cat-antibiotic" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">ยาฆ่าเชื้อ (<span id="count-anti">0</span>)</button>
         <button onclick="filterCategory('symptomatic')" id="btn-cat-symptomatic" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">บรรเทาอาการ/ไอ/หวัด (<span id="count-symp">0</span>)</button>
-        <button onclick="filterCategory('gi')" id="btn-cat-gi" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">ทางเดินอาหาร/เสริมอาหาร (<span id="count-gi">0</span>)</button>
+        <button onclick="filterCategory('gi')" id="btn-cat-gi" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">ทางเดินอาหาร/อาหารเสริม (<span id="count-gi">0</span>)</button>
         <button onclick="filterCategory('iv')" id="btn-cat-iv" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">ยาฉีด/กู้ชีพ/TDM (<span id="count-iv">0</span>)</button>
       </div>
       <div class="relative w-full sm:w-64">
         <input 
           type="text" 
           id="search-input" 
-          placeholder="ค้นหาชื่อยา เช่น Amox, Paxlovid..." 
+          placeholder="ค้นหาชื่อยา เช่น Favipiravir, Amox..." 
           class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500"
           oninput="handleSearch()"
         />
@@ -195,7 +195,7 @@
 
     <!-- Active Filter Status -->
     <div id="filter-status-bar" class="text-xs text-slate-500 px-1 flex justify-between items-center hidden">
-      <span>กำลังแสดงผลสำหรับ: <strong id="filter-status-text" class="text-blue-700 font-semibold"></strong></span>
+      <span>ตัวกรองปัจจุบัน: <strong id="filter-status-text" class="text-blue-700 font-semibold"></strong></span>
       <button onclick="clearAllFilters()" class="text-rose-600 hover:underline text-[11px] font-bold">ล้างตัวกรอง</button>
     </div>
 
@@ -246,27 +246,6 @@
             <span class="font-mono text-amber-800 font-bold bg-white px-2 py-1 rounded border">IBW + 0.4 × (ABW - IBW)</span>
           </div>
         </div>
-
-        <!-- Ready Reckoner Table -->
-        <div>
-          <h4 class="font-bold text-slate-700 mb-1.5 flex items-center justify-between">
-            <span>Ready Reckoner (ทวีคูณน้ำหนักแรกเกิด x)</span>
-            <span class="text-[10px] text-slate-400 font-normal">สมมติแรกเกิด ~3,000 g</span>
-          </h4>
-          <div class="grid grid-cols-2 gap-2 text-[11px]">
-            <div class="bg-slate-50 p-2 rounded border space-y-1">
-              <div class="flex justify-between"><span>• 5 เดือน:</span><strong class="text-indigo-600">2x (~6 kg)</strong></div>
-              <div class="flex justify-between"><span>• 1 ปี:</span><strong class="text-indigo-600">3x (~9-10 kg)</strong></div>
-              <div class="flex justify-between"><span>• 2 ปี:</span><strong class="text-indigo-600">4x (~12 kg)</strong></div>
-              <div class="flex justify-between"><span>• 3 ปี:</span><strong class="text-indigo-600">5x (~15 kg)</strong></div>
-            </div>
-            <div class="bg-slate-50 p-2 rounded border space-y-1">
-              <div class="flex justify-between"><span>• 5 ปี:</span><strong class="text-indigo-600">6x (~18 kg)</strong></div>
-              <div class="flex justify-between"><span>• 7 ปี:</span><strong class="text-indigo-600">7x (~21-23 kg)</strong></div>
-              <div class="flex justify-between"><span>• 10 ปี:</span><strong class="text-indigo-600">10x (~30 kg)</strong></div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -292,37 +271,52 @@
             <li><strong>ความลึก (Depth at lip)</strong> = (อายุ / 2) + 12 ซม. หรือ ETT ID × 3</li>
           </ul>
         </div>
-
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-[11px]">
-            <thead>
-              <tr class="bg-slate-100 text-slate-700 border-b">
-                <th class="p-2">อายุ</th>
-                <th class="p-2">น้ำหนัก</th>
-                <th class="p-2">ETT (Uncuffed)</th>
-                <th class="p-2">ความลึก (ซม.)</th>
-                <th class="p-2">Laryngoscope</th>
-                <th class="p-2">Suction</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y text-slate-600">
-              <tr><td class="p-2 font-medium">แรกเกิด</td><td>3-3.5 kg</td><td>3.0 - 3.5</td><td>9 - 10</td><td>Miller 0-1</td><td>6 - 8 Fr</td></tr>
-              <tr><td class="p-2 font-medium">6 เดือน</td><td>7-8 kg</td><td>3.5 - 4.0</td><td>11 - 12</td><td>Miller 1</td><td>8 Fr</td></tr>
-              <tr><td class="p-2 font-medium">1 ปี</td><td>10 kg</td><td>4.0</td><td>12</td><td>Miller 1 / Mac 1</td><td>8 Fr</td></tr>
-              <tr><td class="p-2 font-medium">2 ปี</td><td>12 kg</td><td>4.5</td><td>13</td><td>Mac 2</td><td>8 - 10 Fr</td></tr>
-              <tr><td class="p-2 font-medium">4 ปี</td><td>16 kg</td><td>5.0</td><td>14</td><td>Mac 2</td><td>10 Fr</td></tr>
-              <tr><td class="p-2 font-medium">6 ปี</td><td>20 kg</td><td>5.5</td><td>15</td><td>Mac 2</td><td>10 Fr</td></tr>
-              <tr><td class="p-2 font-medium">8 ปี</td><td>25 kg</td><td>6.0</td><td>16</td><td>Mac 2-3</td><td>10 - 12 Fr</td></tr>
-              <tr><td class="p-2 font-medium">10 ปี</td><td>32 kg</td><td>6.5 (cuffed 6.0)</td><td>17</td><td>Mac 3</td><td>12 Fr</td></tr>
-            </tbody>
-          </table>
-        </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Master Pediatric Drug Database merging Chainat, Ang Thong, Pak Phanang, MIMS/Medscape & COVID-19 Evidence
+    // Practical Rounded Dose Helpers
+    function roundToPracticalMl(ml) {
+      if (ml <= 0) return 0;
+      if (ml < 1.0) {
+        // Drops / Syringe small dose: round to nearest 0.1 or 0.2 ml
+        return Number((Math.round(ml * 10) / 10).toFixed(1));
+      } else if (ml < 3.0) {
+        // Syringe: 1.0, 1.25, 1.5, 1.75, 2.0, 2.5
+        const step = 0.25;
+        return Number((Math.round(ml / step) * step).toFixed(2));
+      } else if (ml <= 10.0) {
+        // Round to nearest 0.5 ml (e.g., 3.0, 3.5, 4.0, 4.5, 5.0)
+        return Number((Math.round(ml * 2) / 2).toFixed(1));
+      } else {
+        // Round to nearest 1.0 ml
+        return Math.round(ml);
+      }
+    }
+
+    function roundToPracticalTab(tab) {
+      if (tab <= 0) return 0;
+      // Round to practical quarters of tablet: 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2...
+      const step = 0.25;
+      return Number((Math.round(tab / step) * step).toFixed(2));
+    }
+
+    function formatTabletFraction(tab) {
+      if (tab <= 0) return '0 tab';
+      const whole = Math.floor(tab);
+      const frac = tab - whole;
+      let fracStr = '';
+      if (Math.abs(frac - 0.25) < 0.05) fracStr = '¼';
+      else if (Math.abs(frac - 0.5) < 0.05) fracStr = '½';
+      else if (Math.abs(frac - 0.75) < 0.05) fracStr = '¾';
+
+      if (whole === 0) return `${fracStr || tab} tab`;
+      if (!fracStr) return `${whole} tab`;
+      return `${whole} ${fracStr} tab (${tab} tab)`;
+    }
+
+    // Master Drug Database
     const MASTER_DRUG_DATABASE = [
       // ==================== ANTIBIOTICS & ANTIVIRALS ====================
       {
@@ -332,9 +326,11 @@
         diseases: ['uri'],
         weightBasis: 'ABW',
         weightNote: 'ใช้ ABW คำนวณ (Max 2,000-3,000 mg/day)',
+        bottleVolume: 60, // ml per bottle
+        defaultDays: 7,
         strengths: [
-          { label: '125 mg / 5 ml (25 mg/ml)', mgPerMl: 25 },
-          { label: '250 mg / 5 ml (50 mg/ml)', mgPerMl: 50 }
+          { label: '125 mg / 5 ml (60 ml/ขวด)', mgPerMl: 25 },
+          { label: '250 mg / 5 ml (60 ml/ขวด)', mgPerMl: 50 }
         ],
         selectedStrength: 0,
         type: 'mkd',
@@ -343,6 +339,7 @@
         maxDose: 50,
         doseUnit: 'mg/kg/day',
         frequency: 'tid',
+        dosesPerDay: 3,
         freqText: 'วันละ 3 ครั้ง ทุก 8 ชม. หลังอาหาร',
         maxDailyDose: 2000,
         instruction: 'ใช้รักษา Pharyngitis, Tonsillitis, mild RTI รับประทานติดต่อกันจนหมด 7-10 วัน'
@@ -354,9 +351,11 @@
         diseases: ['aom'],
         weightBasis: 'ABW',
         weightNote: 'ใช้ ABW คำนวณ (Max 3,000 mg/day)',
+        bottleVolume: 60,
+        defaultDays: 10,
         strengths: [
-          { label: '250 mg / 5 ml (50 mg/ml)', mgPerMl: 50 },
-          { label: '125 mg / 5 ml (25 mg/ml)', mgPerMl: 25 }
+          { label: '250 mg / 5 ml (60 ml/ขวด)', mgPerMl: 50 },
+          { label: '125 mg / 5 ml (60 ml/ขวด)', mgPerMl: 25 }
         ],
         selectedStrength: 0,
         type: 'mkd',
@@ -365,9 +364,10 @@
         maxDose: 90,
         doseUnit: 'mg/kg/day',
         frequency: 'bid',
+        dosesPerDay: 2,
         freqText: 'วันละ 2 ครั้ง ทุก 12 ชม. หลังอาหาร',
         maxDailyDose: 3000,
-        instruction: 'ขนาดยาจำเพาะสำหรับ Acute Otitis Media (AOM) หรือสงสัยเชื้อดื้อยา S. pneumoniae (<2 ปี ทาน 10 วัน, ≥2 ปี ทาน 5-7 วัน)'
+        instruction: 'ขนาดยาจำเพาะสำหรับ Acute Otitis Media (AOM) (<2 ปี ทาน 10 วัน, ≥2 ปี ทาน 5-7 วัน)'
       },
       {
         id: 'augmentin',
@@ -376,9 +376,11 @@
         diseases: ['aom', 'uri'],
         weightBasis: 'ABW',
         weightNote: 'ใช้ ABW คำนวณตามขนาด Amoxicillin (Max 2,000 mg/day)',
+        bottleVolume: 60,
+        defaultDays: 7,
         strengths: [
-          { label: '228.5 mg / 5 ml (Amox 200)', mgPerMl: 40 },
-          { label: '457 mg / 5 ml (Amox 400)', mgPerMl: 80 }
+          { label: '228.5 mg / 5 ml (Amox 200 mg)', mgPerMl: 40 },
+          { label: '457 mg / 5 ml (Amox 400 mg)', mgPerMl: 80 }
         ],
         selectedStrength: 0,
         type: 'mkd',
@@ -387,9 +389,10 @@
         maxDose: 45,
         doseUnit: 'mg/kg/day (of Amox)',
         frequency: 'bid',
+        dosesPerDay: 2,
         freqText: 'วันละ 2 ครั้ง ทุก 12 ชม. พร้อมอาหาร',
         maxDailyDose: 2000,
-        instruction: 'สูตร 7:1 แนะนำบริหารวันละ 2 ครั้ง (BID) เพื่อลดผลข้างเคียงท้องเสียจาก Clavulanic acid'
+        instruction: 'สูตร 7:1 แนะนำบริหารวันละ 2 ครั้ง (BID) เพื่อลดผลข้างเคียงท้องเสียจาก Clavulanate'
       },
       {
         id: 'cephalexin',
@@ -398,7 +401,9 @@
         diseases: [],
         weightBasis: 'ABW',
         weightNote: 'ใช้ ABW คำนวณ (Max 2,000 mg/day)',
-        strengths: [{ label: '125 mg / 5 ml', mgPerMl: 25 }],
+        bottleVolume: 60,
+        defaultDays: 7,
+        strengths: [{ label: '125 mg / 5 ml (60 ml/ขวด)', mgPerMl: 25 }],
         selectedStrength: 0,
         type: 'mkd',
         defaultDose: 35,
@@ -406,6 +411,7 @@
         maxDose: 50,
         doseUnit: 'mg/kg/day',
         frequency: 'qid',
+        dosesPerDay: 4,
         freqText: 'วันละ 4 ครั้ง ก่อนอาหาร (หรือแบ่ง tid)',
         maxDailyDose: 2000,
         instruction: 'รับประทานตอนท้องว่าง ก่อนอาหาร 30-60 นาที'
@@ -417,7 +423,9 @@
         diseases: ['uri'],
         weightBasis: 'ABW',
         weightNote: 'ใช้ ABW คำนวณ',
-        strengths: [{ label: '125 mg / 5 ml (200,000 U)', mgPerMl: 25 }],
+        bottleVolume: 60,
+        defaultDays: 10,
+        strengths: [{ label: '125 mg / 5 ml (60 ml/ขวด)', mgPerMl: 25 }],
         selectedStrength: 0,
         type: 'mkd',
         defaultDose: 30,
@@ -425,8 +433,9 @@
         maxDose: 50,
         doseUnit: 'mg/kg/day',
         frequency: 'qid',
+        dosesPerDay: 4,
         freqText: 'วันละ 4 ครั้ง ก่อนอาหาร 1 ชม. และก่อนนอน',
-        instruction: 'ยาตัวเลือกแรกสำหรับ Group A Strep Pharyngitis ทานตอนท้องว่าง'
+        instruction: 'ยาตัวเลือกแรกสำหรับ Group A Strep Pharyngitis รับประทานติดต่อกัน 10 วัน'
       },
       {
         id: 'cefaclor',
@@ -435,7 +444,9 @@
         diseases: ['aom', 'uri'],
         weightBasis: 'ABW',
         weightNote: 'ใช้ ABW คำนวณ (Max 1,000 mg/day)',
-        strengths: [{ label: '125 mg / 5 ml', mgPerMl: 25 }],
+        bottleVolume: 60,
+        defaultDays: 7,
+        strengths: [{ label: '125 mg / 5 ml (60 ml/ขวด)', mgPerMl: 25 }],
         selectedStrength: 0,
         type: 'mkd',
         defaultDose: 30,
@@ -443,6 +454,7 @@
         maxDose: 40,
         doseUnit: 'mg/kg/day',
         frequency: 'tid',
+        dosesPerDay: 3,
         freqText: 'วันละ 3 ครั้ง ทุก 8 ชม.',
         maxDailyDose: 1000,
         instruction: 'ใช้รักษาโรคติดเชื้อทางเดินหายใจและหูชั้นกลาง'
@@ -454,7 +466,9 @@
         diseases: ['aom', 'uri'],
         weightBasis: 'ABW',
         weightNote: 'ใช้ ABW คำนวณ (Max 600 mg/day)',
-        strengths: [{ label: '125 mg / 5 ml', mgPerMl: 25 }],
+        bottleVolume: 30,
+        defaultDays: 7,
+        strengths: [{ label: '125 mg / 5 ml (30 ml/ขวด)', mgPerMl: 25 }],
         selectedStrength: 0,
         type: 'mkd',
         defaultDose: 14,
@@ -462,9 +476,10 @@
         maxDose: 14,
         doseUnit: 'mg/kg/day',
         frequency: 'bid',
+        dosesPerDay: 2,
         freqText: 'วันละ 2 ครั้ง (7 mg/kg/dose) หรือวันละ 1 ครั้ง (14 mg/kg)',
         maxDailyDose: 600,
-        instruction: 'อาจทำให้อุจจาระเป็นสีแดงอิฐเมื่อทำปฏิกิริยากับธาตุเหล็กในลำไส้'
+        instruction: 'อาจทำให้อุจจาระเป็นสีแดงอิฐเมื่อทำปฏิกิริยากับธาตุเหล็ก'
       },
       {
         id: 'cotrimoxazole',
@@ -473,7 +488,9 @@
         diseases: ['ge'],
         weightBasis: 'ABW',
         weightNote: 'ใช้ ABW คำนวณตามขนาด TMP (Max 320 mg TMP/day)',
-        strengths: [{ label: 'TMP 40 + SMZ 200 mg / 5 ml', mgPerMl: 8 }],
+        bottleVolume: 60,
+        defaultDays: 5,
+        strengths: [{ label: 'TMP 40 + SMZ 200 mg / 5 ml (60 ml)', mgPerMl: 8 }],
         selectedStrength: 0,
         type: 'mkd',
         defaultDose: 8,
@@ -481,6 +498,7 @@
         maxDose: 12,
         doseUnit: 'mg/kg/day (of TMP)',
         frequency: 'bid',
+        dosesPerDay: 2,
         freqText: 'วันละ 2 ครั้ง ทุก 12 ชม.',
         maxDailyDose: 320,
         instruction: 'ดื่มน้ำตามมากๆ ระวังในผู้ป่วย G6PD deficiency ห้ามใช้ในทารกแรกเกิด'
@@ -492,9 +510,11 @@
         diseases: ['uri', 'aom'],
         weightBasis: 'ABW',
         weightNote: 'ใช้ ABW คำนวณ (Max 500 mg/day)',
+        bottleVolume: 15,
+        defaultDays: 3,
         strengths: [
-          { label: '200 mg / 5 ml (40 mg/ml)', mgPerMl: 40 },
-          { label: '100 mg / ซอง (ละลายน้ำ 4 ml = 25 mg/ml)', mgPerMl: 25 }
+          { label: '200 mg / 5 ml (15 ml/ขวด)', mgPerMl: 40 },
+          { label: '100 mg / ซอง (ละลายน้ำ 4 ml)', mgPerMl: 25 }
         ],
         selectedStrength: 0,
         type: 'mkd',
@@ -503,9 +523,10 @@
         maxDose: 10,
         doseUnit: 'mg/kg/day',
         frequency: 'od',
+        dosesPerDay: 1,
         freqText: 'วันละ 1 ครั้ง ก่อนอาหาร 1 ชม. (ติดต่อกัน 3-5 วัน)',
         maxDailyDose: 500,
-        instruction: 'รับประทานวันละ 1 ครั้ง ติดต่อกัน 3-5 วันตามข้อบ่งใช้'
+        instruction: 'รับประทานวันละ 1 ครั้ง ติดต่อกัน 3-5 วัน'
       },
       {
         id: 'dicloxacillin',
@@ -514,7 +535,9 @@
         diseases: [],
         weightBasis: 'ABW',
         weightNote: 'ใช้ ABW คำนวณ (Max 2,000 mg/day)',
-        strengths: [{ label: '62.5 mg / 5 ml', mgPerMl: 12.5 }],
+        bottleVolume: 60,
+        defaultDays: 7,
+        strengths: [{ label: '62.5 mg / 5 ml (60 ml/ขวด)', mgPerMl: 12.5 }],
         selectedStrength: 0,
         type: 'mkd',
         defaultDose: 25,
@@ -522,92 +545,23 @@
         maxDose: 50,
         doseUnit: 'mg/kg/day',
         frequency: 'qid',
+        dosesPerDay: 4,
         freqText: 'วันละ 4 ครั้ง ก่อนอาหาร 1 ชม. และก่อนนอน',
-        instruction: 'ใช้รักษาการติดเชื้อผิวหนัง (Staph. aureus) ต้องทานตอนท้องว่าง'
-      },
-      {
-        id: 'erythromycin',
-        name: 'Erythromycin Estolate Syrup',
-        category: 'antibiotic',
-        diseases: ['uri'],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ (Max 2,000 mg/day)',
-        strengths: [{ label: '125 mg / 5 ml', mgPerMl: 25 }],
-        selectedStrength: 0,
-        type: 'mkd',
-        defaultDose: 40,
-        minDose: 30,
-        maxDose: 50,
-        doseUnit: 'mg/kg/day',
-        frequency: 'qid',
-        freqText: 'วันละ 4 ครั้ง ก่อนอาหาร',
-        maxDailyDose: 2000,
-        instruction: 'รับประทานก่อนอาหาร'
-      },
-      {
-        id: 'roxithromycin',
-        name: 'Roxithromycin Tablet',
-        category: 'antibiotic',
-        diseases: ['uri'],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ (Max 300 mg/day)',
-        strengths: [{ label: '150 mg / เม็ด', mgPerMl: 150 }],
-        selectedStrength: 0,
-        type: 'mkdose',
-        defaultDose: 3.5,
-        minDose: 2.5,
-        maxDose: 5,
-        doseUnit: 'mg/kg/dose',
-        frequency: 'bid',
-        freqText: 'วันละ 2 ครั้ง ก่อนอาหาร 15 นาที',
-        instruction: 'ยานี้เป็นยาเม็ด รับประทานก่อนอาหาร'
-      },
-      {
-        id: 'doxycycline',
-        name: 'Doxycycline Capsule',
-        category: 'antibiotic',
-        diseases: [],
-        weightBasis: 'ABW',
-        weightNote: 'ห้ามใช้ในเด็กอายุ < 8 ปี',
-        strengths: [{ label: '100 mg / แคปซูล', mgPerMl: 100 }],
-        selectedStrength: 0,
-        type: 'mkd',
-        defaultDose: 2.5,
-        minDose: 2,
-        maxDose: 5,
-        doseUnit: 'mg/kg/day',
-        frequency: 'bid',
-        freqText: 'แบ่งวันละ 2 ครั้ง พร้อมอาหารหรือดื่มน้ำตามมากๆ',
-        minAge: 8,
-        instruction: 'ข้อห้าม: ห้ามใช้ในเด็กอายุต่ำกว่า 8 ปี (ทำให้ฟันมีสีเหลืองถาวรและเคลือบฟันเจริญผิดปกติ)'
-      },
-      {
-        id: 'mebendazole',
-        name: 'Mebendazole Suspension',
-        category: 'antibiotic',
-        diseases: [],
-        weightBasis: 'AGE',
-        weightNote: 'ขนาดยาคงที่ตามข้อบ่งใช้ (Fixed Dose)',
-        strengths: [{ label: '100 mg / 5 ml (20 mg/ml)', mgPerMl: 20 }],
-        selectedStrength: 0,
-        type: 'fixed',
-        fixedDoseText: 'พยาธิเข็มหมุด: 5 ml ครั้งเดียว | พยาธิอื่นๆ: 5 ml วันละ 2 ครั้ง นาน 3 วัน',
-        minAge: 2,
-        instruction: 'แนะนำในเด็กอายุ ≥ 2 ปีขึ้นไป เขย่าขวดก่อนรับประทาน'
+        instruction: 'ใช้รักษาการติดเชื้อผิวหนัง ต้องทานตอนท้องว่าง'
       },
 
-      // COVID-19 Specific Antivirals
+      // COVID-19 Specific Medications
       {
         id: 'favipiravir',
         name: 'Favipiravir Tablet (ยาต้านไวรัสโควิด-19)',
         category: 'antibiotic',
         diseases: ['covid'],
         weightBasis: 'ABW',
-        weightNote: 'คำนวณตาม ABW สำหรับเด็กที่ติดเชื้อ COVID-19',
+        weightNote: 'D1: 70 MKD แบ่ง bid | D2-5: 30 MKD แบ่ง bid (บดละลายน้ำได้)',
         strengths: [{ label: '200 mg / เม็ด', mgPerMl: 200 }],
         selectedStrength: 0,
         type: 'custom_favi',
-        instruction: 'Day 1 (Loading): 70 mg/kg/day แบ่งวันละ 2 ครั้ง | Day 2-5 (Maint): 30 mg/kg/day แบ่งวันละ 2 ครั้ง (บดละลายน้ำได้)'
+        instruction: 'Day 1: ทานทุก 12 ชม. (2 มื้อ) | Day 2 - 5: ทานทุก 12 ชม. (8 มื้อ รวม 5 วัน)'
       },
       {
         id: 'paxlovid',
@@ -615,13 +569,14 @@
         category: 'antibiotic',
         diseases: ['covid'],
         weightBasis: 'AGE',
-        weightNote: 'ข้อบ่งใช้: เด็กอายุ ≥ 12 ปี และน้ำหนักตัว ≥ 40 kg เท่านั้น',
+        weightNote: 'เกณฑ์: เด็กอายุ ≥ 12 ปี และน้ำหนักตัว ≥ 40 kg เท่านั้น',
         strengths: [{ label: 'Nirmatrelvir 150 mg 2 เม็ด + Ritonavir 100 mg 1 เม็ด', mgPerMl: 1 }],
         selectedStrength: 0,
         type: 'fixed',
         fixedDoseText: 'Nirmatrelvir 300 mg (2 เม็ด) + Ritonavir 100 mg (1 เม็ด) พร้อมกัน วันละ 2 ครั้ง (q 12 hr) ติดต่อกัน 5 วัน',
+        dispenseText: 'จ่าย Paxlovid 1 กล่อง (30 เม็ด สำหรับคอร์ส 5 วัน)',
         minAge: 12,
-        instruction: 'ต้องเริ่มยาภายใน 5 วันนับจากเริ่มมีอาการ ตรวจสอบปฏิกิริยาระหว่างยา (Drug Interaction) เสมอ และปรับขนาดยาหากไตบกพร่อง'
+        instruction: 'ต้องเริ่มยาภายใน 5 วันนับจากเริ่มมีอาการ ตรวจสอบปฏิกิริยาระหว่างยา (Drug Interaction) เสมอ'
       },
 
       // ==================== SYMPTOMATIC & RESPIRATORY ====================
@@ -632,10 +587,12 @@
         diseases: ['uri', 'aom', 'hfmd', 'covid'],
         weightBasis: 'ABW_OR_IBW',
         weightNote: 'ปกติใช้ ABW (หากเด็กอ้วนมาก >120% IBW แนะนำใช้ IBW ป้องกันพิษต่อตับ)',
+        bottleVolume: 60,
+        defaultDays: 3,
         strengths: [
-          { label: '120 mg / 5 ml (24 mg/ml)', mgPerMl: 24 },
-          { label: '250 mg / 5 ml (50 mg/ml)', mgPerMl: 50 },
-          { label: 'Drop 60 mg / 0.6 ml (100 mg/ml)', mgPerMl: 100 }
+          { label: '120 mg / 5 ml (60 ml/ขวด)', mgPerMl: 24, vol: 60 },
+          { label: '250 mg / 5 ml (60 ml/ขวด)', mgPerMl: 50, vol: 60 },
+          { label: 'Drop 60 mg / 0.6 ml (15 ml/ขวด)', mgPerMl: 100, vol: 15 }
         ],
         selectedStrength: 0,
         type: 'mkdose',
@@ -644,6 +601,7 @@
         maxDose: 15,
         doseUnit: 'mg/kg/dose',
         frequency: 'prn',
+        dosesPerDay: 4,
         freqText: 'ทุก 4 - 6 ชั่วโมง เวลามีไข้หรือปวด',
         maxSingleDose: 1000,
         maxDailyDose: 4000,
@@ -656,7 +614,9 @@
         diseases: ['aom', 'hfmd', 'covid'],
         weightBasis: 'ABW',
         weightNote: 'ใช้ ABW คำนวณ (Max 400 mg/dose, 2,400 mg/day)',
-        strengths: [{ label: '100 mg / 5 ml (20 mg/ml)', mgPerMl: 20 }],
+        bottleVolume: 60,
+        defaultDays: 3,
+        strengths: [{ label: '100 mg / 5 ml (60 ml/ขวด)', mgPerMl: 20, vol: 60 }],
         selectedStrength: 0,
         type: 'mkdose',
         defaultDose: 10,
@@ -664,6 +624,7 @@
         maxDose: 10,
         doseUnit: 'mg/kg/dose',
         frequency: 'prn',
+        dosesPerDay: 3,
         freqText: 'ทุก 6 - 8 ชั่วโมง หลังอาหารทันที',
         minAge: 0.5,
         maxSingleDose: 400,
@@ -677,7 +638,9 @@
         diseases: ['uri'],
         weightBasis: 'ABW',
         weightNote: 'ใช้ ABW คำนวณ',
-        strengths: [{ label: '2 mg / 5 ml (0.4 mg/ml)', mgPerMl: 0.4 }],
+        bottleVolume: 60,
+        defaultDays: 5,
+        strengths: [{ label: '2 mg / 5 ml (60 ml/ขวด)', mgPerMl: 0.4, vol: 60 }],
         selectedStrength: 0,
         type: 'mkd',
         defaultDose: 0.35,
@@ -685,9 +648,10 @@
         maxDose: 0.35,
         doseUnit: 'mg/kg/day',
         frequency: 'tid',
-        freqText: 'วันละ 3 - 4 ครั้ง หลังอาหาร',
+        dosesPerDay: 3,
+        freqText: 'วันละ 3 ครั้ง หลังอาหาร',
         minAge: 2,
-        instruction: 'ทำให้ง่วงซึม ชะลอน้ำมูก หลีกเลี่ยงในเด็กอายุต่ำกว่า 2 ปี'
+        instruction: 'ทำให้ง่วงซึม หลีกเลี่ยงในเด็กอายุต่ำกว่า 2 ปี'
       },
       {
         id: 'hydroxyzine_syr',
@@ -696,7 +660,9 @@
         diseases: ['hfmd'],
         weightBasis: 'ABW',
         weightNote: 'ใช้ ABW คำนวณ',
-        strengths: [{ label: '10 mg / 5 ml (2 mg/ml)', mgPerMl: 2 }],
+        bottleVolume: 60,
+        defaultDays: 5,
+        strengths: [{ label: '10 mg / 5 ml (60 ml/ขวด)', mgPerMl: 2, vol: 60 }],
         selectedStrength: 0,
         type: 'mkd',
         defaultDose: 1.5,
@@ -704,9 +670,10 @@
         maxDose: 2,
         doseUnit: 'mg/kg/day',
         frequency: 'tid',
+        dosesPerDay: 3,
         freqText: 'วันละ 3 ครั้ง หลังอาหาร',
         minAge: 1,
-        instruction: 'บรรเทาอาการคัน ผื่นลมพิษ ตุ่มคันจากไวรัส ทำให้ง่วงซึม'
+        instruction: 'บรรเทาอาการคัน ตุ่มคันจากไวรัส ทำให้ง่วงซึม'
       },
       {
         id: 'cetirizine',
@@ -715,108 +682,18 @@
         diseases: ['uri'],
         weightBasis: 'AGE',
         weightNote: 'คำนวณตามเกณฑ์อายุ (Age-based)',
-        strengths: [{ label: '5 mg / 5 ml (1 mg/ml)', mgPerMl: 1 }],
+        bottleVolume: 60,
+        defaultDays: 7,
+        strengths: [{ label: '5 mg / 5 ml (60 ml/ขวด)', mgPerMl: 1, vol: 60 }],
         selectedStrength: 0,
         type: 'age_based',
         calcByAge: (age) => {
           if (age < 0.5) return { text: 'ไม่แนะนำในเด็กต่ำกว่า 6 เดือน', ml: 0 };
-          if (age < 2) return { text: '2.5 ml (2.5 mg) วันละ 1 ครั้ง (OD)', ml: 2.5 };
-          if (age <= 5) return { text: '2.5 - 5 ml วันละ 1 ครั้ง หรือแบ่ง bid', ml: 5 };
-          return { text: '5 - 10 ml (5-10 mg) วันละ 1 ครั้ง (OD)', ml: 10 };
+          if (age < 2) return { text: '2.5 ml (2.5 mg) วันละ 1 ครั้ง (OD)', ml: 2.5, dosesPerDay: 1 };
+          if (age <= 5) return { text: '2.5 - 5 ml วันละ 1 ครั้ง หรือแบ่ง bid', ml: 5, dosesPerDay: 1 };
+          return { text: '5 - 10 ml (5-10 mg) วันละ 1 ครั้ง (OD)', ml: 10, dosesPerDay: 1 };
         },
         instruction: 'ยาแก้แพ้ไม่ง่วง รับรองในเด็กตั้งแต่ 6 เดือนขึ้นไป'
-      },
-      {
-        id: 'loratadine',
-        name: 'Loratadine Syrup (Claritin)',
-        category: 'symptomatic',
-        diseases: ['uri'],
-        weightBasis: 'AGE',
-        weightNote: 'คำนวณตามเกณฑ์อายุ (Age-based)',
-        strengths: [{ label: '5 mg / 5 ml (1 mg/ml)', mgPerMl: 1 }],
-        selectedStrength: 0,
-        type: 'age_based',
-        calcByAge: (age) => {
-          if (age < 2) return { text: 'ไม่แนะนำในเด็กอายุต่ำกว่า 2 ปี', ml: 0 };
-          if (age <= 5) return { text: '5 ml (5 mg) วันละ 1 ครั้ง (OD)', ml: 5 };
-          return { text: '10 ml (10 mg) วันละ 1 ครั้ง (OD)', ml: 10 };
-        },
-        instruction: 'รับประทานวันละ 1 ครั้ง ไม่ทำให้ง่วง แนะนำอายุ 2 ปีขึ้นไป'
-      },
-      {
-        id: 'diphenhydramine',
-        name: 'Diphenhydramine (Benadryl) Syrup',
-        category: 'symptomatic',
-        diseases: [],
-        weightBasis: 'ABW',
-        weightNote: 'ห้ามใช้ในเด็กอายุ < 1 ปี',
-        strengths: [{ label: '12.5 mg / 5 ml (2.5 mg/ml)', mgPerMl: 2.5 }],
-        selectedStrength: 0,
-        type: 'mkd',
-        defaultDose: 5,
-        minDose: 5,
-        maxDose: 5,
-        doseUnit: 'mg/kg/day',
-        frequency: 'tid',
-        freqText: 'วันละ 3 - 4 ครั้ง หลังอาหาร',
-        minAge: 1,
-        instruction: 'ข้อห้าม: ห้ามใช้ในเด็กอายุต่ำกว่า 1 ปี ทำให้ง่วงซึมมาก'
-      },
-      {
-        id: 'ketotifen',
-        name: 'Ketotifen Syrup (Zaditen)',
-        category: 'symptomatic',
-        diseases: ['asthma', 'uri'],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ',
-        strengths: [{ label: '1 mg / 5 ml (0.2 mg/ml)', mgPerMl: 0.2 }],
-        selectedStrength: 0,
-        type: 'mkdose',
-        defaultDose: 0.025,
-        minDose: 0.025,
-        maxDose: 0.025,
-        doseUnit: 'mg/kg/dose',
-        frequency: 'bid',
-        freqText: 'วันละ 2 ครั้ง เช้า-เย็น หลังอาหาร',
-        instruction: 'ยาป้องกันหอบและภูมิแพ้'
-      },
-      {
-        id: 'pseudoephedrine',
-        name: 'Pseudoephedrine Syrup',
-        category: 'symptomatic',
-        diseases: ['uri', 'aom'],
-        weightBasis: 'ABW',
-        weightNote: 'ไม่แนะนำในเด็กอายุ < 2 ปี',
-        strengths: [{ label: '30 mg / 5 ml (6 mg/ml)', mgPerMl: 6 }],
-        selectedStrength: 0,
-        type: 'mkd',
-        defaultDose: 4,
-        minDose: 4,
-        maxDose: 4,
-        doseUnit: 'mg/kg/day',
-        frequency: 'tid',
-        freqText: 'วันละ 3 ครั้ง หลังอาหาร',
-        minAge: 2,
-        instruction: 'ลดอาการคัดแน่นจมูก ห้ามใช้ในเด็ก < 2 ปี อาจทำให้ใจสั่น นอนไม่หลับ'
-      },
-      {
-        id: 'actifed',
-        name: 'Actifed Syrup (Pseudo + Triprolidine)',
-        category: 'symptomatic',
-        diseases: ['uri'],
-        weightBasis: 'ABW',
-        weightNote: 'ห้ามใช้ในเด็กอายุ < 2 ปี',
-        strengths: [{ label: 'Pseudo 30 mg + Triprolidine 1.25 mg / 5 ml', mgPerMl: 6 }],
-        selectedStrength: 0,
-        type: 'mkd',
-        defaultDose: 4,
-        minDose: 4,
-        maxDose: 4,
-        doseUnit: 'mg/kg/day (of Pseudo)',
-        frequency: 'tid',
-        freqText: 'วันละ 3 ครั้ง หลังอาหาร',
-        minAge: 2,
-        instruction: 'ห้ามใช้ในเด็ก < 2 ปี (ทำให้เสมหะเหนียวข้นและกดการหายใจ)'
       },
       {
         id: 'salbutamol_syr',
@@ -825,7 +702,9 @@
         diseases: ['asthma', 'uri', 'covid'],
         weightBasis: 'ABW',
         weightNote: 'ใช้ ABW คำนวณ (Max 2 mg/dose)',
-        strengths: [{ label: '2 mg / 5 ml (0.4 mg/ml)', mgPerMl: 0.4 }],
+        bottleVolume: 60,
+        defaultDays: 5,
+        strengths: [{ label: '2 mg / 5 ml (60 ml/ขวด)', mgPerMl: 0.4, vol: 60 }],
         selectedStrength: 0,
         type: 'mkdose',
         defaultDose: 0.1,
@@ -833,21 +712,10 @@
         maxDose: 0.15,
         doseUnit: 'mg/kg/dose',
         frequency: 'tid',
+        dosesPerDay: 3,
         freqText: 'วันละ 3 ครั้ง หลังอาหาร (หรือทุก 6-8 ชม.)',
         maxSingleDose: 2,
         instruction: 'ขยายหลอดลม บรรเทาอาการไอหอบ อาจมีอาการใจสั่น มือสั่น'
-      },
-      {
-        id: 'procaterol',
-        name: 'Procaterol (Meptin) Syrup',
-        category: 'symptomatic',
-        diseases: ['asthma', 'uri'],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ',
-        strengths: [{ label: '25 mcg / 5 ml (5 mcg/ml)', mgPerMl: 0.005 }],
-        selectedStrength: 0,
-        type: 'custom_procaterol',
-        instruction: '1.25 mcg/kg/dose วันละ 2 ครั้ง หรือตามเกณฑ์ (<1 ปี: 2.5 ml, 1-3 ปี: 3.5 ml, 4-5 ปี: 5 ml bid)'
       },
       {
         id: 'bromhexine',
@@ -856,34 +724,18 @@
         diseases: ['uri', 'covid'],
         weightBasis: 'AGE',
         weightNote: 'คำนวณตามเกณฑ์อายุ (Age-based)',
-        strengths: [{ label: '4 mg / 5 ml (0.8 mg/ml)', mgPerMl: 0.8 }],
+        bottleVolume: 60,
+        defaultDays: 5,
+        strengths: [{ label: '4 mg / 5 ml (60 ml/ขวด)', mgPerMl: 0.8, vol: 60 }],
         selectedStrength: 0,
         type: 'age_based',
         calcByAge: (age) => {
-          if (age < 2) return { text: '1.25 ml วันละ 3 ครั้ง', ml: 1.25 };
-          if (age <= 5) return { text: '2.5 ml (½ ช้อนชา) วันละ 3 ครั้ง', ml: 2.5 };
-          if (age <= 10) return { text: '5 ml (1 ช้อนชา) วันละ 3 ครั้ง', ml: 5 };
-          return { text: '10 ml (2 ช้อนชา) วันละ 3 ครั้ง', ml: 10 };
+          if (age < 2) return { text: '1.25 ml วันละ 3 ครั้ง', ml: 1.25, dosesPerDay: 3 };
+          if (age <= 5) return { text: '2.5 ml (½ ช้อนชา) วันละ 3 ครั้ง', ml: 2.5, dosesPerDay: 3 };
+          if (age <= 10) return { text: '5 ml (1 ช้อนชา) วันละ 3 ครั้ง', ml: 5, dosesPerDay: 3 };
+          return { text: '10 ml (2 ช้อนชา) วันละ 3 ครั้ง', ml: 10, dosesPerDay: 3 };
         },
         instruction: 'ยาละลายเสมหะ ดื่มน้ำตามมากๆ เพื่อให้เสมหะระบายตัวดี'
-      },
-      {
-        id: 'nac',
-        name: 'N-acetylcysteine (NAC) Powder',
-        category: 'symptomatic',
-        diseases: ['uri', 'covid'],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ',
-        strengths: [{ label: '200 mg / ซอง', mgPerMl: 1 }],
-        selectedStrength: 0,
-        type: 'mkd',
-        defaultDose: 20,
-        minDose: 20,
-        maxDose: 30,
-        doseUnit: 'mg/kg/day',
-        frequency: 'bid',
-        freqText: 'แบ่งวันละ 2 - 3 ครั้ง ละลายน้ำดื่ม',
-        instruction: 'ยาละลายเสมหะ ละลายน้ำดื่มทันที'
       },
       {
         id: 'gg',
@@ -892,45 +744,12 @@
         diseases: ['uri', 'covid'],
         weightBasis: 'AGE_WITH_DOSE',
         weightNote: 'แจ้งเตือน: FDA/AAP ไม่แนะนำให้ใช้ในเด็กอายุ < 4 ปี',
-        strengths: [{ label: '100 mg / 5 ml (20 mg/ml)', mgPerMl: 20 }],
+        bottleVolume: 60,
+        defaultDays: 5,
+        strengths: [{ label: '100 mg / 5 ml (60 ml/ขวด)', mgPerMl: 20, vol: 60 }],
         selectedStrength: 0,
         type: 'custom_gg',
-        instruction: 'คำเตือนความปลอดภัย: สากลไม่แนะนำยาขับเสมหะในเด็กอายุ < 4 ปี แนะนำให้ดื่มน้ำอุ่นเพียงพอและล้างจมูก'
-      },
-      {
-        id: 'ammonium_carb',
-        name: 'Ammonium Carb + Glycyrrhiza Mixture',
-        category: 'symptomatic',
-        diseases: ['uri'],
-        weightBasis: 'AGE',
-        weightNote: 'คำนวณตามเกณฑ์อายุ (Age-based)',
-        strengths: [{ label: 'สูตรยาน้ำแก้ไอ รพ.สต.', mgPerMl: 1 }],
-        selectedStrength: 0,
-        type: 'age_based',
-        calcByAge: (age) => {
-          if (age < 1) return { text: 'ไม่ควรใช้ในเด็กอายุต่ำกว่า 1 ปี', ml: 0 };
-          if (age <= 2) return { text: '2.5 ml วันละ 3-4 ครั้ง หลังอาหาร', ml: 2.5 };
-          if (age <= 5) return { text: '5 ml (1 ช้อนชา) วันละ 3-4 ครั้ง', ml: 5 };
-          return { text: '10 ml (2 ช้อนชา) วันละ 3-4 ครั้ง', ml: 10 };
-        },
-        instruction: 'ยาน้ำแก้ไอขับเสมหะ เขย่าขวดก่อนรินยา'
-      },
-      {
-        id: 'mist_scill',
-        name: 'Mist. Scill. Ammon.',
-        category: 'symptomatic',
-        diseases: ['uri'],
-        weightBasis: 'AGE',
-        weightNote: 'ห้ามใช้ในเด็กอายุต่ำกว่า 6 ปี',
-        strengths: [{ label: 'ยาน้ำแก้ไอขับเสมหะ', mgPerMl: 1 }],
-        selectedStrength: 0,
-        type: 'age_based',
-        calcByAge: (age) => {
-          if (age < 6) return { text: 'ข้อห้าม: ห้ามใช้ในเด็กอายุต่ำกว่า 6 ปี', ml: 0 };
-          return { text: '2.5 - 5 ml (½ - 1 ช้อนชา) วันละ 3 ครั้ง หลังอาหาร', ml: 5 };
-        },
-        minAge: 6,
-        instruction: 'ห้ามใช้ในเด็กอายุต่ำกว่า 6 ปี'
+        instruction: 'คำเตือนความปลอดภัย: สากลไม่แนะนำยาขับเสมหะในเด็กอายุ < 4 ปี แนะนำให้ดื่มน้ำอุ่นและล้างจมูก'
       },
 
       // ==================== GI & NUTRITION ====================
@@ -941,7 +760,9 @@
         diseases: ['ge'],
         weightBasis: 'ABW',
         weightNote: '0.2–0.4 mg/kg/dose tid ac (Hard-cap ไม่เกิน 1 mg/kg/day, Max 10 mg/dose)',
-        strengths: [{ label: '5 mg / 5 ml (1 mg/ml)', mgPerMl: 1 }],
+        bottleVolume: 30,
+        defaultDays: 3,
+        strengths: [{ label: '5 mg / 5 ml (30 ml/ขวด)', mgPerMl: 1, vol: 30 }],
         selectedStrength: 0,
         type: 'custom_domperidone',
         instruction: 'รับประทานก่อนอาหาร 15-30 นาที วันละ 3 ครั้ง (ไม่ควรใช้ติดต่อกันเกิน 1 สัปดาห์ เพื่อความปลอดภัยต่อหัวใจ)'
@@ -953,31 +774,16 @@
         diseases: ['ge', 'hfmd'],
         weightBasis: 'AGE',
         weightNote: 'คำนวณตามอายุ/น้ำหนัก (Age/BW-based)',
-        strengths: [{ label: '40 mg / 0.6 ml (Drop)', mgPerMl: 66.6 }],
+        bottleVolume: 15,
+        defaultDays: 5,
+        strengths: [{ label: '40 mg / 0.6 ml (15 ml/ขวด)', mgPerMl: 66.6, vol: 15 }],
         selectedStrength: 0,
         type: 'age_based',
         calcByAge: (age, bw) => {
-          if (age < 2 || bw < 10.9) return { text: '0.3 ml (ประมาณ 6-8 หยด) วันละ 3-4 ครั้ง หลังอาหารและก่อนนอน', ml: 0.3 };
-          return { text: '0.6 ml (ประมาณ 12-15 หยด) วันละ 3-4 ครั้ง หลังอาหารและก่อนนอน', ml: 0.6 };
+          if (age < 2 || bw < 10.9) return { text: '0.3 ml (ประมาณ 6-8 หยด) วันละ 3-4 ครั้ง หลังอาหาร/ก่อนนอน', ml: 0.3, dosesPerDay: 4 };
+          return { text: '0.6 ml (ประมาณ 12-15 หยด) วันละ 3-4 ครั้ง หลังอาหาร/ก่อนนอน', ml: 0.6, dosesPerDay: 4 };
         },
-        instruction: 'แก้อาการท้องอืด ท้องเฟ้อ ร้องโคลิกในทารก และช่วยเคลือบแผลในช่องปากเด็กมือเท้าปาก'
-      },
-      {
-        id: 'hyoscine_syr',
-        name: 'Hyoscine-N-butylbromide Syrup',
-        category: 'gi',
-        diseases: ['ge'],
-        weightBasis: 'AGE',
-        weightNote: 'คำนวณตามเกณฑ์อายุ (Age-based)',
-        strengths: [{ label: '5 mg / 5 ml (1 mg/ml)', mgPerMl: 1 }],
-        selectedStrength: 0,
-        type: 'age_based',
-        calcByAge: (age) => {
-          if (age < 1) return { text: '2.5 ml ทุก 8 ชม. (ใช้เมื่อจำเป็น)', ml: 2.5 };
-          if (age <= 6) return { text: '5 - 10 ml (1-2 ช้อนชา) วันละ 3 ครั้ง', ml: 5 };
-          return { text: '10 - 20 ml (2-4 ช้อนชา) วันละ 3 ครั้ง', ml: 10 };
-        },
-        instruction: 'แก้ปวดเกร็งช่องท้อง ลำไส้บีบตัว'
+        instruction: 'แก้อาการท้องอืด ร้องโคลิก และใช้เคลือบแผลในช่องปากเด็กมือเท้าปาก'
       },
       {
         id: 'mom',
@@ -986,134 +792,21 @@
         diseases: ['ge'],
         weightBasis: 'AGE',
         weightNote: 'ยาระบาย คำนวณตามเกณฑ์อายุ',
-        strengths: [{ label: '400 mg / 5 ml (ยาระบาย)', mgPerMl: 80 }],
+        bottleVolume: 240,
+        defaultDays: 5,
+        strengths: [{ label: '400 mg / 5 ml (240 ml/ขวด)', mgPerMl: 80, vol: 240 }],
         selectedStrength: 0,
         type: 'age_based',
         calcByAge: (age, bw) => {
-          if (age < 2) return { text: `${(bw * 0.5).toFixed(1)} ml (0.5 ml/kg) ก่อนนอน`, ml: (bw * 0.5) };
-          if (age <= 5) return { text: '5 - 15 ml วันละ 1 ครั้ง ก่อนนอน', ml: 7.5 };
-          if (age <= 12) return { text: '15 - 30 ml วันละ 1 ครั้ง ก่อนนอน', ml: 15 };
-          return { text: '30 - 60 ml วันละ 1 ครั้ง ก่อนนอน', ml: 30 };
+          if (age < 2) return { text: `${(bw * 0.5).toFixed(1)} ml (0.5 ml/kg) ก่อนนอน`, ml: (bw * 0.5), dosesPerDay: 1 };
+          if (age <= 5) return { text: '5 - 15 ml วันละ 1 ครั้ง ก่อนนอน', ml: 7.5, dosesPerDay: 1 };
+          if (age <= 12) return { text: '15 - 30 ml วันละ 1 ครั้ง ก่อนนอน', ml: 15, dosesPerDay: 1 };
+          return { text: '30 - 60 ml วันละ 1 ครั้ง ก่อนนอน', ml: 30, dosesPerDay: 1 };
         },
         instruction: 'เขย่าขวดก่อนใช้ ดื่มน้ำตามมากๆ'
       },
-      {
-        id: 'alummilk',
-        name: 'Alummilk Suspension (ยาลดกรด)',
-        category: 'gi',
-        diseases: ['ge', 'hfmd'],
-        weightBasis: 'AGE',
-        weightNote: 'ขนาดยาตามเกณฑ์เด็ก',
-        strengths: [{ label: 'ยาน้ำลดกรดเคลือบกระเพาะ', mgPerMl: 1 }],
-        selectedStrength: 0,
-        type: 'fixed',
-        fixedDoseText: 'เด็ก: 5 - 15 ml วันละ 3 - 4 ครั้ง หลังอาหาร 1 ชม. และก่อนนอน (หรือใช้ป้ายแผลในปาก HFMD)',
-        instruction: 'เขย่าขวดก่อนรินยา รับประทานหลังอาหาร 1 ชั่วโมง'
-      },
-      {
-        id: 'kaopectin',
-        name: 'Kaopectin Suspension',
-        category: 'gi',
-        diseases: ['ge'],
-        weightBasis: 'AGE',
-        weightNote: 'ขนาดยาตามเกณฑ์เด็ก',
-        strengths: [{ label: 'ยาแก้ท้องเสียดูดซับสารพิษ', mgPerMl: 1 }],
-        selectedStrength: 0,
-        type: 'fixed',
-        fixedDoseText: 'เด็ก: 5 - 15 ml วันละ 3 - 4 ครั้ง เมื่อมีอาการถ่ายเหลว',
-        instruction: 'ให้ร่วมกับผงน้ำตาลเกลือแร่ (ORS) เพื่อชดเชยการสูญเสียน้ำ'
-      },
-      {
-        id: 'ferrous_drop',
-        name: 'Ferrous Fumarate Drop',
-        category: 'gi',
-        diseases: [],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณตามปริมาณ Elemental Iron (15 mg Fe / 0.6 ml)',
-        strengths: [{ label: '45 mg / 0.6 ml (Fe 15 mg/0.6 ml)', mgPerMl: 25 }], // 25 mg Fe/ml
-        selectedStrength: 0,
-        type: 'custom_iron_drop',
-        instruction: 'ป้องกัน: 1-2 mg Fe/kg/day วันละ 1 ครั้ง | รักษาโลหิตจาง: 3-6 mg Fe/kg/day แบ่ง 1-3 ครั้ง (อาจทำให้อุจจาระสีดำ)'
-      },
-      {
-        id: 'eurofer_syr',
-        name: 'Ferric Hydroxide (Eurofer) Syrup',
-        category: 'gi',
-        diseases: [],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ (Elemental Iron 10 mg / 1 ml)',
-        strengths: [{ label: '10 mg Fe / ml (60 ml)', mgPerMl: 10 }],
-        selectedStrength: 0,
-        type: 'custom_iron_syr',
-        instruction: 'เด็ก 6 เดือน - 12 ปี: ป้องกัน 2-4 mg Fe/kg/day | รักษา 4-6 mg Fe/kg/day ทานพร้อมหรือหลังอาหาร'
-      },
-      {
-        id: 'mtv_syr',
-        name: 'Multivitamin Syrup (MTV)',
-        category: 'gi',
-        diseases: ['uri', 'hfmd'],
-        weightBasis: 'AGE',
-        weightNote: 'วิตามินรวมตามเกณฑ์อายุ',
-        strengths: [{ label: 'ยาน้ำวิตามินรวม', mgPerMl: 1 }],
-        selectedStrength: 0,
-        type: 'age_based',
-        calcByAge: (age) => {
-          if (age <= 6) return { text: '5 ml (1 ช้อนชา) วันละ 1 ครั้ง หลังอาหาร', ml: 5 };
-          return { text: '5 - 10 ml (1-2 ช้อนชา) วันละ 1 ครั้ง หลังอาหาร', ml: 10 };
-        },
-        instruction: 'รับประทานวันละ 1 ครั้ง หลังอาหารเช้า'
-      },
-      {
-        id: 'vite_emulsion',
-        name: 'Vitamin E Emulsion',
-        category: 'gi',
-        diseases: [],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ (15-30 IU/kg/day)',
-        strengths: [{ label: '50 IU / ml', mgPerMl: 50 }],
-        selectedStrength: 0,
-        type: 'mkd',
-        defaultDose: 20,
-        minDose: 15,
-        maxDose: 30,
-        doseUnit: 'IU/kg/day',
-        frequency: 'od',
-        freqText: 'วันละ 1 ครั้ง หลังอาหาร',
-        instruction: 'วิตามินอีเสริมโภชนาการ'
-      },
-      {
-        id: 'depakine',
-        name: 'Sodium Valproate (Depakine) Syrup',
-        category: 'gi',
-        diseases: [],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ (ติดตามระดับยาในเลือด TDM)',
-        strengths: [{ label: '200 mg / ml', mgPerMl: 200 }],
-        selectedStrength: 0,
-        type: 'mkd',
-        defaultDose: 15,
-        minDose: 10,
-        maxDose: 30,
-        doseUnit: 'mg/kg/day',
-        frequency: 'bid',
-        freqText: 'แบ่งให้วันละ 2 - 3 ครั้ง พร้อมอาหาร',
-        instruction: 'ยากันชัก เริ่มต้น 10-15 mg/kg/day ค่อยๆ ปรับเพิ่มจนถึง Maintenance 30-60 mg/kg/day'
-      },
 
       // ==================== INJECTIONS, RESUSCITATION & TDM ====================
-      {
-        id: 'nystatin',
-        name: 'Nystatin Oral Suspension',
-        category: 'iv',
-        diseases: [],
-        weightBasis: 'AGE',
-        weightNote: 'ป้ายปากรักษาเชื้อรา',
-        strengths: [{ label: '100,000 U / ml', mgPerMl: 1 }],
-        selectedStrength: 0,
-        type: 'fixed',
-        fixedDoseText: 'ทารกคลอดก่อนกำหนด: 1 ml | เด็กทั่วไป: 2 ml วันละ 4 ครั้ง ป้ายปากหลังอาหาร',
-        instruction: 'ป้ายกระพุ้งแก้มและลิ้น อมไว้สักครู่ก่อนกลืน'
-      },
       {
         id: 'salbutamol_nb',
         name: 'Salbutamol Nebule (0.5% Soln)',
@@ -1121,6 +814,7 @@
         diseases: ['asthma', 'covid'],
         weightBasis: 'ABW',
         weightNote: '0.03 ml/kg/dose (0.15 mg/kg) ผสม NSS พ่นละอองฝอย',
+        bottleVolume: 20, // 20 ml bottle
         strengths: [{ label: '5 mg / ml (0.5%)', mgPerMl: 5 }],
         selectedStrength: 0,
         type: 'custom_nb',
@@ -1133,7 +827,7 @@
         diseases: ['asthma'],
         weightBasis: 'ABW',
         weightNote: 'ใช้ ABW คำนวณ (Max 0.3 mg/dose)',
-        strengths: [{ label: '0.5 mg / ml', mgPerMl: 0.5 }],
+        strengths: [{ label: '0.5 mg / ml (1 ml/amp)', mgPerMl: 0.5 }],
         selectedStrength: 0,
         type: 'mkdose',
         defaultDose: 0.01,
@@ -1206,139 +900,6 @@
         instruction: 'ยามาตรฐานสำหรับ Croup และอาการทางเดินหายใจส่วนบนบวมอุดกั้น'
       },
       {
-        id: 'prednisolone_tab',
-        name: 'Prednisolone Tablet',
-        category: 'iv',
-        diseases: ['asthma'],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ (Max 40-60 mg/day)',
-        strengths: [{ label: '5 mg / เม็ด', mgPerMl: 5 }],
-        selectedStrength: 0,
-        type: 'mkd',
-        defaultDose: 1.5,
-        minDose: 1,
-        maxDose: 2,
-        doseUnit: 'mg/kg/day',
-        frequency: 'od',
-        freqText: 'วันละ 1 - 2 ครั้ง หลังอาหารเช้า (ทาน 3-5 วัน)',
-        maxDailyDose: 60,
-        instruction: 'รักษาภาวะ Acute asthma exacerbation ทานติดต่อกัน 3-5 วันโดยไม่ต้อง taper dose'
-      },
-      {
-        id: 'diazepam_iv',
-        name: 'Diazepam IV (Valium)',
-        category: 'iv',
-        diseases: [],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ (แก้อาการชักเฉียบพลัน)',
-        strengths: [{ label: '10 mg / 2 ml (5 mg/ml)', mgPerMl: 5 }],
-        selectedStrength: 0,
-        type: 'mkdose',
-        defaultDose: 0.2,
-        minDose: 0.2,
-        maxDose: 0.3,
-        doseUnit: 'mg/kg/dose',
-        frequency: 'prn',
-        freqText: 'ฉีดเข้าหลอดเลือดดำช้าๆ (ไม่เกิน 2 mg/นาที) เวลามีอาการชัก',
-        maxSingleDose: 5,
-        instruction: 'ห้ามฉีดเร็วเพราะอาจกดการหายใจและความดันตก (เด็ก < 5 ปี Max 5 mg, ≥ 5 ปี Max 10 mg)'
-      },
-      {
-        id: 'midazolam_iv',
-        name: 'Midazolam IV / Buccal',
-        category: 'iv',
-        diseases: [],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ (แก้อาการชัก)',
-        strengths: [{ label: '5 mg / ml', mgPerMl: 5 }],
-        selectedStrength: 0,
-        type: 'mkdose',
-        defaultDose: 0.15,
-        minDose: 0.1,
-        maxDose: 0.2,
-        doseUnit: 'mg/kg/dose',
-        frequency: 'prn',
-        freqText: 'ฉีดเข้าหลอดเลือดดำช้าๆ หรือหยดเข้ากระพุ้งแก้ม/พ่นจมูก',
-        maxSingleDose: 5,
-        instruction: 'สามารถให้ทาง Buccal หรือ Intranasal ในเด็กที่ยังไม่มีเส้น IV'
-      },
-      {
-        id: 'ampicillin_iv',
-        name: 'Ampicillin IV',
-        category: 'iv',
-        diseases: [],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ (Max 12 g/day)',
-        strengths: [{ label: '1 g / vial (ผสม 10 ml = 100 mg/ml)', mgPerMl: 100 }],
-        selectedStrength: 0,
-        type: 'mkd',
-        defaultDose: 150,
-        minDose: 100,
-        maxDose: 200,
-        doseUnit: 'mg/kg/day',
-        frequency: 'qid',
-        freqText: 'ฉีดเข้าหลอดเลือดดำ ทุก 6 ชม.',
-        maxDailyDose: 12000,
-        instruction: 'ฉีด IV ช้าๆ นาน 3-5 นาที'
-      },
-      {
-        id: 'cloxacillin_iv',
-        name: 'Cloxacillin IV',
-        category: 'iv',
-        diseases: [],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ (Max 12 g/day)',
-        strengths: [{ label: '1 g / vial (ผสม 10 ml = 100 mg/ml)', mgPerMl: 100 }],
-        selectedStrength: 0,
-        type: 'mkd',
-        defaultDose: 150,
-        minDose: 100,
-        maxDose: 200,
-        doseUnit: 'mg/kg/day',
-        frequency: 'qid',
-        freqText: 'ฉีดเข้าหลอดเลือดดำ ทุก 6 ชม.',
-        maxDailyDose: 12000,
-        instruction: 'ระวัง Phlebitis แนะนำผสม NSS หรือ D5W หยดช้าๆ'
-      },
-      {
-        id: 'cefazolin_iv',
-        name: 'Cefazolin IV',
-        category: 'iv',
-        diseases: [],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ (Max 6 g/day)',
-        strengths: [{ label: '1 g / vial (ผสม 10 ml = 100 mg/ml)', mgPerMl: 100 }],
-        selectedStrength: 0,
-        type: 'mkd',
-        defaultDose: 75,
-        minDose: 50,
-        maxDose: 100,
-        doseUnit: 'mg/kg/day',
-        frequency: 'tid',
-        freqText: 'ฉีดเข้าหลอดเลือดดำ ทุก 8 ชม.',
-        maxDailyDose: 6000,
-        instruction: 'ยาปฏิชีวนะกลุ่ม 1st generation cephalosporin'
-      },
-      {
-        id: 'cefotaxime_iv',
-        name: 'Cefotaxime IV',
-        category: 'iv',
-        diseases: [],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ (Max 12 g/day)',
-        strengths: [{ label: '1 g / vial (ผสม 10 ml = 100 mg/ml)', mgPerMl: 100 }],
-        selectedStrength: 0,
-        type: 'mkd',
-        defaultDose: 150,
-        minDose: 100,
-        maxDose: 200,
-        doseUnit: 'mg/kg/day',
-        frequency: 'qid',
-        freqText: 'ฉีดเข้าหลอดเลือดดำ ทุก 6-8 ชม. (Meningitis: 200-300 MKD)',
-        maxDailyDose: 12000,
-        instruction: 'ปลอดภัยในทารกแรกเกิดที่เสี่ยงต่อ Hyperbilirubinemia'
-      },
-      {
         id: 'ceftriaxone_iv',
         name: 'Ceftriaxone IV',
         category: 'iv',
@@ -1353,164 +914,11 @@
         maxDose: 75,
         doseUnit: 'mg/kg/day',
         frequency: 'od',
+        dosesPerDay: 1,
         freqText: 'วันละ 1 ครั้ง (Meningitis 100 MKD แบ่ง q 12h)',
         maxDailyDose: 2000,
         instruction: 'ข้อห้าม: ห้ามผสมหรือให้ร่วมกับสารละลายที่มีแคลเซียมเด็ดขาด'
       },
-      {
-        id: 'ceftazidime_iv',
-        name: 'Ceftazidime IV',
-        category: 'iv',
-        diseases: [],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ (Max 6 g/day)',
-        strengths: [{ label: '1 g / vial (ผสม 10 ml = 100 mg/ml)', mgPerMl: 100 }],
-        selectedStrength: 0,
-        type: 'mkd',
-        defaultDose: 120,
-        minDose: 100,
-        maxDose: 150,
-        doseUnit: 'mg/kg/day',
-        frequency: 'tid',
-        freqText: 'ฉีดเข้าหลอดเลือดดำ ทุก 8 ชม.',
-        maxDailyDose: 6000,
-        instruction: 'ครอบคลุมเชื้อ Pseudomonas aeruginosa'
-      },
-      {
-        id: 'meropenem_iv',
-        name: 'Meropenem IV',
-        category: 'iv',
-        diseases: [],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ (Max 6 g/day)',
-        strengths: [{ label: '1 g / vial (ผสม 20 ml = 50 mg/ml)', mgPerMl: 50 }],
-        selectedStrength: 0,
-        type: 'mkdose',
-        defaultDose: 20,
-        minDose: 20,
-        maxDose: 40,
-        doseUnit: 'mg/kg/dose',
-        frequency: 'tid',
-        freqText: 'ฉีดเข้าหลอดเลือดดำ ทุก 8 ชม. (Meningitis 40 mg/kg/dose)',
-        maxSingleDose: 2000,
-        instruction: 'Drip นาน 15-30 นาที หรือ Extended infusion 3-4 ชั่วโมง'
-      },
-      {
-        id: 'tazocin_iv',
-        name: 'Tazocin (Piperacillin/Tazobactam) IV',
-        category: 'iv',
-        diseases: [],
-        weightBasis: 'ABW',
-        weightNote: 'คิดตามขนาด Piperacillin (100 mg/kg/dose q 8h)',
-        strengths: [{ label: '4.5 g / vial (Pip 4g + Tazo 0.5g ผสม 20 ml = 200 mg Pip/ml)', mgPerMl: 200 }],
-        selectedStrength: 0,
-        type: 'mkdose',
-        defaultDose: 100,
-        minDose: 80,
-        maxDose: 100,
-        doseUnit: 'mg Pip/kg/dose',
-        frequency: 'tid',
-        freqText: 'ฉีดเข้าหลอดเลือดดำ ทุก 8 ชม. (Drip 30 นาที)',
-        maxSingleDose: 4000,
-        instruction: 'ขนาดยาอิงตามส่วนประกอบ Piperacillin'
-      },
-      {
-        id: 'metronidazole_iv',
-        name: 'Metronidazole IV',
-        category: 'iv',
-        diseases: ['ge'],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ (Max 4 g/day)',
-        strengths: [{ label: '500 mg / 100 ml (5 mg/ml ขวดพร้อมดริป)', mgPerMl: 5 }],
-        selectedStrength: 0,
-        type: 'mkd',
-        defaultDose: 30,
-        minDose: 30,
-        maxDose: 30,
-        doseUnit: 'mg/kg/day',
-        frequency: 'tid',
-        freqText: 'ฉีดเข้าหลอดเลือดดำ ทุก 8 ชม. (Drip 30-60 นาที)',
-        maxDailyDose: 4000,
-        instruction: 'ครอบคลุมเชื้อแอนแอโรบส์ (Anaerobes)'
-      },
-      {
-        id: 'clindamycin_iv',
-        name: 'Clindamycin IV',
-        category: 'iv',
-        diseases: [],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ (Max 4.8 g/day)',
-        strengths: [{ label: '600 mg / 4 ml (150 mg/ml)', mgPerMl: 150 }],
-        selectedStrength: 0,
-        type: 'mkd',
-        defaultDose: 30,
-        minDose: 25,
-        maxDose: 40,
-        doseUnit: 'mg/kg/day',
-        frequency: 'qid',
-        freqText: 'ฉีดเข้าหลอดเลือดดำ ทุก 6 - 8 ชม.',
-        maxDailyDose: 4800,
-        instruction: 'ห้ามฉีด IV push เร็วเด็ดขาด ต้องเจือจางและ Drip อย่างน้อย 20-30 นาที'
-      },
-      {
-        id: 'ondansetron_iv',
-        name: 'Ondansetron IV (Zofran)',
-        category: 'iv',
-        diseases: ['ge'],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ (Max 8-16 mg/dose)',
-        strengths: [{ label: '8 mg / 4 ml (2 mg/ml)', mgPerMl: 2 }],
-        selectedStrength: 0,
-        type: 'mkdose',
-        defaultDose: 0.15,
-        minDose: 0.15,
-        maxDose: 0.15,
-        doseUnit: 'mg/kg/dose',
-        frequency: 'prn',
-        freqText: 'ฉีดเข้าหลอดเลือดดำช้าๆ 2-5 นาที ทุก 8 ชม. เมื่ออาเจียนรุนแรง',
-        maxSingleDose: 8,
-        instruction: 'ยาต้านการอาเจียนที่มีประสิทธิภาพสูงในเด็กกระเพาะลำไส้อักเสบเฉียบพลัน'
-      },
-      {
-        id: 'metoclopramide_iv',
-        name: 'Metoclopramide IV (Plasil)',
-        category: 'iv',
-        diseases: ['ge'],
-        weightBasis: 'ABW',
-        weightNote: 'ระวัง Extrapyramidal symptoms (EPS) ในเด็ก',
-        strengths: [{ label: '10 mg / 2 ml (5 mg/ml)', mgPerMl: 5 }],
-        selectedStrength: 0,
-        type: 'mkdose',
-        defaultDose: 0.1,
-        minDose: 0.1,
-        maxDose: 0.2,
-        doseUnit: 'mg/kg/dose',
-        frequency: 'tid',
-        freqText: 'ฉีดเข้าหลอดเลือดดำ ทุก 8 ชม.',
-        maxSingleDose: 10,
-        instruction: 'ระวังอาการกระตุก เกร็ง (Dystonia/EPS) หากเกิดให้แก้ด้วย Diphenhydramine IV'
-      },
-      {
-        id: 'dimenhydrinate_iv',
-        name: 'Dimenhydrinate IV',
-        category: 'iv',
-        diseases: ['ge'],
-        weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ (Max 300 mg/day)',
-        strengths: [{ label: '50 mg / ml', mgPerMl: 50 }],
-        selectedStrength: 0,
-        type: 'mkd',
-        defaultDose: 5,
-        minDose: 5,
-        maxDose: 5,
-        doseUnit: 'mg/kg/day',
-        frequency: 'qid',
-        freqText: 'แบ่งฉีดเข้าหลอดเลือดดำ ทุก 6 ชม.',
-        maxDailyDose: 300,
-        instruction: 'เจือจางก่อนฉีด IV ช้าๆ ทำให้ง่วงซึม'
-      },
-
-      // Narrow Therapeutic Index (NTI) Medications
       {
         id: 'amikacin_iv',
         name: 'Amikacin IV / IM (ตามแนวทาง Divided q 8-12 hr)',
@@ -1526,6 +934,7 @@
         maxDose: 15,
         doseUnit: 'mg/kg/day',
         frequency: 'bid',
+        dosesPerDay: 2,
         freqText: 'แบ่งบริหารทุก 8 - 12 ชม. (Drip ช้าๆ 30-60 นาที หรือฉีด IM)',
         instruction: 'Narrow Therapeutic Index เฝ้าระวังการทำงานของไตและติดตาม TDM trough level'
       },
@@ -1544,6 +953,7 @@
         maxDose: 7.5,
         doseUnit: 'mg/kg/day (OD dose)',
         frequency: 'od',
+        dosesPerDay: 1,
         freqText: 'วันละ 1 ครั้ง หยดเข้าหลอดเลือดดำช้าๆ 30-60 นาที',
         instruction: 'ติดตามระดับ trough level และค่า Scr สม่ำเสมอ'
       },
@@ -1562,6 +972,7 @@
         maxDose: 60,
         doseUnit: 'mg/kg/day',
         frequency: 'tid',
+        dosesPerDay: 3,
         freqText: 'แบ่งให้ทุก 6 - 8 ชม. (Drip ช้าๆ นานกว่า 60 นาที)',
         instruction: 'Drip ช้าๆ ป้องกัน Red Man Syndrome และติดตาม TDM trough level'
       },
@@ -1601,7 +1012,6 @@
       }
     }
 
-    // Calculation: Adjusted Body Weight (AdjBW)
     function calculateAdjBW(abw, ibw) {
       if (abw > ibw) {
         return Number((ibw + 0.4 * (abw - ibw)).toFixed(1));
@@ -1659,56 +1069,41 @@
 
     function filterCategory(cat) {
       currentCategory = cat;
-      currentDisease = 'all'; // reset disease preset
+      currentDisease = 'all';
       updateFilterButtons();
       renderDrugCards();
     }
 
     function filterDisease(dis) {
       currentDisease = dis;
-      currentCategory = 'all'; // reset category tab
+      currentCategory = 'all';
       updateFilterButtons();
       renderDrugCards();
     }
 
     function updateFilterButtons() {
-      // Category buttons styling
       document.querySelectorAll('.cat-btn').forEach(b => {
         b.className = 'cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200';
       });
       document.getElementById(`btn-cat-${currentCategory}`).className = 'cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-xs';
 
-      // Disease buttons styling
       document.querySelectorAll('.disease-btn').forEach(b => {
         b.className = 'disease-btn px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200';
       });
       document.getElementById(`btn-dis-${currentDisease}`).className = 'disease-btn px-2.5 py-1 text-xs font-semibold rounded-lg bg-indigo-600 text-white shadow-xs';
 
-      // Update Filter Status Bar
       const statusBar = document.getElementById('filter-status-bar');
       const statusText = document.getElementById('filter-status-text');
       if (currentDisease !== 'all' || currentCategory !== 'all' || searchQuery !== '') {
         statusBar.classList.remove('hidden');
         let txt = [];
-        if (currentDisease !== 'all') txt.push(`โรค: ${getDiseaseLabel(currentDisease)}`);
+        if (currentDisease !== 'all') txt.push(`โรค: ${currentDisease}`);
         if (currentCategory !== 'all') txt.push(`หมวด: ${currentCategory}`);
         if (searchQuery !== '') txt.push(`ค้นหา: "${searchQuery}"`);
         statusText.innerText = txt.join(' | ');
       } else {
         statusBar.classList.add('hidden');
       }
-    }
-
-    function getDiseaseLabel(dis) {
-      const map = {
-        uri: 'ไข้หวัด / URI',
-        aom: 'หูชั้นกลางอักเสบ (AOM)',
-        hfmd: 'มือเท้าปาก (HFMD)',
-        covid: 'โควิด-19 (COVID-19)',
-        ge: 'ถ่ายเหลว / อาเจียน (AGE/Vomit)',
-        asthma: 'หอบหืด / หลอดลมหดเกร็ง'
-      };
-      return map[dis] || dis;
     }
 
     function clearAllFilters() {
@@ -1783,7 +1178,7 @@
       grid.innerHTML = filtered.map(drug => {
         const curStrength = drug.strengths[drug.selectedStrength || 0];
         
-        // Weight selection
+        // Weight basis
         let calcWeight = abw;
         let weightTypeLabel = 'ABW';
         let weightBadgeColor = 'bg-slate-100 text-slate-700 border-slate-300';
@@ -1817,11 +1212,13 @@
           weightBadgeColor = 'bg-purple-100 text-purple-800 border-purple-300';
         }
 
-        let doseMgPerDose = 0;
-        let doseMlPerDose = 0;
+        let rawMl = 0;
+        let suggestedMl = 0;
         let tspDesc = '';
         let formulaDesc = '';
         let warningBadge = '';
+        let dispensingBanner = '';
+        let customDoseDisplay = null;
 
         // Strict Age Restriction Warning
         if (drug.minAge && age < drug.minAge) {
@@ -1830,109 +1227,220 @@
           </div>`;
         }
 
-        // Calculations Engine
+        // Calculations & Suggest Dose Engine
         if (drug.type === 'mkd') {
           const dailyMg = calcWeight * drug.defaultDose;
-          const dosesPerDay = (drug.frequency === 'bid') ? 2 : (drug.frequency === 'tid') ? 3 : (drug.frequency === 'qid') ? 4 : 1;
-          doseMgPerDose = dailyMg / dosesPerDay;
-          doseMlPerDose = doseMgPerDose / curStrength.mgPerMl;
-          formulaDesc = `${drug.defaultDose} mg/kg/day × ${calcWeight.toFixed(1)} kg (${weightTypeLabel}) ÷ ${dosesPerDay} มื้อ = ${doseMgPerDose.toFixed(1)} mg`;
-          tspDesc = formatTeaspoons(doseMlPerDose);
+          const dosesPerDay = drug.dosesPerDay || 3;
+          const mgPerDose = dailyMg / dosesPerDay;
+          rawMl = mgPerDose / curStrength.mgPerMl;
+          suggestedMl = roundToPracticalMl(rawMl);
+          formulaDesc = `${drug.defaultDose} mg/kg/day × ${calcWeight.toFixed(1)} kg (${weightTypeLabel}) ÷ ${dosesPerDay} มื้อ = ${mgPerDose.toFixed(1)} mg (${rawMl.toFixed(2)} ml)`;
+          tspDesc = formatTeaspoons(suggestedMl);
+
+          // Dispensing bottle calc
+          const days = drug.defaultDays || 7;
+          const totalMl = suggestedMl * dosesPerDay * days;
+          const bVol = drug.bottleVolume || 60;
+          const bottles = Math.ceil(totalMl / bVol);
+          dispensingBanner = `
+            <div class="mt-2.5 bg-blue-50 border border-blue-200/80 rounded-lg p-2 text-xs flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-prescription-bottle text-blue-600 text-base"></i>
+                <div>
+                  <span class="font-bold text-blue-900">แนะนำสั่งจ่าย: </span>
+                  <span class="font-extrabold text-blue-800">${bottles} ขวด (${bVol} ml/ขวด)</span>
+                  <span class="text-[10px] text-slate-500 block">สำหรับรับประทาน ${days} วัน (ปริมาตรรวม ~${totalMl.toFixed(0)} ml)</span>
+                </div>
+              </div>
+            </div>
+          `;
 
         } else if (drug.type === 'mkdose') {
-          doseMgPerDose = calcWeight * drug.defaultDose;
-          if (drug.maxSingleDose && doseMgPerDose > drug.maxSingleDose) {
-            doseMgPerDose = drug.maxSingleDose;
+          let mgPerDose = calcWeight * drug.defaultDose;
+          if (drug.maxSingleDose && mgPerDose > drug.maxSingleDose) {
+            mgPerDose = drug.maxSingleDose;
             warningBadge += `<div class="mt-1 text-[11px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded font-medium">จำกัดขนาดยาสูงสุด ${drug.maxSingleDose} mg/dose</div>`;
           }
-          doseMlPerDose = doseMgPerDose / curStrength.mgPerMl;
-          formulaDesc = `${drug.defaultDose} mg/kg × ${calcWeight.toFixed(1)} kg (${weightTypeLabel}) = ${doseMgPerDose.toFixed(1)} mg`;
-          tspDesc = formatTeaspoons(doseMlPerDose);
+          rawMl = mgPerDose / curStrength.mgPerMl;
+          suggestedMl = roundToPracticalMl(rawMl);
+          formulaDesc = `${drug.defaultDose} mg/kg × ${calcWeight.toFixed(1)} kg (${weightTypeLabel}) = ${mgPerDose.toFixed(1)} mg (${rawMl.toFixed(2)} ml)`;
+          tspDesc = formatTeaspoons(suggestedMl);
+
+          if (drug.bottleVolume) {
+            const days = drug.defaultDays || 3;
+            const dosesPerDay = drug.dosesPerDay || 4;
+            const totalMl = suggestedMl * dosesPerDay * days;
+            const bVol = drug.bottleVolume;
+            const bottles = Math.ceil(totalMl / bVol);
+            dispensingBanner = `
+              <div class="mt-2.5 bg-blue-50 border border-blue-200/80 rounded-lg p-2 text-xs flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-prescription-bottle text-blue-600 text-base"></i>
+                  <div>
+                    <span class="font-bold text-blue-900">แนะนำสั่งจ่าย: </span>
+                    <span class="font-extrabold text-blue-800">${bottles} ขวด (${bVol} ml/ขวด)</span>
+                    <span class="text-[10px] text-slate-500 block">ประเมินทาน ${days} วัน prn (ปริมาตร ~${totalMl.toFixed(0)} ml)</span>
+                  </div>
+                </div>
+              </div>
+            `;
+          }
 
         } else if (drug.type === 'custom_domperidone') {
-          // 0.25 mg/kg/dose, tid ac, hard-cap at 1 mg/kg/day or max 10 mg/dose
           let mgDose = calcWeight * 0.25;
           if (mgDose > 10) mgDose = 10;
-          doseMlPerDose = mgDose / 1; // 5 mg/5 ml = 1 mg/ml
+          rawMl = mgDose / 1;
+          suggestedMl = roundToPracticalMl(rawMl);
           formulaDesc = `0.25 mg/kg/dose × ${calcWeight.toFixed(1)} kg = ${mgDose.toFixed(1)} mg (Max 10 mg/dose, 1 MKD)`;
-          tspDesc = formatTeaspoons(doseMlPerDose);
+          tspDesc = formatTeaspoons(suggestedMl);
+
+          const days = 3;
+          const totalMl = suggestedMl * 3 * days;
+          const bottles = Math.ceil(totalMl / 30);
+          dispensingBanner = `
+            <div class="mt-2.5 bg-blue-50 border border-blue-200/80 rounded-lg p-2 text-xs flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-prescription-bottle text-blue-600 text-base"></i>
+                <div>
+                  <span class="font-bold text-blue-900">แนะนำสั่งจ่าย: </span>
+                  <span class="font-extrabold text-blue-800">${bottles} ขวด (30 ml/ขวด)</span>
+                  <span class="text-[10px] text-slate-500 block">รับประทาน 3 วัน ac (รวม ~${totalMl.toFixed(0)} ml)</span>
+                </div>
+              </div>
+            </div>
+          `;
 
         } else if (drug.type === 'custom_gg') {
-          // Glyceryl Guaiacolate
           if (age < 2) {
-            const dailyMg = calcWeight * 12;
-            const singleMg = dailyMg / 4;
-            doseMlPerDose = singleMg / 20; // 100 mg/5 ml = 20 mg/ml
-            formulaDesc = `โดสเด็ก < 2 ปี (รพ.อ่างทอง): 12 MKD ÷ 4 มื้อ = ${doseMlPerDose.toFixed(1)} ml`;
-            tspDesc = formatTeaspoons(doseMlPerDose);
+            rawMl = (calcWeight * 12) / (4 * 20);
+            suggestedMl = roundToPracticalMl(rawMl);
+            formulaDesc = `โดสเด็ก < 2 ปี (รพ.อ่างทอง): 12 MKD ÷ 4 มื้อ = ${rawMl.toFixed(2)} ml`;
             warningBadge += `<div class="mt-2 text-[11px] bg-rose-100 text-rose-900 p-1.5 rounded-md border border-rose-300 font-bold leading-snug">
               <i class="fa-solid fa-triangle-exclamation text-rose-600 mr-1"></i> แจ้งเตือนสากล (US FDA/AAP): ไม่แนะนำให้ใช้ยาแก้ไอ/ขับเสมหะในเด็กอายุต่ำกว่า 4 ปี
             </div>`;
           } else if (age < 4) {
-            doseMlPerDose = 2.5;
+            suggestedMl = 2.5;
             formulaDesc = `อายุ 2-4 ปี: 2.5 ml วันละ 3-4 ครั้ง`;
-            tspDesc = formatTeaspoons(doseMlPerDose);
             warningBadge += `<div class="mt-2 text-[11px] bg-rose-100 text-rose-900 p-1.5 rounded-md border border-rose-300 font-bold leading-snug">
               <i class="fa-solid fa-triangle-exclamation text-rose-600 mr-1"></i> แจ้งเตือนสากล (US FDA/AAP): ไม่แนะนำให้ใช้ยาแก้ไอ/ขับเสมหะในเด็กอายุต่ำกว่า 4 ปี
             </div>`;
           } else if (age <= 6) {
-            doseMlPerDose = 3.5;
+            suggestedMl = 3.5;
             formulaDesc = `อายุ 4-6 ปี: 2.5 - 5 ml (½ - 1 ช้อนชา) วันละ 3-4 ครั้ง`;
-            tspDesc = ` (½ - 1 ช้อนชา)`;
           } else {
-            doseMlPerDose = 7.5;
+            suggestedMl = 7.5;
             formulaDesc = `อายุ > 6 ปี: 5 - 10 ml (1 - 2 ช้อนชา) วันละ 3-4 ครั้ง`;
-            tspDesc = ` (1 - 2 ช้อนชา)`;
           }
+          tspDesc = formatTeaspoons(suggestedMl);
+
+          const totalMl = suggestedMl * 3 * 5;
+          const bottles = Math.ceil(totalMl / 60);
+          dispensingBanner = `
+            <div class="mt-2.5 bg-blue-50 border border-blue-200/80 rounded-lg p-2 text-xs flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-prescription-bottle text-blue-600 text-base"></i>
+                <div>
+                  <span class="font-bold text-blue-900">แนะนำสั่งจ่าย: </span>
+                  <span class="font-extrabold text-blue-800">${bottles} ขวด (60 ml/ขวด)</span>
+                </div>
+              </div>
+            </div>
+          `;
 
         } else if (drug.type === 'custom_favi') {
           // Favipiravir 200 mg
-          const day1Mg = calcWeight * 70;
-          const day1Tabs = (day1Mg / 200).toFixed(1);
-          const maintMg = calcWeight * 30;
-          const maintTabs = (maintMg / 200).toFixed(1);
-          doseMlPerDose = 0;
-          formulaDesc = `Day 1: ${day1Mg.toFixed(0)} mg/วัน (~${day1Tabs} เม็ด แบ่ง bid) | Day 2-5: ${maintMg.toFixed(0)} mg/วัน (~${maintTabs} เม็ด แบ่ง bid)`;
+          const d1DailyMg = calcWeight * 70;
+          const d1RawTabPerDose = (d1DailyMg / 2) / 200;
+          const d1SuggTab = roundToPracticalTab(d1RawTabPerDose);
 
-        } else if (drug.type === 'custom_procaterol') {
-          const mcgDose = calcWeight * 1.25;
-          doseMlPerDose = mcgDose / 5;
-          formulaDesc = `1.25 mcg/kg/dose = ${mcgDose.toFixed(1)} mcg (วันละ 2 ครั้ง)`;
-          tspDesc = formatTeaspoons(doseMlPerDose);
+          const maintDailyMg = calcWeight * 30;
+          const maintRawTabPerDose = (maintDailyMg / 2) / 200;
+          const maintSuggTab = roundToPracticalTab(maintRawTabPerDose);
+
+          // Total Tabs Calc
+          const d1TotalTabs = d1SuggTab * 2;
+          const maintTotalTabs = maintSuggTab * 2 * 4; // 4 days (Day 2-5)
+          const exactTotal = d1TotalTabs + maintTotalTabs;
+          const roundedTotal = Math.ceil(exactTotal);
+
+          customDoseDisplay = `
+            <div class="space-y-2 mt-2">
+              <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-2.5 text-xs">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="font-bold text-indigo-900">Day 1 (Loading dose):</span>
+                  <span class="font-black text-sm text-indigo-700">${formatTabletFraction(d1SuggTab)} po q 12 hr</span>
+                </div>
+                <div class="text-[11px] text-slate-500">70 mg/kg/day = ${(d1DailyMg/2).toFixed(0)} mg/มื้อ (คำนวณเป๊ะ: ${d1RawTabPerDose.toFixed(2)} tab)</div>
+              </div>
+
+              <div class="bg-indigo-50/60 border border-indigo-200 rounded-lg p-2.5 text-xs">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="font-bold text-indigo-900">Day 2 – 5 (Maintenance):</span>
+                  <span class="font-black text-sm text-indigo-700">${formatTabletFraction(maintSuggTab)} po q 12 hr</span>
+                </div>
+                <div class="text-[11px] text-slate-500">30 mg/kg/day = ${(maintDailyMg/2).toFixed(0)} mg/มื้อ (คำนวณเป๊ะ: ${maintRawTabPerDose.toFixed(2)} tab)</div>
+              </div>
+            </div>
+          `;
+
+          dispensingBanner = `
+            <div class="mt-2.5 bg-emerald-50 border border-emerald-300 rounded-xl p-2.5 text-xs flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-pills text-emerald-600 text-lg"></i>
+                <div>
+                  <span class="font-bold text-emerald-950">จำนวนเวชภัณฑ์ที่ต้องจ่าย: </span>
+                  <span class="text-sm font-black text-emerald-700">${roundedTotal} เม็ด</span>
+                  <span class="text-[11px] text-emerald-800 block">คำนวณได้รวม ${exactTotal} เม็ด (D1: ${d1TotalTabs} เม็ด + D2-5: ${maintTotalTabs} เม็ด)</span>
+                </div>
+              </div>
+            </div>
+          `;
 
         } else if (drug.type === 'custom_nb') {
           let ml = calcWeight * 0.03;
           if (ml < 0.5) ml = 0.5;
           if (ml > 1.0) ml = 1.0;
-          doseMlPerDose = ml;
-          formulaDesc = `0.03 ml/kg/dose (Min 0.5 ml, Max 1.0 ml) ผสม NSS ให้ได้ 3-4 ml`;
-
-        } else if (drug.type === 'custom_iron_drop') {
-          const prevMg = calcWeight * 1.5;
-          const prevMl = prevMg / 25; // 15 mg Fe / 0.6 ml = 25 mg/ml
-          const treatMg = calcWeight * 4;
-          const treatMl = treatMg / 25;
-          formulaDesc = `ป้องกัน (1.5 MKD): ${prevMl.toFixed(2)} ml วันละครั้ง | รักษา (4 MKD): ${treatMl.toFixed(2)} ml/วัน (แบ่ง 1-2 ครั้ง)`;
-          doseMlPerDose = prevMl;
-
-        } else if (drug.type === 'custom_iron_syr') {
-          const prevMl = (calcWeight * 2) / 10;
-          const treatMl = (calcWeight * 4) / 10;
-          formulaDesc = `ป้องกัน (2 MKD): ${prevMl.toFixed(1)} ml วันละครั้ง | รักษา (4 MKD): ${treatMl.toFixed(1)} ml/วัน`;
-          doseMlPerDose = prevMl;
-          tspDesc = formatTeaspoons(prevMl);
+          suggestedMl = Number(ml.toFixed(2));
+          formulaDesc = `0.03 ml/kg/dose (Min 0.5 ml, Max 1.0 ml) + NSS ให้ได้ 3-4 ml`;
 
         } else if (drug.type === 'age_based') {
           const res = drug.calcByAge(age, abw);
           formulaDesc = res.text;
-          doseMlPerDose = res.ml;
-          tspDesc = (doseMlPerDose > 0 && doseMlPerDose <= 15) ? formatTeaspoons(doseMlPerDose) : '';
+          suggestedMl = res.ml;
+          tspDesc = (suggestedMl > 0 && suggestedMl <= 15) ? formatTeaspoons(suggestedMl) : '';
+
+          if (drug.bottleVolume && suggestedMl > 0) {
+            const days = drug.defaultDays || 5;
+            const dosesPerDay = res.dosesPerDay || 1;
+            const totalMl = suggestedMl * dosesPerDay * days;
+            const bottles = Math.ceil(totalMl / drug.bottleVolume);
+            dispensingBanner = `
+              <div class="mt-2.5 bg-blue-50 border border-blue-200/80 rounded-lg p-2 text-xs flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-prescription-bottle text-blue-600 text-base"></i>
+                  <div>
+                    <span class="font-bold text-blue-900">แนะนำสั่งจ่าย: </span>
+                    <span class="font-extrabold text-blue-800">${bottles} ขวด (${drug.bottleVolume} ml/ขวด)</span>
+                    <span class="text-[10px] text-slate-500 block">รับประทาน ${days} วัน (รวม ~${totalMl.toFixed(0)} ml)</span>
+                  </div>
+                </div>
+              </div>
+            `;
+          }
 
         } else if (drug.type === 'fixed') {
           formulaDesc = drug.fixedDoseText;
+          if (drug.dispenseText) {
+            dispensingBanner = `
+              <div class="mt-2.5 bg-emerald-50 border border-emerald-300 rounded-xl p-2 text-xs font-bold text-emerald-900 flex items-center gap-2">
+                <i class="fa-solid fa-box-open text-emerald-600 text-base"></i>
+                <span>${drug.dispenseText}</span>
+              </div>
+            `;
+          }
         }
 
-        // Strength selectors HTML
+        // Strength Selectors HTML
         let strengthOptionsHtml = '';
         if (drug.strengths.length > 1) {
           strengthOptionsHtml = `
@@ -1976,18 +1484,20 @@
 
               <!-- Calculated Result Box -->
               <div class="mt-2.5 bg-slate-50 rounded-lg p-2.5 border border-slate-200/80">
-                <div class="flex items-baseline justify-between">
-                  <span class="text-xs font-bold text-slate-500">ขนาดยาต่อมื้อ:</span>
-                  <div class="text-right">
-                    ${doseMlPerDose > 0 ? `
-                      <span class="text-xl font-black text-blue-700">${doseMlPerDose.toFixed(1)}</span>
-                      <span class="text-xs font-bold text-blue-700">ml / ซีซี</span>
-                      <span class="text-xs font-semibold text-slate-600 ml-1">${tspDesc}</span>
-                    ` : `
-                      <span class="text-xs font-bold text-slate-700">ดูสูตรบริหารด้านล่าง</span>
-                    `}
+                ${customDoseDisplay ? customDoseDisplay : `
+                  <div class="flex items-baseline justify-between">
+                    <span class="text-xs font-bold text-slate-500">ขนาดยาต่อมื้อ (Suggest Dose):</span>
+                    <div class="text-right">
+                      ${suggestedMl > 0 ? `
+                        <span class="text-2xl font-black text-blue-700">${suggestedMl}</span>
+                        <span class="text-xs font-bold text-blue-700">ml / ซีซี</span>
+                        <span class="text-xs font-semibold text-slate-600 ml-1">${tspDesc}</span>
+                      ` : `
+                        <span class="text-xs font-bold text-slate-700">ดูวิธีใช้ด้านล่าง</span>
+                      `}
+                    </div>
                   </div>
-                </div>
+                `}
 
                 <div class="mt-1 text-[11px] text-slate-500 flex items-center justify-between border-t border-slate-200/60 pt-1">
                   <span>ความถี่: <strong>${drug.freqText || '-'}</strong></span>
@@ -1995,6 +1505,9 @@
                 <div class="text-[10px] text-slate-500 mt-0.5 font-mono">
                   สูตร: ${formulaDesc}
                 </div>
+
+                <!-- Dispensing Box Banner -->
+                ${dispensingBanner}
               </div>
 
               ${warningBadge}
