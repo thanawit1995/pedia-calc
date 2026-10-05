@@ -1589,7 +1589,6 @@
         instruction: 'รับประทานพร้อมอาหารทันทีเพื่อลดอาการคลื่นไส้ แน่นท้อง'
       },
       {
-              {
         id: 'paracetamol_325_tab',
         name: 'Paracetamol Tablet 325 mg (เด็กโต 20–35 kg)',
         category: 'symptomatic',
@@ -1607,7 +1606,8 @@
         freqText: 'ทุก 4 - 6 ชั่วโมง เวลามีไข้หรือปวด (ไม่เกินวันละ 2,600 mg)',
         instruction: 'ยาเม็ด 325 mg เหมาะสำหรับเด็กโตที่กลืนยาเม็ดได้ (อายุ ≥6 ปี หรือ นน. 20-35 kg) ไม่ต้องหักแบ่งเม็ด 500 mg'
       },
-      id: 'paracetamol_tab',
+      {
+        id: 'paracetamol_tab',
         name: 'Paracetamol Tablet 500 mg (เด็กโต/วัยรุ่น)',
         category: 'symptomatic',
         scopes: ['adolescent'],
@@ -2189,7 +2189,6 @@
       } else {
         return Number((50 + (ageYears - 12) * 2).toFixed(1));
       }
-    }
     }
 
     function calculateAdjBW(abw, ibw) {
