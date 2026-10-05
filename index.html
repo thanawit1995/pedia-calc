@@ -361,14 +361,14 @@
           <div class="flex justify-between items-center flex-wrap gap-2">
             <span class="font-bold text-teal-900 text-sm">เลือกระดับความรุนแรงของภาวะขาดน้ำ (Dehydration Severity):</span>
             <div class="flex gap-1">
-              <button onclick="setDehydrationLevel(0.05)" id="btn-dehy-mild" class="dehy-btn px-2.5 py-1 rounded text-xs font-bold bg-teal-600 text-white shadow-2xs">
-                Mild (5%)
+              <button onclick="setDehydrationLevel('mild')" id="btn-dehy-mild" class="dehy-btn px-2.5 py-1 rounded text-xs font-bold bg-teal-600 text-white shadow-2xs">
+                Mild (<span id="btn-label-mild">5%</span>)
               </button>
-              <button onclick="setDehydrationLevel(0.10)" id="btn-dehy-mod" class="dehy-btn px-2.5 py-1 rounded text-xs font-bold bg-white text-teal-800 border border-teal-300 hover:bg-teal-100">
-                Moderate (10%)
+              <button onclick="setDehydrationLevel('mod')" id="btn-dehy-mod" class="dehy-btn px-2.5 py-1 rounded text-xs font-bold bg-white text-teal-800 border border-teal-300 hover:bg-teal-100">
+                Moderate (<span id="btn-label-mod">10%</span>)
               </button>
-              <button onclick="setDehydrationLevel(0.15)" id="btn-dehy-sev" class="dehy-btn px-2.5 py-1 rounded text-xs font-bold bg-white text-teal-800 border border-teal-300 hover:bg-teal-100">
-                Severe (15%)
+              <button onclick="setDehydrationLevel('sev')" id="btn-dehy-sev" class="dehy-btn px-2.5 py-1 rounded text-xs font-bold bg-white text-teal-800 border border-teal-300 hover:bg-teal-100">
+                Severe (<span id="btn-label-sev">15%</span>)
               </button>
             </div>
           </div>
@@ -687,7 +687,7 @@
             <i class="fa-solid fa-circle-info"></i> การประเมินน้ำหนักคาดการณ์ตามเกณฑ์อายุ
           </h4>
           <p class="text-teal-800 leading-relaxed">
-            ระบบใช้เกณฑ์ <strong>Weech's Formula</strong> คำนวณ Ideal Body Weight (IBW) เพื่อนำไปคิดขนาดยากลุ่มเสี่ยงพิษสูง (Narrow Therapeutic Index) เช่น Aminoglycosides, Vancomycin, Aminophylline และคำนวณ Adjusted Body Weight (AdjBW) เมื่อเด็กมีภาวะน้ำหนักเกิน ($ABW > 120\%$ ของ IBW)
+            ระบบใช้เกณฑ์ <strong>Weech's Formula</strong> คำนวณ Ideal Body Weight (IBW) เพื่อนำไปคิดขนาดยากลุ่มเสี่ยงพิษสูง (Narrow Therapeutic Index) เช่น Aminoglycosides, Vancomycin, Aminophylline และคำนวณ Adjusted Body Weight (AdjBW) เมื่อเด็กมีภาวะน้ำหนักเกิน (ABW > 120% ของ IBW)
           </p>
         </div>
 
@@ -737,7 +737,7 @@
           <span class="font-bold text-rose-900"><i class="fa-solid fa-heart-pulse text-rose-600 mr-1"></i>เคสปัจจุบัน:</span>
           <span>น้ำหนัก <strong><span id="pals-wt">10.0</span> kg</strong></span>
           <span class="text-slate-300">|</span>
-          <span>อายุ <strong><span id="pals-age">1</span> ปี</strong></span>
+          <span>อายุ <strong><span id="pals-age">1 ปี</span></strong></span>
         </div>
         <div class="text-[11px] text-rose-800 font-semibold bg-white/80 px-2 py-0.5 rounded border border-rose-200">
           ETT Uncuffed: <span id="pals-ett-uncuffed" class="font-bold text-rose-700">4.0</span> | Cuffed: <span id="pals-ett-cuffed" class="font-bold text-rose-700">3.5</span> | ลึก: <span id="pals-ett-depth" class="font-bold text-rose-700">12.5</span> ซม.
@@ -3527,7 +3527,23 @@
     // ==========================================
     // PEDIATRIC IV FLUID CALCULATOR LOGIC
     // ==========================================
-    let currentDehyRatio = 0.05;
+    let currentDehyLevel = 'mild';
+
+    function getDehydrationRatios(ageYears) {
+      if (ageYears >= 1.0) {
+        return {
+          mild: { pct: 3, ratio: 0.03 },
+          mod: { pct: 6, ratio: 0.06 },
+          sev: { pct: 9, ratio: 0.09 }
+        };
+      } else {
+        return {
+          mild: { pct: 5, ratio: 0.05 },
+          mod: { pct: 10, ratio: 0.10 },
+          sev: { pct: 15, ratio: 0.15 }
+        };
+      }
+    }
     let currentNeoGest = 'term';
 
     function calculateMaintenanceFluid(wt, ageYears) {
@@ -3587,14 +3603,11 @@
       }
     }
 
-    function setDehydrationLevel(ratio) {
-      currentDehyRatio = ratio;
-      document.querySelectorAll('.dehy-btn').forEach(b => {
-        b.className = 'dehy-btn px-2.5 py-1 rounded text-xs font-bold bg-white text-teal-800 border border-teal-300 hover:bg-teal-100';
-      });
-      const btnId = ratio === 0.05 ? 'btn-dehy-mild' : (ratio === 0.10 ? 'btn-dehy-mod' : 'btn-dehy-sev');
-      const activeBtn = document.getElementById(btnId);
-      if (activeBtn) activeBtn.className = 'dehy-btn px-2.5 py-1 rounded text-xs font-bold bg-teal-600 text-white shadow-2xs';
+    function setDehydrationLevel(level) {
+      if (level === 0.03 || level === 0.05) level = 'mild';
+      else if (level === 0.06 || level === 0.10) level = 'mod';
+      else if (level === 0.09 || level === 0.15) level = 'sev';
+      currentDehyLevel = level;
 
       const wt = parseFloat(document.getElementById('weight-input')?.value) || 10;
       const age = getChildAgeYears();
@@ -3602,8 +3615,27 @@
     }
 
     function updateDehydrationCalc(wt, age) {
+      const ratios = getDehydrationRatios(age);
+
+      // Dynamic button labels based on age
+      const elMild = document.getElementById('btn-label-mild');
+      if (elMild) elMild.innerText = `${ratios.mild.pct}%`;
+      const elMod = document.getElementById('btn-label-mod');
+      if (elMod) elMod.innerText = `${ratios.mod.pct}%`;
+      const elSev = document.getElementById('btn-label-sev');
+      if (elSev) elSev.innerText = `${ratios.sev.pct}%`;
+
+      // Active styling
+      document.querySelectorAll('.dehy-btn').forEach(b => {
+        b.className = 'dehy-btn px-2.5 py-1 rounded text-xs font-bold bg-white text-teal-800 border border-teal-300 hover:bg-teal-100';
+      });
+      const btnId = currentDehyLevel === 'mild' ? 'btn-dehy-mild' : (currentDehyLevel === 'mod' ? 'btn-dehy-mod' : 'btn-dehy-sev');
+      const activeBtn = document.getElementById(btnId);
+      if (activeBtn) activeBtn.className = 'dehy-btn px-2.5 py-1 rounded text-xs font-bold bg-teal-600 text-white shadow-2xs';
+
+      const selected = ratios[currentDehyLevel] || ratios.mild;
       const maint = calculateMaintenanceFluid(wt, age);
-      const deficit = Math.round(wt * currentDehyRatio * 1000);
+      const deficit = Math.round(wt * selected.ratio * 1000);
       const total = deficit + maint.daily;
 
       const phase1Vol = Math.round((deficit / 2) + (maint.daily / 3));
@@ -3613,7 +3645,7 @@
       const phase2Rate = Math.round(phase2Vol / 16);
 
       const elPctLabel = document.getElementById('dehy-pct-label');
-      if (elPctLabel) elPctLabel.innerText = `Deficit ${Math.round(currentDehyRatio * 100)}% (${deficit} mL)`;
+      if (elPctLabel) elPctLabel.innerText = `Deficit ${selected.pct}% (${deficit} mL)`;
 
       const elDef = document.getElementById('dehy-deficit-vol');
       if (elDef) elDef.innerText = deficit;
@@ -3654,18 +3686,20 @@
 
       const termRates = [
         { day: 'Day 1', mlKg: 65, fluid: '10% D/W (ห้ามมีเกลือแร่)' },
-        { day: 'Day 2', mlKg: 75, fluid: '10% D/W (ตรวจเกลือแร่)' },
-        { day: 'Day 3', mlKg: 90, fluid: '10% D/N/5 หรือเติม Na/K' },
-        { day: 'Day 4', mlKg: 110, fluid: '10% D/N/5 + KCl' },
-        { day: 'Day 5+', mlKg: 135, fluid: '10% D/N/5 + KCl' }
+        { day: 'Day 2', mlKg: 65, fluid: '10% D/W (ตรวจเกลือแร่)' },
+        { day: 'Day 3', mlKg: 80, fluid: '10% D/N/5 หรือเติม Na/K' },
+        { day: 'Day 4', mlKg: 100, fluid: '10% D/N/5 + KCl' },
+        { day: 'Day 5', mlKg: 120, fluid: '10% D/N/5 + KCl' },
+        { day: 'Day 6+', mlKg: 150, fluid: '10% D/N/5 + KCl' }
       ];
 
       const pretermRates = [
-        { day: 'Day 1', mlKg: 70, fluid: '10% D/W (ห้ามมีเกลือแร่)' },
-        { day: 'Day 2', mlKg: 90, fluid: '10% D/W (ตรวจเกลือแร่)' },
-        { day: 'Day 3', mlKg: 110, fluid: '10% D/N/5 หรือเติม Na/K' },
-        { day: 'Day 4', mlKg: 130, fluid: '10% D/N/5 + KCl' },
-        { day: 'Day 5+', mlKg: 150, fluid: '10% D/N/5 + KCl' }
+        { day: 'Day 1', mlKg: 80, fluid: '10% D/W (ห้ามมีเกลือแร่)' },
+        { day: 'Day 2', mlKg: 80, fluid: '10% D/W (ตรวจเกลือแร่)' },
+        { day: 'Day 3', mlKg: 100, fluid: '10% D/N/5 หรือเติม Na/K' },
+        { day: 'Day 4', mlKg: 120, fluid: '10% D/N/5 + KCl' },
+        { day: 'Day 5', mlKg: 150, fluid: '10% D/N/5 + KCl' },
+        { day: 'Day 6+', mlKg: 150, fluid: '10% D/N/5 + KCl' }
       ];
 
       const rates = currentNeoGest === 'term' ? termRates : pretermRates;
