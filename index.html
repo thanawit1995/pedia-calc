@@ -196,7 +196,95 @@
       <!-- Cards Injected via JavaScript -->
     </div>
 
+    <!-- Footer: Disclaimer & Credits -->
+    <footer class="mt-8 pt-4 pb-6 text-center text-xs text-slate-500 border-t border-slate-200/80 space-y-2">
+      <div class="text-[11px] text-slate-400">
+        ⚠️ จัดทำขึ้นเพื่อเป็นแนวทางช่วยคำนวณทางคลินิกสำหรับบุคลากรทางการแพทย์ การตัดสินใจในการรักษาขึ้นกับดุลยพินิจของแพทย์ผู้รักษา
+      </div>
+      <div class="flex items-center justify-center gap-3 flex-wrap">
+        <button onclick="toggleModal('credit-modal')" class="text-blue-600 hover:text-blue-800 font-bold hover:underline flex items-center gap-1.5 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-200 shadow-2xs">
+          <i class="fa-solid fa-book-bookmark text-blue-600"></i> แหล่งอ้างอิงและเครดิต (Credits & References)
+        </button>
+      </div>
+      <div class="text-[10px] text-slate-400">
+        Pediatric & Adolescent Drug Dose & Dispensing Navigator • พัฒนาโดย นพ.ธนวิชญ์
+      </div>
+    </footer>
+
   </main>
+
+  <!-- Credits & References Modal -->
+  <div id="credit-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 z-50 hidden">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-4 sm:p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-3 mb-4">
+        <h3 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
+          <i class="fa-solid fa-book-bookmark text-blue-600"></i> แหล่งอ้างอิงและเครดิต (Credits & References)
+        </h3>
+        <button onclick="toggleModal('credit-modal')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3.5 text-xs text-slate-600">
+        <!-- 1. แหล่งข้อมูลคู่มือยาโรงพยาบาล -->
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5">
+          <div class="font-bold text-slate-800 text-sm mb-2 flex items-center gap-1.5">
+            <i class="fa-solid fa-hospital text-blue-600"></i> คู่มือและแนวทางการใช้ยาในเด็กของโรงพยาบาล
+          </div>
+          <ul class="list-disc list-inside space-y-1 leading-relaxed text-[11px] text-slate-700">
+            <li><strong>โรงพยาบาลชัยนาทนเรนทร:</strong> คู่มือขนาดยาเด็กที่ใช้บ่อย, แนวทางการบริหารยาฉีด และตารางกู้ชีพฉุกเฉิน (PALS & Inotrope Rule of 6)</li>
+            <li><strong>โรงพยาบาลอ่างทอง:</strong> แนวทางการปรับขนาดยาและรูปแบบยาสำหรับเด็ก (Pediatric Dose Guidelines)</li>
+            <li><strong>โรงพยาบาลปากพนัง:</strong> แนวทางการใช้ยาในเด็กและการจ่ายเวชภัณฑ์ผู้ป่วยนอก (Child Drug Dosing)</li>
+            <li><strong>โรงพยาบาลสุรินทร์:</strong> Pediatric Treatment & Emergency V.3.0 (โดย นพ.เอกฤทธิ์ พาณิชศิลปกิจ)</li>
+          </ul>
+        </div>
+
+        <!-- 2. แนวทางเวชปฏิบัติระดับประเทศและสากล -->
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5">
+          <div class="font-bold text-slate-800 text-sm mb-2 flex items-center gap-1.5">
+            <i class="fa-solid fa-file-medical text-teal-600"></i> แนวทางเวชปฏิบัติตามหลักฐานเชิงประจักษ์ (Evidence-Based Guidelines)
+          </div>
+          <ul class="list-disc list-inside space-y-1 leading-relaxed text-[11px] text-slate-700">
+            <li><strong>American Heart Association (AHA):</strong> Pediatric Advanced Life Support (PALS) Guidelines & Pediatric Emergency Pocket Card</li>
+            <li><strong>The Johns Hopkins Hospital:</strong> The Johns Hopkins Children's Center Kids Kard (Hunt EA, Nelson-McMillan K, McNamara L)</li>
+            <li><strong>The Harriet Lane Handbook:</strong> A Manual for Pediatric House Officers, Johns Hopkins Hospital</li>
+            <li><strong>ราชวิทยาลัยกุมารแพทย์แห่งประเทศไทย:</strong> แนวทางการดูแลรักษาโรคติดเชื้อเฉียบพลันระบบหายใจในเด็ก พ.ศ. 2562 และคู่มือการดูแลสุขภาพเด็กไทย</li>
+            <li><strong>สมาคมสภาองค์กรโรคหืดแห่งประเทศไทย:</strong> แนวทางการวินิจฉัยและรักษาโรคหืดในเด็กในประเทศไทย (Thai Pediatric Asthma Guideline)</li>
+            <li><strong>กรมการแพทย์ กระทรวงสาธารณสุข:</strong> แนวทางเวชปฏิบัติ การวินิจฉัย ดูแลรักษา และป้องกันการติดเชื้อ กรณีโรค COVID-19 (Favipiravir & Paxlovid)</li>
+            <li><strong>ฐานข้อมูลสากล:</strong> MIMS Thailand, Medscape Pediatric Drug Reference, UpToDate Pediatric Dosing</li>
+          </ul>
+        </div>
+
+        <!-- 3. สูตรและเกณฑ์คำนวณมาตรฐาน -->
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5">
+          <div class="font-bold text-slate-800 text-sm mb-2 flex items-center gap-1.5">
+            <i class="fa-solid fa-calculator text-indigo-600"></i> สูตรและหลักเกณฑ์การคำนวณมาตรฐาน
+          </div>
+          <ul class="list-disc list-inside space-y-1 leading-relaxed text-[11px] text-slate-700">
+            <li><strong>Weech's Formula:</strong> การประเมิน Ideal Body Weight (IBW) ตามช่วงอายุเด็ก</li>
+            <li><strong>Adjusted Body Weight (AdjBW):</strong> สูตรปรับน้ำหนักในเด็กที่มีภาวะน้ำหนักเกิน (IBW + 0.4 × (ABW - IBW)) สำหรับยากลุ่ม Narrow Therapeutic Index</li>
+            <li><strong>Rule of 6:</strong> สูตรผสม Inotropes และ Vasoactive IV Infusions (6 × Wt mg ใน 100 mL)</li>
+            <li><strong>Rule of 50:</strong> การรักษาภาวะ Hypoglycemia ด้วย Dextrose ในเด็ก (D10W, D25W, D50W)</li>
+            <li><strong>Cole's Formula:</strong> ขนาดท่อช่วยหายใจ Uncuffed ETT (Age/4 + 4) และ Cuffed ETT (Age/4 + 3.5)</li>
+          </ul>
+        </div>
+
+        <!-- 4. เครดิตผู้พัฒนาและข้อจำกัดความรับผิดชอบ -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-3.5 space-y-2">
+          <div class="font-bold text-blue-950 text-sm flex items-center gap-1.5">
+            <i class="fa-solid fa-code text-blue-700"></i> ข้อมูลผู้พัฒนา (Developer)
+          </div>
+          <p class="text-[11px] text-blue-900 leading-relaxed">
+            พัฒนาและรวบรวมโดย: <strong>นพ.ธนวิชญ์</strong><br>
+            GitHub Repository: <a href="https://thanawit1995.github.io/pedia-calc/" target="_blank" class="underline text-blue-700 font-semibold">thanawit1995.github.io/pedia-calc</a>
+          </p>
+          <div class="text-[10px] text-slate-500 border-t border-blue-200/60 pt-2 leading-relaxed">
+            <strong>Medical Disclaimer:</strong> เว็บแอปพลิเคชันนี้พัฒนาขึ้นเพื่ออำนวยความสะดวกในการทบทวนและคำนวณขนาดยาทางคลินิกสำหรับแพทย์และบุคลากรทางการแพทย์ ข้อมูลทั้งหมดจัดทำขึ้นเพื่อการศึกษาและการปฏิบัติงานเบื้องต้น ไม่สามารถทดแทนการประเมินทางคลินิก การตัดสินใจในการรักษาต้องขึ้นอยู่กับดุลยพินิจของแพทย์ผู้รักษาและสภาวะของผู้ป่วยแต่ละรายเสมอ
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Weech's Formula Reference Modal -->
   <div id="weech-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
