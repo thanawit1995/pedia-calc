@@ -1,1747 +1,922 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#0284c7">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="PediaCalc">
-  <meta name="description" content="โปรแกรมคำนวณขนาดยาเด็ก รพ.ชัยนาทนเรนทร Web Application ออฟไลน์และใช้งานผ่านมือถือได้ทันที">
-  <title>ระบบคำนวณขนาดยาเด็ก รพ.ชัยนาทนเรนทร (Pediatric Drug Calculator)</title>
-  
-  <!-- Web App Manifest for mobile installation -->
-  <link rel="manifest" href="data:application/manifest+json;utf-8,%7B%22name%22%3A%22Pediatric%20Drug%20Calculator%22%2C%22short_name%22%3A%22PediaCalc%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f8fafc%22%2C%22theme_color%22%3A%22%230284c7%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fplacehold.co%2F192x192%2F0284c7%2Fffffff.png%3Ftext%3DRx%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
-  <link rel="apple-touch-icon" href="https://placehold.co/192x192/0284c7/ffffff.png?text=Rx">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Pediatric Drug Dose & Weight Calculator (ABW / IBW / AdjBW)</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Prompt', 'sans-serif'],
-          },
-          colors: {
-            med: {
-              50: '#f0f9ff',
-              100: '#e0f2fe',
-              500: '#0284c7',
-              600: '#0369a1',
-              700: '#075985',
-              800: '#0c4a6e',
-            }
-          }
-        }
-      }
-    }
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Custom scrollbar and subtle transitions */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #f1f5f9;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
-    }
-    .badge-pill {
-      @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
-    }
+    body { font-family: 'Sarabun', sans-serif; }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans selection:bg-sky-200">
+<body class="bg-slate-50 text-slate-800 min-h-screen pb-16">
 
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm backdrop-blur-md bg-white/90">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-blue-700 via-indigo-700 to-teal-700 text-white shadow-md sticky top-0 z-30">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-sky-500/20">
-          <i class="fa-solid fa-prescription-bottle-medical text-lg"></i>
+        <div class="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
+          <i class="fa-solid fa-calculator text-2xl"></i>
         </div>
         <div>
-          <h1 class="text-base sm:text-lg font-bold text-slate-800 leading-tight">โปรแกรมคำนวณขนาดยาเด็ก</h1>
-          <p class="text-xs text-slate-500 hidden sm:block">อ้างอิงขนาดยาเด็กที่ใช้บ่อย รพ. ชัยนาทนเรนทร (MKD / MKdose)</p>
+          <h1 class="text-base sm:text-lg font-bold leading-tight">Pediatric Dosing & Weight Basis</h1>
+          <p class="text-xs text-blue-100">รองรับการจำแนกน้ำหนัก ABW • IBW • AdjBW</p>
         </div>
       </div>
-      
-      <div class="flex items-center space-x-2">
-        <button onclick="toggleGithubModal()" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs sm:text-sm font-medium text-slate-700 shadow-sm transition flex items-center gap-1.5">
-          <i class="fa-brands fa-github text-slate-900 text-sm"></i>
-          <span class="hidden sm:inline">วิธีขึ้น GitHub</span>
-          <span class="sm:hidden">GitHub</span>
+      <div class="flex space-x-2">
+        <button onclick="toggleModal('weech-modal')" class="bg-teal-500 hover:bg-teal-600 px-3 py-1.5 rounded-lg text-xs font-semibold shadow transition flex items-center gap-1.5">
+          <i class="fa-solid fa-weight-scale"></i> Weech's Formula
         </button>
-        <button onclick="toggleEquipmentModal()" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs sm:text-sm font-medium text-slate-700 shadow-sm transition flex items-center gap-1.5">
-          <i class="fa-solid fa-ruler-combined text-sky-600"></i>
-          <span>อุปกรณ์เด็ก & Vital Signs</span>
+        <button onclick="toggleModal('equip-modal')" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-xs font-semibold backdrop-blur-sm transition flex items-center gap-1.5">
+          <i class="fa-solid fa-toolbox"></i> อุปกรณ์เด็ก
         </button>
       </div>
     </div>
   </header>
 
-  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-6">
-    
-    <!-- Top Input Card -->
-    <section class="bg-gradient-to-br from-sky-700 via-sky-800 to-indigo-900 rounded-3xl p-5 sm:p-7 text-white shadow-xl shadow-sky-900/10 relative overflow-hidden">
-      <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
-        <i class="fa-solid fa-baby text-9xl"></i>
-      </div>
+  <main class="max-w-5xl mx-auto px-4 mt-4 space-y-4">
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
-        <!-- Weight Input -->
-        <div class="lg:col-span-6 space-y-3">
-          <div class="flex items-center justify-between">
-            <label for="weightInput" class="text-sm sm:text-base font-semibold text-sky-100 flex items-center gap-2">
-              <i class="fa-solid fa-weight-scale text-amber-300"></i>
-              <span>น้ำหนักตัวเด็ก (กิโลกรัม)</span>
-            </label>
-            <span class="text-xs text-sky-200 bg-sky-800/80 px-2.5 py-0.5 rounded-full border border-sky-600/50">
-              * คำนวณแบบ Real-time ทันที
+    <!-- Weight & Age Input Panel -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-4 transition-all">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+        
+        <!-- Input ABW (Actual Weight) -->
+        <div class="md:col-span-5">
+          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">
+            น้ำหนักจริง (ABW - Actual Body Weight) <span class="text-rose-500">*</span>
+          </label>
+          <div class="relative flex items-center">
+            <input 
+              type="number" 
+              id="weight-input" 
+              step="0.1" 
+              min="0.5" 
+              max="120"
+              placeholder="เช่น 10" 
+              value="10"
+              class="w-full pl-10 pr-16 py-2.5 text-2xl font-bold bg-slate-50 border-2 border-blue-500 text-blue-900 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 transition"
+              oninput="handleInputsChange()"
+            />
+            <span class="absolute left-3.5 text-slate-400 text-lg">
+              <i class="fa-solid fa-weight-hanging"></i>
+            </span>
+            <span class="absolute right-4 font-bold text-slate-400 text-sm">กก. (kg)</span>
+          </div>
+          <!-- Quick presets -->
+          <div class="flex flex-wrap gap-1 mt-2">
+            <button onclick="setWeight(5)" class="px-2 py-0.5 text-xs font-medium bg-slate-100 hover:bg-blue-100 rounded border">5k</button>
+            <button onclick="setWeight(8)" class="px-2 py-0.5 text-xs font-medium bg-slate-100 hover:bg-blue-100 rounded border">8k</button>
+            <button onclick="setWeight(10)" class="px-2 py-0.5 text-xs font-medium bg-slate-100 hover:bg-blue-100 rounded border">10k</button>
+            <button onclick="setWeight(12)" class="px-2 py-0.5 text-xs font-medium bg-slate-100 hover:bg-blue-100 rounded border">12k</button>
+            <button onclick="setWeight(15)" class="px-2 py-0.5 text-xs font-medium bg-slate-100 hover:bg-blue-100 rounded border">15k</button>
+            <button onclick="setWeight(20)" class="px-2 py-0.5 text-xs font-medium bg-slate-100 hover:bg-blue-100 rounded border">20k</button>
+            <button onclick="setWeight(25)" class="px-2 py-0.5 text-xs font-medium bg-slate-100 hover:bg-blue-100 rounded border">25k</button>
+          </div>
+        </div>
+
+        <!-- Input Child Age (For IBW calculation) -->
+        <div class="md:col-span-3">
+          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">
+            อายุเด็ก (ใช้คิด IBW อัตโนมัติ) <span class="text-rose-500">*</span>
+          </label>
+          <div class="relative flex items-center">
+            <input 
+              type="number" 
+              id="age-input" 
+              step="0.5" 
+              min="0.1" 
+              max="15" 
+              value="1" 
+              class="w-full pl-9 pr-14 py-2.5 text-xl font-bold bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 transition"
+              oninput="handleInputsChange()"
+            />
+            <span class="absolute left-3 text-slate-400 text-sm">
+              <i class="fa-solid fa-child"></i>
+            </span>
+            <span class="absolute right-3 font-semibold text-slate-400 text-xs">ปี (yr)</span>
+          </div>
+          <span class="text-[11px] text-slate-400 mt-1 block">เช่น 0.5 = 6 เดือน, 1.5 = 1 ปีครึ่ง</span>
+        </div>
+
+        <!-- Weight Metrics Summary Card -->
+        <div class="md:col-span-4 bg-gradient-to-br from-slate-50 to-blue-50/50 rounded-xl p-3 border border-blue-100 flex flex-col justify-between">
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-xs font-bold text-slate-600">สัดส่วนน้ำหนักสำหรับคำนวณ</span>
+            <span id="obese-status-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+              น้ำหนักสมส่วน
             </span>
           </div>
 
-          <div class="flex items-center gap-3">
-            <div class="relative flex-1">
-              <input 
-                type="number" 
-                id="weightInput" 
-                step="0.1" 
-                min="0.5" 
-                max="100" 
-                value="10" 
-                oninput="onWeightChange(this.value)"
-                class="w-full bg-white text-slate-900 font-bold text-2xl sm:text-3xl px-4 py-3 rounded-2xl shadow-inner focus:outline-none focus:ring-4 focus:ring-sky-400 placeholder-slate-400 pr-14"
-                placeholder="เช่น 10"
-              />
-              <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-semibold text-base sm:text-lg">kg</span>
+          <div class="grid grid-cols-3 gap-2 text-center text-xs">
+            <div class="bg-white p-1.5 rounded-lg border border-slate-200">
+              <div class="text-[10px] font-bold text-slate-400">ABW (จริง)</div>
+              <div id="metric-abw" class="text-sm font-black text-slate-800">10.0</div>
+              <div class="text-[9px] text-slate-400">kg</div>
             </div>
-            
-            <div class="flex gap-1.5">
-              <button onclick="adjustWeight(-1)" class="w-12 h-12 bg-white/10 hover:bg-white/20 active:scale-95 text-white rounded-2xl flex items-center justify-center font-bold text-lg backdrop-blur-sm transition border border-white/20" title="ลด 1 kg">
-                -1
-              </button>
-              <button onclick="adjustWeight(1)" class="w-12 h-12 bg-white/10 hover:bg-white/20 active:scale-95 text-white rounded-2xl flex items-center justify-center font-bold text-lg backdrop-blur-sm transition border border-white/20" title="เพิ่ม 1 kg">
-                +1
-              </button>
+            <div class="bg-white p-1.5 rounded-lg border border-teal-200">
+              <div class="text-[10px] font-bold text-teal-600">IBW (เกณฑ์)</div>
+              <div id="metric-ibw" class="text-sm font-black text-teal-700">10.0</div>
+              <div class="text-[9px] text-teal-500">kg</div>
+            </div>
+            <div class="bg-white p-1.5 rounded-lg border border-indigo-200">
+              <div class="text-[10px] font-bold text-indigo-600">AdjBW (ปรับ)</div>
+              <div id="metric-adjbw" class="text-sm font-black text-indigo-700">10.0</div>
+              <div class="text-[9px] text-indigo-500">kg</div>
             </div>
           </div>
 
-          <!-- Quick Weight Buttons -->
-          <div class="flex flex-wrap items-center gap-1.5 pt-1 text-xs">
-            <span class="text-sky-300 font-medium mr-1">น้ำหนักด่วน:</span>
-            <button onclick="setWeight(3.5)" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded-lg transition font-medium">3.5 kg (แรกเกิด)</button>
-            <button onclick="setWeight(7)" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded-lg transition font-medium">7 kg (6 เดือน)</button>
-            <button onclick="setWeight(10)" class="px-2.5 py-1 bg-white/25 border border-sky-300/50 rounded-lg transition font-bold text-amber-200">10 kg (1 ขวบ)</button>
-            <button onclick="setWeight(14)" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded-lg transition font-medium">14 kg (3 ขวบ)</button>
-            <button onclick="setWeight(18)" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded-lg transition font-medium">18 kg (5 ขวบ)</button>
-            <button onclick="setWeight(25)" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded-lg transition font-medium">25 kg (8 ขวบ)</button>
+          <div id="weight-ratio-text" class="text-[10px] text-slate-500 mt-1 text-center">
+            ABW คิดเป็น 100% ของ IBW
           </div>
         </div>
 
-        <div class="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-3.5 bg-black/15 p-4 rounded-2xl border border-white/10 backdrop-blur-sm">
-          <div>
-            <label for="ageInput" class="text-xs sm:text-sm font-semibold text-sky-200 flex items-center gap-1.5 mb-1.5">
-              <i class="fa-regular fa-calendar-days text-sky-300"></i>
-              <span>อายุโดยประมาณ (สำหรับยาที่คิดตามอายุ)</span>
-            </label>
-            <select 
-              id="ageSelect" 
-              onchange="onAgeChange(this.value)"
-              class="w-full bg-white text-slate-800 text-sm font-medium rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-400"
-            >
-              <option value="0.2">ทารกแรกเกิด (< 1 เดือน)</option>
-              <option value="0.5">ทารก 1-6 เดือน</option>
-              <option value="1" selected>1 ขวบ (12 เดือน)</option>
-              <option value="2">2 - 3 ขวบ</option>
-              <option value="4">4 - 5 ขวบ</option>
-              <option value="6">6 - 11 ขวบ</option>
-              <option value="12">12 ขวบขึ้นไป</option>
-            </select>
-            <p class="text-[11px] text-sky-200 mt-1">* ส่งผลต่อยา Cetirizine, Loratadine, Simethicone, MOM ฯลฯ</p>
-          </div>
-
-          <div class="bg-white/10 rounded-xl p-3 border border-white/10 flex flex-col justify-between">
-            <div class="text-xs text-sky-200 font-medium">สูตรย่อทางการแพทย์</div>
-            <div class="text-xs space-y-1 my-1">
-              <div><strong class="text-amber-300">MKD</strong> = mg/kg/Day (มก./กก./วัน)</div>
-              <div><strong class="text-amber-300">MKdose</strong> = mg/kg/dose (มก./กก./ครั้ง)</div>
-              <div><strong class="text-amber-300">1 ช้อนชา (tsp)</strong> ≈ 5 mL</div>
-            </div>
-            <div class="text-[11px] text-sky-200/80">ระบบปัดทศนิยม 1-2 ตำแหน่งเพื่อความปลอดภัย</div>
-          </div>
-        </div>
       </div>
     </section>
 
-    <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
-      <!-- Search Input -->
-      <div class="relative flex-1">
-        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+    <!-- Filter & Search Toolbar -->
+    <div class="flex flex-col sm:flex-row gap-2 justify-between items-center bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm">
+      <div class="flex flex-wrap gap-1 w-full sm:w-auto overflow-x-auto">
+        <button onclick="filterCategory('all')" id="btn-cat-all" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-sm">ทั้งหมด (<span id="count-all">0</span>)</button>
+        <button onclick="filterCategory('antibiotic')" id="btn-cat-antibiotic" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">ยาฆ่าเชื้อ (<span id="count-anti">0</span>)</button>
+        <button onclick="filterCategory('symptomatic')" id="btn-cat-symptomatic" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">บรรเทาอาการ/ไอ/หวัด (<span id="count-symp">0</span>)</button>
+        <button onclick="filterCategory('gi')" id="btn-cat-gi" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">ทางเดินอาหาร (<span id="count-gi">0</span>)</button>
+        <button onclick="filterCategory('iv')" id="btn-cat-iv" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">ยาฉีด/TDM (<span id="count-iv">0</span>)</button>
+      </div>
+      <div class="relative w-full sm:w-64">
         <input 
           type="text" 
-          id="searchInput" 
-          oninput="filterDrugs()" 
-          placeholder="ค้นหาชื่อยา เช่น Amox, Para, Bactrim, Cef..." 
-          class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 hover:bg-slate-100/70 focus:bg-white rounded-xl border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 transition outline-none"
+          id="search-input" 
+          placeholder="ค้นหาชื่อยา เช่น Amox, Gentamicin..." 
+          class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500"
+          oninput="handleSearch()"
         />
-      </div>
-
-      <!-- Categories Pills -->
-      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none text-xs font-medium">
-        <button onclick="setCategory('all')" id="btn-cat-all" class="cat-btn px-3 py-2 rounded-xl bg-sky-600 text-white whitespace-nowrap shadow-sm transition">
-          ทั้งหมด (<span id="count-all">0</span>)
-        </button>
-        <button onclick="setCategory('oral-anti')" id="btn-cat-oral-anti" class="cat-btn px-3 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap transition">
-          ยาฆ่าเชื้อชนิดกิน
-        </button>
-        <button onclick="setCategory('oral-general')" id="btn-cat-oral-general" class="cat-btn px-3 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap transition">
-          ยาลดไข้/หวัด/ทั่วไป
-        </button>
-        <button onclick="setCategory('iv')" id="btn-cat-iv" class="cat-btn px-3 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap transition">
-          ยาฉีด (IV/SC/NB)
-        </button>
+        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-slate-400 text-xs"></i>
       </div>
     </div>
 
-    <div id="drugGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <!-- Drug Results Grid -->
+    <div id="drug-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
       <!-- Injected via JavaScript -->
-    </div>
-
-    <!-- Empty State -->
-    <div id="emptyState" class="hidden text-center py-16 bg-white rounded-3xl border border-dashed border-slate-300">
-      <i class="fa-solid fa-prescription-bottle text-5xl text-slate-300 mb-3"></i>
-      <h3 class="text-base font-semibold text-slate-700">ไม่พบรายการยาที่ตรงกับการค้นหา</h3>
-      <p class="text-xs text-slate-500 mt-1">ลองค้นหาด้วยชื่อสามัญ หรือเปลี่ยนหมวดหมู่ยา</p>
     </div>
 
   </main>
 
-  <div id="equipmentModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-150">
-      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-sky-50">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center">
-            <i class="fa-solid fa-lungs"></i>
-          </div>
-          <div>
-            <h3 class="text-base font-bold text-slate-800">Pediatric Parameters & Equipment Guide</h3>
-            <p class="text-xs text-slate-500">ตารางอุปกรณ์กู้ชีพเด็กตามช่วงอายุและน้ำหนักตัว</p>
-          </div>
-        </div>
-        <button onclick="toggleEquipmentModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500 transition">
+  <!-- Weech's Formula & Ready Reckoner Modal -->
+  <div id="weech-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-2xl max-w-xl w-full p-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-3 mb-4">
+        <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+          <i class="fa-solid fa-weight-scale text-teal-600"></i> Weech's Formula & Ideal Body Weight
+        </h3>
+        <button onclick="toggleModal('weech-modal')" class="text-slate-400 hover:text-slate-600 p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
 
-      <div class="p-6 overflow-y-auto space-y-4">
-        <div class="overflow-x-auto border border-slate-200 rounded-2xl shadow-sm">
-          <table class="w-full text-xs text-left border-collapse">
-            <thead class="bg-slate-100 text-slate-700 uppercase font-semibold border-b border-slate-200">
-              <tr>
-                <th class="p-2.5 border-r border-slate-200">Parameter / ช่วงอายุ</th>
-                <th class="p-2.5 border-r border-slate-200">Premie</th>
-                <th class="p-2.5 border-r border-slate-200">Newborn</th>
-                <th class="p-2.5 border-r border-slate-200">6 mo</th>
-                <th class="p-2.5 border-r border-slate-200">1 yr</th>
-                <th class="p-2.5 border-r border-slate-200">2-3 yr</th>
-                <th class="p-2.5 border-r border-slate-200">4-6 yr</th>
-                <th class="p-2.5 border-r border-slate-200">7-10 yr</th>
-                <th class="p-2.5 border-r border-slate-200">11-15 yr</th>
-                <th class="p-2.5">> 15 yr</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100 text-slate-700">
-              <tr class="bg-sky-50/40 font-medium">
-                <td class="p-2.5 border-r border-slate-200 font-bold text-sky-800">น้ำหนัก (Weight, kg)</td>
-                <td class="p-2.5 border-r border-slate-200">2.5 - 3.5</td>
-                <td class="p-2.5 border-r border-slate-200">3.5 - 4</td>
-                <td class="p-2.5 border-r border-slate-200">6 - 8</td>
-                <td class="p-2.5 border-r border-slate-200">10</td>
-                <td class="p-2.5 border-r border-slate-200">11 - 15</td>
-                <td class="p-2.5 border-r border-slate-200">16 - 20</td>
-                <td class="p-2.5 border-r border-slate-200">24 - 35</td>
-                <td class="p-2.5 border-r border-slate-200">36 - 50</td>
-                <td class="p-2.5">> 50</td>
-              </tr>
-              <tr>
-                <td class="p-2.5 border-r border-slate-200 font-medium">Bag Valve Mask</td>
-                <td class="p-2.5 border-r border-slate-200">Infant</td>
-                <td class="p-2.5 border-r border-slate-200">Infant</td>
-                <td class="p-2.5 border-r border-slate-200">Small child</td>
-                <td class="p-2.5 border-r border-slate-200">Small child</td>
-                <td class="p-2.5 border-r border-slate-200">Child</td>
-                <td class="p-2.5 border-r border-slate-200">Child</td>
-                <td class="p-2.5 border-r border-slate-200">Child/Small adult</td>
-                <td class="p-2.5 border-r border-slate-200">Adult</td>
-                <td class="p-2.5">Adult</td>
-              </tr>
-              <tr class="bg-slate-50/50">
-                <td class="p-2.5 border-r border-slate-200 font-medium">ETT Size (Uncuffed)</td>
-                <td class="p-2.5 border-r border-slate-200 font-semibold text-rose-600">2.5 - 3.0</td>
-                <td class="p-2.5 border-r border-slate-200 font-semibold text-rose-600">3.0 - 3.5</td>
-                <td class="p-2.5 border-r border-slate-200 font-semibold text-rose-600">3.5 - 4.0</td>
-                <td class="p-2.5 border-r border-slate-200 font-semibold text-rose-600">4.0</td>
-                <td class="p-2.5 border-r border-slate-200 font-semibold text-rose-600">4.5</td>
-                <td class="p-2.5 border-r border-slate-200 font-semibold text-rose-600">5.0 - 5.5</td>
-                <td class="p-2.5 border-r border-slate-200 font-semibold text-rose-600">6.0</td>
-                <td class="p-2.5 border-r border-slate-200 font-semibold text-rose-600">6.5 - 7.0</td>
-                <td class="p-2.5 font-semibold text-rose-600">7.0 - 8.0</td>
-              </tr>
-              <tr>
-                <td class="p-2.5 border-r border-slate-200 font-medium">ความลึก ETT (ปากถึงปลาย)</td>
-                <td class="p-2.5 border-r border-slate-200">9 - 10 cm</td>
-                <td class="p-2.5 border-r border-slate-200">10 cm</td>
-                <td class="p-2.5 border-r border-slate-200">11 cm</td>
-                <td class="p-2.5 border-r border-slate-200">12 cm</td>
-                <td class="p-2.5 border-r border-slate-200">13 cm</td>
-                <td class="p-2.5 border-r border-slate-200">14 - 15 cm</td>
-                <td class="p-2.5 border-r border-slate-200">16 - 17 cm</td>
-                <td class="p-2.5 border-r border-slate-200">18 - 20 cm</td>
-                <td class="p-2.5">21 - 23 cm</td>
-              </tr>
-              <tr class="bg-slate-50/50">
-                <td class="p-2.5 border-r border-slate-200 font-medium">Laryngoscope Blade</td>
-                <td class="p-2.5 border-r border-slate-200">0 Miller</td>
-                <td class="p-2.5 border-r border-slate-200">0-1 Miller</td>
-                <td class="p-2.5 border-r border-slate-200">1 Miller</td>
-                <td class="p-2.5 border-r border-slate-200">1 Miller</td>
-                <td class="p-2.5 border-r border-slate-200">2 Miller/Mac</td>
-                <td class="p-2.5 border-r border-slate-200">2 Mac</td>
-                <td class="p-2.5 border-r border-slate-200">2-3 Mac</td>
-                <td class="p-2.5 border-r border-slate-200">3 Mac</td>
-                <td class="p-2.5">3-4 Mac</td>
-              </tr>
-              <tr>
-                <td class="p-2.5 border-r border-slate-200 font-medium">Suction Catheter (Fr)</td>
-                <td class="p-2.5 border-r border-slate-200">6</td>
-                <td class="p-2.5 border-r border-slate-200">6 - 8</td>
-                <td class="p-2.5 border-r border-slate-200">8</td>
-                <td class="p-2.5 border-r border-slate-200">8</td>
-                <td class="p-2.5 border-r border-slate-200">8 - 10</td>
-                <td class="p-2.5 border-r border-slate-200">10</td>
-                <td class="p-2.5 border-r border-slate-200">10</td>
-                <td class="p-2.5 border-r border-slate-200">12</td>
-                <td class="p-2.5">14</td>
-              </tr>
-              <tr class="bg-slate-50/50">
-                <td class="p-2.5 border-r border-slate-200 font-medium">Chest Tube (Fr)</td>
-                <td class="p-2.5 border-r border-slate-200">10 - 12</td>
-                <td class="p-2.5 border-r border-slate-200">10 - 12</td>
-                <td class="p-2.5 border-r border-slate-200">16 - 20</td>
-                <td class="p-2.5 border-r border-slate-200">16 - 20</td>
-                <td class="p-2.5 border-r border-slate-200">20 - 24</td>
-                <td class="p-2.5 border-r border-slate-200">20 - 24</td>
-                <td class="p-2.5 border-r border-slate-200">24 - 32</td>
-                <td class="p-2.5 border-r border-slate-200">28 - 36</td>
-                <td class="p-2.5">32 - 40</td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="space-y-4 text-xs">
+        <div class="bg-teal-50 border border-teal-200 rounded-xl p-3.5">
+          <h4 class="font-bold text-teal-900 mb-1.5 flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-info"></i> สูตรน้ำหนักตามเกณฑ์ (IBW)
+          </h4>
+          <p class="text-teal-800 leading-relaxed">
+            ระบบใช้เกณฑ์ <strong>Weech's Formula</strong> ในการคำนวณ Ideal Body Weight (IBW) เพื่อนำไปคิดขนาดยากลุ่ม Narrow therapeutic index และคำนวณ Adjusted Body Weight (AdjBW) เมื่อผู้ป่วยมีภาวะน้ำหนักเกิน ($ABW > 120\%$ ของ IBW)
+          </p>
         </div>
-        <p class="text-xs text-slate-500 text-center">สูตรประเมิน ETT uncuffed: (อายุ/4) + 4 | ความลึก ETT = ขนาด ETT x 3</p>
-      </div>
 
-      <div class="px-6 py-3 bg-slate-50 border-t border-slate-200 flex justify-end">
-        <button onclick="toggleEquipmentModal()" class="px-4 py-2 bg-slate-700 hover:bg-slate-800 text-white rounded-xl text-sm font-medium transition">
-          ปิดหน้าต่าง
-        </button>
+        <div class="space-y-2">
+          <div class="border rounded-lg p-2.5 bg-slate-50 flex items-center justify-between">
+            <span class="font-semibold text-slate-800">3 – 12 เดือน</span>
+            <span class="font-mono text-blue-700 font-bold bg-white px-2 py-1 rounded border">(Age in months + 9) / 2</span>
+          </div>
+          <div class="border rounded-lg p-2.5 bg-slate-50 flex items-center justify-between">
+            <span class="font-semibold text-slate-800">1 – 6 ปี</span>
+            <span class="font-mono text-blue-700 font-bold bg-white px-2 py-1 rounded border">(Age × 2) + 8</span>
+          </div>
+          <div class="border rounded-lg p-2.5 bg-slate-50 flex items-center justify-between">
+            <span class="font-semibold text-slate-800">7 – 12 ปี</span>
+            <span class="font-mono text-blue-700 font-bold bg-white px-2 py-1 rounded border">[(Age × 7) - 5] / 2</span>
+          </div>
+          <div class="border rounded-lg p-2.5 bg-amber-50 border-amber-200 flex items-center justify-between">
+            <span class="font-semibold text-amber-900">Adjusted Body Weight</span>
+            <span class="font-mono text-amber-800 font-bold bg-white px-2 py-1 rounded border">IBW + 0.4 × (ABW - IBW)</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- GitHub Deployment & PWA Guide Modal -->
-  <div id="githubModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-150">
-      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white">
-            <i class="fa-brands fa-github text-lg"></i>
-          </div>
-          <div>
-            <h3 class="text-base font-bold text-white">วิธีนำ Web App ขึ้น GitHub Pages ฟรี</h3>
-            <p class="text-xs text-slate-300">เปิดเป็นลิงก์เว็บใช้งานได้ตลอดเวลา ทั้งในคอมพิวเตอร์และมือถือ</p>
-          </div>
-        </div>
-        <button onclick="toggleGithubModal()" class="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition">
+  <!-- Equipment Reference Modal -->
+  <div id="equip-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-3 mb-4">
+        <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+          <i class="fa-solid fa-toolbox text-blue-600"></i> อุปกรณ์ช่วยชีวิตและขนาดท่อช่วยหายใจในเด็ก
+        </h3>
+        <button onclick="toggleModal('equip-modal')" class="text-slate-400 hover:text-slate-600 p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
 
-      <div class="p-6 overflow-y-auto space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
-        <div class="bg-sky-50 border border-sky-200 rounded-2xl p-4 text-sky-900">
-          <p class="font-semibold flex items-center gap-2 mb-1">
-            <i class="fa-solid fa-circle-check text-sky-600"></i>
-            เว็บนี้ถูกออกแบบให้อยู่ในไฟล์เดียว (Single-file HTML)
-          </p>
-          <p class="text-xs text-sky-700">ไม่ต้องลง Node.js หรือ build เครื่องมือใดๆ เพียงแค่อัปโหลดไฟล์ชื่อ <code>index.html</code> ขึ้น GitHub ก็พร้อมใช้งานทันที</p>
-        </div>
-
-        <div class="space-y-3">
-          <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
-            <span class="w-6 h-6 rounded-full bg-sky-600 text-white flex items-center justify-center text-xs font-bold shrink-0">1</span>
-            <div>
-              <p class="font-semibold text-slate-800">สร้าง Repository บน GitHub</p>
-              <p class="text-xs text-slate-500 mt-0.5">เข้าเว็บ <a href="https://github.com/new" target="_blank" class="text-sky-600 underline">github.com/new</a> ตั้งชื่อ เช่น <code>pedia-calculator</code> เลือกเป็น <strong>Public</strong> แล้วกด Create repository</p>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
-            <span class="w-6 h-6 rounded-full bg-sky-600 text-white flex items-center justify-center text-xs font-bold shrink-0">2</span>
-            <div>
-              <p class="font-semibold text-slate-800">อัปโหลดไฟล์ index.html</p>
-              <p class="text-xs text-slate-500 mt-0.5">กดปุ่ม <strong>Add file > Upload files</strong> แล้วลากไฟล์ <code>index.html</code> นี้ลงไป จากนั้นกดปุ่มสีเขียว <strong>Commit changes</strong></p>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
-            <span class="w-6 h-6 rounded-full bg-sky-600 text-white flex items-center justify-center text-xs font-bold shrink-0">3</span>
-            <div>
-              <p class="font-semibold text-slate-800">เปิดใช้งาน GitHub Pages</p>
-              <p class="text-xs text-slate-500 mt-0.5">ไปที่แท็บ <strong>Settings</strong> > เมนูซ้าย <strong>Pages</strong> > ในหัวข้อ <em>Branch</em> ให้เลือก <code>main</code> (หรือ <code>master</code>) และโฟลเดอร์ <code>/(root)</code> แล้วกด <strong>Save</strong></p>
-            </div>
-          </div>
-        </div>
-
-        <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-900">
-          <p class="font-bold flex items-center gap-1.5 text-xs sm:text-sm">
-            <i class="fa-solid fa-mobile-screen text-emerald-600"></i>
-            การติดตั้งเป็นแอปบนมือถือ (Add to Home Screen)
-          </p>
-          <ul class="list-disc list-inside mt-1 text-xs text-emerald-800 space-y-1">
-            <li><strong>iPhone (Safari):</strong> กดปุ่มแชร์ (Share) > เลือก <em>"เพิ่มไปยังหน้าจอโฮม" (Add to Home Screen)</em></li>
-            <li><strong>Android (Chrome):</strong> กดจุด 3 จุดมุมขวาบน > เลือก <em>"ติดตั้งแอป" หรือ "เพิ่มลงในหน้าจอหลัก"</em></li>
+      <div class="space-y-3 text-xs">
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <div class="font-bold text-blue-900 mb-1">สูตรคำนวณท่อช่วยหายใจ (ETT Size):</div>
+          <ul class="list-disc list-inside space-y-0.5 text-blue-800">
+            <li><strong>Uncuffed ETT</strong> = (อายุเป็นปี / 4) + 4</li>
+            <li><strong>Cuffed ETT</strong> = (อายุเป็นปี / 4) + 3.5</li>
+            <li><strong>ความลึก (Depth at lip)</strong> = (อายุ / 2) + 12 ซม. หรือ ETT ID × 3</li>
           </ul>
         </div>
       </div>
-
-      <div class="px-6 py-3 bg-slate-50 border-t border-slate-200 flex justify-end">
-        <button onclick="toggleGithubModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-sm font-medium transition">
-          เข้าใจแล้ว ปิดหน้าต่าง
-        </button>
-      </div>
     </div>
   </div>
-
-  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-    <div class="bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 border border-slate-700 text-sm">
-      <i class="fa-solid fa-circle-check text-emerald-400"></i>
-      <span id="toastMsg">คัดลอกข้อความสำเร็จ</span>
-    </div>
-  </div>
-
-  <footer class="mt-auto py-6 border-t border-slate-200 bg-white text-center text-xs text-slate-500 space-y-1">
-    <div>ตารางอ้างอิง: ขนาดยาเด็กที่ใช้บ่อย โรงพยาบาลชัยนาทนเรนทร</div>
-    <div class="text-[11px] text-slate-400">คำเตือน: โปรแกรมนี้พัฒนาขึ้นเพื่ออำนวยความสะดวกในการคิดคำนวณเบื้องต้น บุคลากรทางการแพทย์ควรตรวจสอบสภาวะผู้ป่วยก่อนสั่งใช้ยาเสมอ</div>
-  </footer>
 
   <script>
+    // Drug Database with Explicit Weight Basis (ABW, IBW, or AdjBW)
     const DRUG_DATABASE = [
-      // 1. Amoxicillin
+      // ANTIBIOTICS
       {
-        id: "amoxicillin",
-        name: "Amoxicillin",
-        category: "oral-anti",
-        type: "oral",
+        id: 'amoxicillin',
+        name: 'Amoxicillin Syrup',
+        category: 'antibiotic',
+        weightBasis: 'ABW', // Beta-lactam: Use actual body weight up to max adult dose
+        weightNote: 'ใช้ ABW คำนวณ (จำกัดไม่เกิน Max adult dose)',
         strengths: [
-          { label: "125 mg / 5 mL", mgPerMl: 125 / 5 },
-          { label: "250 mg / 5 mL", mgPerMl: 250 / 5, default: true }
+          { label: '125 mg / 5 ml', mgPerMl: 25 },
+          { label: '250 mg / 5 ml', mgPerMl: 50 }
         ],
-        ruleType: "range_mkd",
-        minMkd: 25,
-        maxMkd: 50,
-        defaultMkd: 37.5,
-        frequencyText: "วันละ 3 ครั้ง (tid)",
-        dosesPerDay: 3,
-        timingText: "รับประทานครั้งละ",
-        instructions: "หลังอาหาร เช้า กลางวัน เย็น",
-        notes: "ยาฆ่าเชื้อกลุ่มเพนิซิลลิน ควรทานติดต่อกันจนหมดตามแพทย์สั่ง"
+        selectedStrength: 0,
+        type: 'mkd',
+        defaultDose: 40,
+        minDose: 20,
+        maxDose: 50,
+        doseUnit: 'mg/kg/day',
+        frequency: 'tid',
+        freqText: 'วันละ 3 ครั้ง ทุก 8 ชม.',
+        maxDailyDose: 2000,
+        instruction: 'รับประทานติดต่อกันจนหมดตามแพทย์สั่ง (กรณี AOM รุนแรงพิจารณา high dose 80-90 MKD)'
       },
-      // 2. Augmentin (Amoxicillin + Clavulanic)
       {
-        id: "augmentin_oral",
-        name: "Augmentin (Amox + Clav)",
-        category: "oral-anti",
-        type: "oral",
+        id: 'augmentin',
+        name: 'Augmentin Syrup (Amox+Clav)',
+        category: 'antibiotic',
+        weightBasis: 'ABW',
+        weightNote: 'ใช้ ABW คำนวณตามขนาด Amoxicillin (Max 2,000 mg/day)',
         strengths: [
-          { label: "228 mg / 5 mL (200+28)", mgPerMl: 200 / 5, default: true },
-          { label: "457 mg / 5 mL (400+57)", mgPerMl: 400 / 5 }
+          { label: '228.5 mg / 5 ml (Amox 200)', mgPerMl: 40 },
+          { label: '457 mg / 5 ml (Amox 400)', mgPerMl: 80 }
         ],
-        ruleType: "range_mkd",
-        minMkd: 25,
-        maxMkd: 50,
-        defaultMkd: 25, // At 10kg with 228 (200mg amox/5ml): 25 MKD -> 250mg/day / 2 = 125mg/dose -> ~3.1ml; or at 10kg with 457 or 228 standard hospital is 5ml bid
-        frequencyText: "วันละ 2 ครั้ง (bid)",
-        dosesPerDay: 2,
-        timingText: "รับประทานครั้งละ",
-        instructions: "หลังอาหาร เช้า และ เย็น (หรือพร้อมอาหาร)",
-        notes: "คำนวณตามขนาดยา Amoxicillin component"
+        selectedStrength: 0,
+        type: 'mkd',
+        defaultDose: 35,
+        minDose: 25,
+        maxDose: 45,
+        doseUnit: 'mg/kg/day (of Amox)',
+        frequency: 'bid',
+        freqText: 'วันละ 2 ครั้ง ทุก 12 ชม. พร้อมอาหาร',
+        maxDailyDose: 2000,
+        instruction: 'สูตร 7:1 แนะนำบริหารวันละ 2 ครั้ง เพื่อลดผลข้างเคียงท้องเสียจาก Clavulanate'
       },
-      // 3. Azithromycin
       {
-        id: "azithromycin",
-        name: "Azithromycin",
-        category: "oral-anti",
-        type: "oral",
-        strengths: [
-          { label: "200 mg / 5 mL", mgPerMl: 200 / 5, default: true }
-        ],
-        ruleType: "fixed_mkd",
-        mkd: 10,
-        frequencyText: "วันละ 1 ครั้ง (od)",
-        dosesPerDay: 1,
-        timingText: "รับประทานครั้งละ",
-        instructions: "วันละ 1 ครั้ง ก่อนอาหาร 1 ชม. หรือหลังอาหาร 2 ชม. (ทาน 3-5 วัน)",
-        notes: "10 MKD (od)"
+        id: 'cephalexin',
+        name: 'Cephalexin (Ibilex) Syrup',
+        category: 'antibiotic',
+        weightBasis: 'ABW',
+        weightNote: 'ใช้ ABW คำนวณ (Max 2,000 mg/day)',
+        strengths: [{ label: '125 mg / 5 ml', mgPerMl: 25 }],
+        selectedStrength: 0,
+        type: 'mkd',
+        defaultDose: 30,
+        minDose: 25,
+        maxDose: 50,
+        doseUnit: 'mg/kg/day',
+        frequency: 'qid',
+        freqText: 'วันละ 4 ครั้ง ก่อนอาหาร (หรือแบ่ง tid)',
+        maxDailyDose: 2000,
+        instruction: 'รับประทานก่อนอาหาร 30 นาที ถึง 1 ชั่วโมง'
       },
-      // 4. Cefaclor
       {
-        id: "cefaclor",
-        name: "Cefaclor",
-        category: "oral-anti",
-        type: "oral",
-        strengths: [
-          { label: "125 mg / 5 mL", mgPerMl: 125 / 5, default: true }
-        ],
-        ruleType: "range_mkd",
-        minMkd: 20,
-        maxMkd: 40,
-        defaultMkd: 30,
-        frequencyText: "วันละ 3 ครั้ง (tid)",
-        dosesPerDay: 3,
-        timingText: "รับประทานครั้งละ",
-        instructions: "หลังอาหาร เช้า กลางวัน เย็น",
-        notes: "20-40 MKD (tid)"
+        id: 'penicillinv',
+        name: 'Penicillin V Syrup',
+        category: 'antibiotic',
+        weightBasis: 'ABW',
+        weightNote: 'ใช้ ABW คำนวณ',
+        strengths: [{ label: '125 mg / 5 ml (200,000 U)', mgPerMl: 25 }],
+        selectedStrength: 0,
+        type: 'mkd',
+        defaultDose: 30,
+        minDose: 25,
+        maxDose: 50,
+        doseUnit: 'mg/kg/day',
+        frequency: 'qid',
+        freqText: 'วันละ 4 ครั้ง ก่อนอาหารและก่อนนอน',
+        instruction: 'รับประทานตอนท้องว่าง ก่อนอาหาร 1 ชั่วโมง'
       },
-      // 5. Cefdinir (Omnicef)
       {
-        id: "cefdinir",
-        name: "Cefdinir (Omnicef)",
-        category: "oral-anti",
-        type: "oral",
-        strengths: [
-          { label: "125 mg / 5 mL", mgPerMl: 125 / 5, default: true }
-        ],
-        ruleType: "fixed_mkd",
-        mkd: 14,
-        frequencyText: "วันละ 2 ครั้ง (bid)",
-        dosesPerDay: 2,
-        timingText: "รับประทานครั้งละ",
-        instructions: "หลังอาหาร เช้า และ เย็น",
-        notes: "14 MKD (bid)"
+        id: 'cefaclor',
+        name: 'Cefaclor (Distaclor) Syrup',
+        category: 'antibiotic',
+        weightBasis: 'ABW',
+        weightNote: 'ใช้ ABW คำนวณ (Max 1,000 mg/day)',
+        strengths: [{ label: '125 mg / 5 ml', mgPerMl: 25 }],
+        selectedStrength: 0,
+        type: 'mkd',
+        defaultDose: 30,
+        minDose: 20,
+        maxDose: 40,
+        doseUnit: 'mg/kg/day',
+        frequency: 'tid',
+        freqText: 'วันละ 3 ครั้ง ทุก 8 ชม.',
+        maxDailyDose: 1000,
+        instruction: 'รับประทานพร้อมหรือหลังอาหาร'
       },
-      // 6. Cotrimoxazole (Bactrim)
       {
-        id: "bactrim",
-        name: "Cotrimoxazole (Bactrim)",
-        category: "oral-anti",
-        type: "oral",
-        strengths: [
-          { label: "TMP 40 mg + SMZ 200 mg / 5 mL", mgPerMl: 40 / 5, default: true }
-        ],
-        ruleType: "range_mkd",
-        minMkd: 8,
-        maxMkd: 12,
-        defaultMkd: 10,
-        frequencyText: "วันละ 2 ครั้ง (bid)",
-        dosesPerDay: 2,
-        timingText: "รับประทานครั้งละ",
-        instructions: "หลังอาหาร เช้า และ เย็น ดื่มน้ำตามมากๆ",
-        notes: "คำนวณตามขนาดยา TMP: 8-12 MKD (bid)"
+        id: 'cefdinir',
+        name: 'Cefdinir (Omnicef) Syrup',
+        category: 'antibiotic',
+        weightBasis: 'ABW',
+        weightNote: 'ใช้ ABW คำนวณ (Max 600 mg/day)',
+        strengths: [{ label: '125 mg / 5 ml', mgPerMl: 25 }],
+        selectedStrength: 0,
+        type: 'mkd',
+        defaultDose: 14,
+        minDose: 14,
+        maxDose: 14,
+        doseUnit: 'mg/kg/day',
+        frequency: 'bid',
+        freqText: 'วันละ 2 ครั้ง (7 mg/kg/dose) หรือวันละ 1 ครั้ง (14 mg/kg)',
+        maxDailyDose: 600,
+        instruction: 'อาจทำให้อุจจาระเป็นสีแดงอิฐเมื่อทำปฏิกิริยากับธาตุเหล็ก'
       },
-      // 7. Clindamycin (Oral)
       {
-        id: "clindamycin_oral",
-        name: "Clindamycin (Tab/Oral)",
-        category: "oral-anti",
-        type: "oral",
-        strengths: [
-          { label: "เม็ด / แคปซูล (150 mg)", mgPerUnit: 150, unit: "mg", default: true }
-        ],
-        ruleType: "range_mkd",
-        minMkd: 10,
-        maxMkd: 30,
-        defaultMkd: 20,
-        frequencyText: "วันละ 3 ครั้ง (tid)",
-        dosesPerDay: 3,
-        timingText: "รับประทานครั้งละ",
-        instructions: "หลังอาหาร เช้า กลางวัน เย็น ดื่มน้ำตามมากๆ",
-        notes: "10-30 MKD (tid)"
+        id: 'cotrimoxazole',
+        name: 'Co-trimoxazole (Bactrim)',
+        category: 'antibiotic',
+        weightBasis: 'ABW',
+        weightNote: 'ใช้ ABW คำนวณตามขนาด TMP (Max 320 mg TMP/day)',
+        strengths: [{ label: 'TMP 40 + SMZ 200 mg / 5 ml', mgPerMl: 8 }],
+        selectedStrength: 0,
+        type: 'mkd',
+        defaultDose: 8,
+        minDose: 8,
+        maxDose: 12,
+        doseUnit: 'mg/kg/day (of TMP)',
+        frequency: 'bid',
+        freqText: 'วันละ 2 ครั้ง ทุก 12 ชม.',
+        maxDailyDose: 320,
+        instruction: 'ดื่มน้ำตามมากๆ ระวังในผู้ป่วยพร่องเอนไซม์ G6PD'
       },
-      // 8. Dicloxacillin
       {
-        id: "dicloxacillin",
-        name: "Dicloxacillin",
-        category: "oral-anti",
-        type: "oral",
+        id: 'azithromycin',
+        name: 'Azithromycin Dry Syrup',
+        category: 'antibiotic',
+        weightBasis: 'ABW',
+        weightNote: 'ใช้ ABW คำนวณ (Max 500 mg/day)',
         strengths: [
-          { label: "62.5 mg / 5 mL", mgPerMl: 62.5 / 5, default: true }
+          { label: '200 mg / 5 ml (40 mg/ml)', mgPerMl: 40 },
+          { label: '100 mg / ซอง (ละลายน้ำ 4 ml)', mgPerMl: 25 }
         ],
-        ruleType: "range_mkd",
-        minMkd: 12.5,
-        maxMkd: 25,
-        defaultMkd: 20,
-        frequencyText: "วันละ 4 ครั้ง (qid)",
-        dosesPerDay: 4,
-        timingText: "รับประทานครั้งละ",
-        instructions: "ก่อนอาหาร 1 ชั่วโมง เช้า กลางวัน เย็น ก่อนนอน",
-        notes: "12.5-25 MKD (qid) ต้องทานตอนท้องว่าง"
+        selectedStrength: 0,
+        type: 'mkd',
+        defaultDose: 10,
+        minDose: 10,
+        maxDose: 10,
+        doseUnit: 'mg/kg/day',
+        frequency: 'od',
+        freqText: 'วันละ 1 ครั้ง ก่อนอาหาร 1 ชม. (3-5 วัน)',
+        maxDailyDose: 500,
+        instruction: 'กินวันละ 1 ครั้ง ต่อเนื่อง 3-5 วันตามข้อบ่งใช้'
       },
-      // 9. Erythromycin
       {
-        id: "erythromycin",
-        name: "Erythromycin",
-        category: "oral-anti",
-        type: "oral",
-        strengths: [
-          { label: "125 mg / 5 mL", mgPerMl: 125 / 5, default: true }
-        ],
-        ruleType: "range_mkd",
-        minMkd: 30,
-        maxMkd: 50,
-        defaultMkd: 40,
-        frequencyText: "วันละ 4 ครั้ง (qid)",
-        dosesPerDay: 4,
-        timingText: "รับประทานครั้งละ",
-        instructions: "ก่อนหรือหลังอาหาร เช้า กลางวัน เย็น ก่อนนอน",
-        notes: "30-50 MKD (qid)"
-      },
-      // 10. Nystatin suspension
-      {
-        id: "nystatin",
-        name: "Nystatin oral suspension",
-        category: "oral-anti",
-        type: "oral",
-        strengths: [
-          { label: "100,000 U / mL", default: true }
-        ],
-        ruleType: "age_fixed",
-        frequencyText: "วันละ 4 ครั้ง (qid)",
-        calculate: function(weight, age) {
-          if (age < 1) {
-            return { doseText: "1 mL", note: "ทารกแรกเกิด/Term infant: 1 mL (100,000 U) qid ป้ายกระพุ้งแก้ม/ลิ้น" };
-          } else {
-            return { doseText: "4 mL", note: "เด็กโต (Child): 4 mL (400,000 U) qid อมกลั้วปากแล้วกลืน" };
-          }
-        },
-        instructions: "ป้ายปากหรืออมกลั้วปาก วันละ 4 ครั้ง หลังอาหารและก่อนนอน",
-        notes: "Term 1 ml qid / Child 4 ml qid"
+        id: 'dicloxacillin',
+        name: 'Dicloxacillin Syrup',
+        category: 'antibiotic',
+        weightBasis: 'ABW',
+        weightNote: 'ใช้ ABW คำนวณ',
+        strengths: [{ label: '62.5 mg / 5 ml', mgPerMl: 12.5 }],
+        selectedStrength: 0,
+        type: 'mkd',
+        defaultDose: 25,
+        minDose: 12.5,
+        maxDose: 50,
+        doseUnit: 'mg/kg/day',
+        frequency: 'qid',
+        freqText: 'วันละ 4 ครั้ง ก่อนอาหาร 1 ชม. และก่อนนอน',
+        instruction: 'ต้องรับประทานตอนท้องว่าง'
       },
 
-      // 23. Paracetamol
+      // SYMPTOMATIC & RESPIRATORY
       {
-        id: "paracetamol",
-        name: "Paracetamol (พาราเซตามอล)",
-        category: "oral-general",
-        type: "oral",
+        id: 'paracetamol',
+        name: 'Paracetamol (พาราเซตามอล)',
+        category: 'symptomatic',
+        weightBasis: 'ABW_OR_IBW', // Special logic in render: If obese (>120% IBW), recommend IBW to prevent hepatotoxicity
+        weightNote: 'ปกติใช้ ABW (แต่หากเด็กอ้วนมากแนะนำใช้ IBW เพื่อลดพิษต่อตับ)',
         strengths: [
-          { label: "120 mg / 5 mL", mgPerMl: 120 / 5, default: true },
-          { label: "250 mg / 5 mL", mgPerMl: 250 / 5 }
+          { label: '120 mg / 5 ml (24 mg/ml)', mgPerMl: 24 },
+          { label: '250 mg / 5 ml (50 mg/ml)', mgPerMl: 50 },
+          { label: 'Drops 60 mg / 0.6 ml (100 mg/ml)', mgPerMl: 100 }
         ],
-        ruleType: "range_mkdose",
-        minMkd: 10,
-        maxMkd: 15,
-        defaultMkd: 12.5,
-        frequencyText: "ทุก 4 - 6 ชั่วโมง เมื่อมีไข้ (prn q 4-6 hr)",
-        timingText: "รับประทานครั้งละ",
-        instructions: "กินเมื่อมีไข้หรือปวด ทุก 4-6 ชม. (ไม่เกินวันละ 5 ครั้ง)",
-        notes: "10-15 MKdose (prn q 4-6 hr)"
+        selectedStrength: 0,
+        type: 'mkdose',
+        defaultDose: 10,
+        minDose: 10,
+        maxDose: 15,
+        doseUnit: 'mg/kg/dose',
+        frequency: 'prn',
+        freqText: 'ทุก 4 - 6 ชั่วโมง เวลามีไข้หรือปวด',
+        maxSingleDose: 1000,
+        maxDailyDose: 4000,
+        instruction: 'ไม่ควรทานเกินวันละ 5 ครั้ง หรือเกิน 75 mg/kg/วัน (Max 4,000 mg/day)'
       },
-      // 24. Ibuprofen
       {
-        id: "ibuprofen",
-        name: "Ibuprofen",
-        category: "oral-general",
-        type: "oral",
-        strengths: [
-          { label: "100 mg / 5 mL", mgPerMl: 100 / 5, default: true }
-        ],
-        ruleType: "range_mkdose",
-        minMkd: 5,
-        maxMkd: 10,
-        defaultMkd: 10,
-        frequencyText: "ทุก 6 - 8 ชั่วโมง หลังอาหารทันที (prn q 6-8 hr)",
-        timingText: "รับประทานครั้งละ",
-        instructions: "กินเฉพาะเมื่อมีไข้สูง ปวด ทุก 6-8 ชม. หลังอาหารทันที ดื่มน้ำตามมากๆ",
-        notes: "5-10 MKdose (ห้ามใช้ในผู้ป่วยสงสัยไข้เลือดออก)"
+        id: 'ibuprofen',
+        name: 'Ibuprofen Suspension',
+        category: 'symptomatic',
+        weightBasis: 'ABW',
+        weightNote: 'ใช้ ABW คำนวณ (Max 400 mg/dose, 2,400 mg/day)',
+        strengths: [{ label: '100 mg / 5 ml (20 mg/ml)', mgPerMl: 20 }],
+        selectedStrength: 0,
+        type: 'mkdose',
+        defaultDose: 10,
+        minDose: 5,
+        maxDose: 10,
+        doseUnit: 'mg/kg/dose',
+        frequency: 'prn',
+        freqText: 'ทุก 6 - 8 ชั่วโมง หลังอาหารทันที',
+        minAge: 0.5,
+        maxSingleDose: 400,
+        maxDailyDose: 2400,
+        instruction: 'แนะนำในเด็กอายุ > 6 เดือนขึ้นไป ห้ามใช้ในผู้สงสัยไข้เลือดออก'
       },
-      // 25. Hydroxyzine (Atarax)
       {
-        id: "hydroxyzine",
-        name: "Hydroxyzine",
-        category: "oral-general",
-        type: "oral",
-        strengths: [
-          { label: "10 mg / 5 mL", mgPerMl: 10 / 5, default: true }
-        ],
-        ruleType: "fixed_mkd",
-        mkd: 2,
-        frequencyText: "วันละ 3 ครั้ง (tid)",
-        dosesPerDay: 3,
-        timingText: "รับประทานครั้งละ",
-        instructions: "หลังอาหาร เช้า กลางวัน เย็น (อาจทำให้ง่วงซึม)",
-        notes: "2 MKD (tid)"
+        id: 'cpm',
+        name: 'Chlorpheniramine (CPM) Syrup',
+        category: 'symptomatic',
+        weightBasis: 'ABW',
+        weightNote: 'ใช้ ABW คำนวณ',
+        strengths: [{ label: '2 mg / 5 ml (0.4 mg/ml)', mgPerMl: 0.4 }],
+        selectedStrength: 0,
+        type: 'mkd',
+        defaultDose: 0.35,
+        minDose: 0.35,
+        maxDose: 0.35,
+        doseUnit: 'mg/kg/day',
+        frequency: 'tid',
+        freqText: 'วันละ 3 - 4 ครั้ง หลังอาหาร',
+        minAge: 2,
+        instruction: 'ทำให้ง่วงซึม หลีกเลี่ยงในเด็กอายุต่ำกว่า 2 ปี'
       },
-      // 26. Loratadine
       {
-        id: "loratadine",
-        name: "Loratadine",
-        category: "oral-general",
-        type: "oral",
-        strengths: [
-          { label: "5 mg / 5 mL", mgPerMl: 5 / 5, default: true }
-        ],
-        ruleType: "custom",
-        frequencyText: "วันละ 1 ครั้ง (od)",
-        calculate: function(weight, age) {
-          if (age < 2) {
-            return { doseText: "อายุ < 2 ปี แนะนำปรึกษาแพทย์เฉพาะราย", note: "ตารางอ้างอิง: 2-5 y: 5 mg od, >= 6 y: 10 mg od" };
-          } else if (age < 6) {
-            return { doseText: "5 mL (5 mg)", note: "เด็กอายุ 2-5 ปี: 5 mg od (5 mL)" };
-          } else {
-            return { doseText: "10 mL (10 mg)", note: "เด็กอายุ >= 6 ปี: 10 mg od (10 mL หรือ 1 เม็ด)" };
-          }
+        id: 'cetirizine',
+        name: 'Cetirizine Syrup (Zyrtec)',
+        category: 'symptomatic',
+        weightBasis: 'AGE',
+        weightNote: 'คำนวณตามเกณฑ์อายุ (Fixed by Age)',
+        strengths: [{ label: '5 mg / 5 ml (1 mg/ml)', mgPerMl: 1 }],
+        selectedStrength: 0,
+        type: 'age_based',
+        calcByAge: (age) => {
+          if (age < 0.5) return { text: 'ไม่แนะนำในเด็กต่ำกว่า 6 เดือน', ml: 0 };
+          if (age < 2) return { text: '2.5 ml (2.5 mg) วันละ 1 ครั้ง (OD)', ml: 2.5 };
+          if (age <= 5) return { text: '2.5 - 5 ml วันละ 1 ครั้ง หรือแบ่ง bid', ml: 5 };
+          return { text: '5 - 10 ml (5-10 mg) วันละ 1 ครั้ง (OD)', ml: 10 };
         },
-        instructions: "รับประทานวันละ 1 ครั้ง เช้าหรือก่อนนอน",
-        notes: "2-5 y: 5 mg od, >= 6 y: 10 mg od"
+        instruction: 'ปลอดภัยในเด็ก 6 เดือนขึ้นไป ไม่ง่วงซึม'
       },
-      // 27. Cetirizine (Zyrtec)
       {
-        id: "cetirizine",
-        name: "Cetirizine",
-        category: "oral-general",
-        type: "oral",
-        strengths: [
-          { label: "5 mg / 5 mL", mgPerMl: 5 / 5, default: true }
-        ],
-        ruleType: "custom",
-        frequencyText: "วันละ 1 ครั้ง (od)",
-        calculate: function(weight, age) {
-          if (age < 0.5) {
-            return { doseText: "อายุ < 6 เดือน ควรระวังเป็นพิเศษ", note: "อ้างอิงเริ่มตั้งแต่ 6 เดือนขึ้นไป" };
-          } else if (age < 2) {
-            return { doseText: "2.5 mL (2.5 mg)", note: "6 mo - 2 y: 2.5 mg po od (2.5 mL)" };
-          } else if (age < 6) {
-            return { doseText: "2.5 - 5 mL (2.5-5 mg)", note: "2 - 5 y: 2.5-5 mg po od (2.5-5 mL)" };
-          } else {
-            return { doseText: "5 - 10 mL (5-10 mg)", note: ">= 6 y: 5-10 mg po od (5-10 mL)" };
-          }
-        },
-        instructions: "รับประทานวันละ 1 ครั้ง ก่อนนอน",
-        notes: "6 m-2 y: 2.5 mg od | 2-5 y: 2.5-5 mg od | >=6 y: 5-10 mg od (น้ำหนัก 10 kg ตัวอย่าง: 2.5 ml OD)"
-      },
-      // 28. Chlorpheniramine (CPM)
-      {
-        id: "cpm",
-        name: "Chlorpheniramine (CPM)",
-        category: "oral-general",
-        type: "oral",
-        strengths: [
-          { label: "2 mg / 5 mL (ยาน้ำ)", mgPerMl: 2 / 5, default: true },
-          { label: "4 mg / Tab (ยาเม็ด)", mgPerUnit: 4 }
-        ],
-        ruleType: "fixed_mkd",
-        mkd: 0.35,
-        frequencyText: "วันละ 3 ครั้ง (tid)",
-        dosesPerDay: 3,
-        timingText: "รับประทานครั้งละ",
-        instructions: "หลังอาหาร เช้า กลางวัน เย็น หรือเมื่อมีอาการแพ้/น้ำมูก",
-        notes: "0.35 MKD (tid-qid) | กรณี Anaphylaxis 0.25 MKdose IV q 6 hr (ที่ 10 kg: ~2.5 ml tid)"
-      },
-      // 29. Domperidone (Motilium)
-      {
-        id: "domperidone",
-        name: "Domperidone (Motilium)",
-        category: "oral-general",
-        type: "oral",
-        strengths: [
-          { label: "5 mg / 5 mL", mgPerMl: 5 / 5, default: true }
-        ],
-        ruleType: "range_mkdose",
-        minMkd: 0.2,
-        maxMkd: 0.4,
-        defaultMkd: 0.25,
-        frequencyText: "วันละ 3 ครั้ง (tid)",
-        timingText: "รับประทานครั้งละ",
-        instructions: "ก่อนอาหาร 15-30 นาที เช้า กลางวัน เย็น",
-        notes: "0.2 - 0.4 MKdose (tid) (ที่ 10 kg: 2.5 ml tid)"
-      },
-      // 30. Simethicone
-      {
-        id: "simethicone",
-        name: "Simethicone (แอร์เอ็กซ์ ดรอปส์)",
-        category: "oral-general",
-        type: "oral",
-        strengths: [
-          { label: "40 mg / 0.6 mL (Drops)", default: true }
-        ],
-        ruleType: "custom",
-        frequencyText: "วันละ 4 ครั้ง หลังอาหารและก่อนนอน (qid)",
-        calculate: function(weight, age) {
-          if (age < 2) {
-            return { doseText: "0.3 mL (ครึ่งหลอดหยด)", note: "อายุ < 2 ปี: 0.3 mL qid" };
-          } else {
-            return { doseText: "0.6 mL (1 หลอดหยดเต็ม)", note: "อายุ >= 2 ปี: 0.6 mL qid" };
-          }
-        },
-        instructions: "กินหลังอาหาร เช้า กลางวัน เย็น และก่อนนอน",
-        notes: "< 2 y: 0.3 ml qid | >= 2 y: 0.6 ml qid"
-      },
-      // 31. Ranitidine Oral
-      {
-        id: "ranitidine_oral",
-        name: "Ranitidine (Oral)",
-        category: "oral-general",
-        type: "oral",
-        strengths: [
-          { label: "15 mg / 1 mL", mgPerMl: 15, default: true }
-        ],
-        ruleType: "range_mkdose",
-        minMkd: 1,
-        maxMkd: 2,
-        defaultMkd: 1.5,
-        frequencyText: "วันละ 2 ครั้ง (bid)",
-        timingText: "รับประทานครั้งละ",
-        instructions: "ก่อนอาหาร เช้า และ เย็น",
-        notes: "1-2 MKdose (bid) | IV: 1 MKdose q 8 hr"
-      },
-      // 36. Alum milk
-      {
-        id: "alum_milk",
-        name: "Alum milk (ยาลดกรดเคลือบกระเพาะ)",
-        category: "oral-general",
-        type: "oral",
-        strengths: [
-          { label: "ยาน้ำแขวนตะกอน oral", default: true }
-        ],
-        ruleType: "fixed_range_dose",
-        frequencyText: "วันละ 3 - 4 ครั้ง (tid-qid)",
-        doseRangeText: "5 - 15 mL / dose",
-        instructions: "รับประทานหลังอาหาร 1-2 ชม. หรือเมื่อมีอาการปวดท้อง",
-        notes: "5-15 ml/dose (tid-qid)"
-      },
-      // 37. Lactulose
-      {
-        id: "lactulose",
-        name: "Lactulose (ยาระบายน้ำตาล)",
-        category: "oral-general",
-        type: "oral",
-        strengths: [
-          { label: "Syr. 66.7%", default: true }
-        ],
-        ruleType: "custom",
-        frequencyText: "วันละ 1-2 ครั้ง",
-        calculate: function(weight) {
-          const dose = Math.min(weight * 1, 60);
-          return {
-            doseText: `${dose.toFixed(1)} mL / dose`,
-            note: `1 ml/kg/dose (Max 60 mL/day) = ${dose.toFixed(1)} mL`
-          };
-        },
-        instructions: "รับประทานก่อนนอน หรือ เช้า-เย็น ดื่มน้ำตามมากๆ",
-        notes: "1 ml/kg/dose (Max 60 ml/Day)"
-      },
-      // 38. MOM (Milk of Magnesia)
-      {
-        id: "mom",
-        name: "Milk of Magnesia (M.O.M.)",
-        category: "oral-general",
-        type: "oral",
-        strengths: [
-          { label: "ยาน้ำแขวนตะกอน oral", default: true }
-        ],
-        ruleType: "custom",
-        frequencyText: "วันละ 1 ครั้ง ก่อนนอน",
-        calculate: function(weight, age) {
-          if (age < 2) {
-            const ml = (weight * 0.5).toFixed(1);
-            return { doseText: `${ml} mL`, note: `< 2 ปี: 0.5 ml/kg ก่อนนอน = ${ml} mL` };
-          } else if (age < 6) {
-            return { doseText: "5 - 15 mL (1 - 3 ช้อนชา)", note: "2 - 5 ปี: 5-15 ml ก่อนนอน" };
-          } else {
-            return { doseText: "15 - 30 mL (1 - 2 ช้อนโต๊ะ)", note: "6 - 11 ปี: 15-30 ml ก่อนนอน" };
-          }
-        },
-        instructions: "รับประทานก่อนนอน ดื่มน้ำตาม 1 แก้ว",
-        notes: "< 2 y: 0.5 ml/kg | 2-5 y: 5-15 ml | 6-11 y: 15-30 ml"
-      },
-      // 39. Salbutamol Syrup
-      {
-        id: "salbutamol_syr",
-        name: "Salbutamol Syrup (เวนโทลิน)",
-        category: "oral-general",
-        type: "oral",
-        strengths: [
-          { label: "2 mg / 5 mL", mgPerMl: 2 / 5, default: true }
-        ],
-        ruleType: "fixed_mkdose",
-        mkdose: 0.1,
-        frequencyText: "ทุก 6 ชั่วโมง (q 6 hr)",
-        timingText: "รับประทานครั้งละ",
-        instructions: "หลังอาหาร เช้า กลางวัน เย็น ก่อนนอน (อาจใจสั่น/มือสั่น)",
-        notes: "0.1 MKdose (q 6 hr) | Nebulizer solution: 0.03 ml/kg/dose NB"
-      },
-      // 40. Procaterol (Meptin)
-      {
-        id: "meptin",
-        name: "Procaterol (Meptin)",
-        category: "oral-general",
-        type: "oral",
-        strengths: [
-          { label: "5 mcg / mL", mcgPerMl: 5, default: true }
-        ],
-        ruleType: "custom",
-        frequencyText: "วันละ 2 ครั้ง (bid)",
-        calculate: function(weight) {
-          const mcg = weight * 1.25;
-          const ml = (mcg / 5).toFixed(2);
-          return {
-            doseText: `${ml} mL (${mcg.toFixed(1)} mcg)`,
-            note: `1.25 mcg/kg/dose x ${weight} kg = ${mcg.toFixed(1)} mcg -> ${ml} mL bid`
-          };
-        },
-        instructions: "รับประทานหลังอาหาร เช้า และ ก่อนนอน",
-        notes: "1.25 mcg/kg/dose (bid)"
-      },
-      // 43. Pseudoephedrine
-      {
-        id: "pseudoephedrine",
-        name: "Pseudoephedrine",
-        category: "oral-general",
-        type: "oral",
-        strengths: [
-          { label: "30 mg / 5 mL", mgPerMl: 30 / 5, default: true }
-        ],
-        ruleType: "fixed_mkd",
-        mkd: 4,
-        frequencyText: "วันละ 3 ครั้ง (tid)",
-        dosesPerDay: 3,
-        timingText: "รับประทานครั้งละ",
-        instructions: "หลังอาหาร เช้า กลางวัน เย็น",
-        notes: "4 MKD (tid)"
-      },
-      // 44. Glyceryl Guaiacolate
-      {
-        id: "glyceryl_guaiacolate",
-        name: "Glyceryl Guaiacolate (Guaifenesin)",
-        category: "oral-general",
-        type: "oral",
-        strengths: [
-          { label: "100 mg / 5 mL", default: true }
-        ],
-        ruleType: "custom",
-        frequencyText: "วันละ 4 ครั้ง (qid)",
-        calculate: function(weight, age) {
-          if (age < 2) {
-            return { doseText: "ปรึกษาแพทย์เฉพาะราย", note: "ไม่แนะนำให้ใช้ในเด็กอายุต่ำกว่า 2 ปี" };
-          } else if (age < 6) {
-            return { doseText: "2.5 mL (ครึ่งช้อนชา)", note: "2-5 y: 2.5 ml qid" };
-          } else {
-            return { doseText: "5 mL (1 ช้อนชา)", note: "6-12 y: 5 ml qid" };
-          }
-        },
-        instructions: "หลังอาหาร เช้า กลางวัน เย็น ก่อนนอน และดื่มน้ำอุ่นตามมากๆ",
-        notes: "2-5 y: 2.5 ml qid, 6-12 y: 5 ml qid"
-      },
-      // 45. Ferrous Fumarate
-      {
-        id: "ferrous_fumarate",
-        name: "Ferrous Fumarate (ธาตุเหล็ก)",
-        category: "oral-general",
-        type: "oral",
-        strengths: [
-          { label: "15 mg / 0.6 mL (Drops)", mgPerMl: 15 / 0.6, default: true }
-        ],
-        ruleType: "custom",
-        frequencyText: "วันละ 1 ครั้ง (od)",
-        calculate: function(weight, age) {
-          const minMg = weight * 2;
-          const maxMg = weight * 3;
-          const minMl = (minMg / 25).toFixed(2);
-          const maxMl = (maxMg / 25).toFixed(2);
-          return {
-            doseText: `${minMl} - ${maxMl} mL (${minMg.toFixed(1)} - ${maxMg.toFixed(1)} mg)`,
-            note: `เริ่มอายุ 6 เดือน | ขนาดยาป้องกัน 2-3 MKD (หรือรักษา 4-6 MKD) วันละ 1 ครั้ง`
-          };
-        },
-        instructions: "กินพร้อมน้ำผลไม้หรือหลังอาหาร วันละ 1 ครั้ง (อุจจาระอาจมีสีดำ)",
-        notes: "2-3 MKD / 4-6 MKD (เริ่มอายุ 6 mo)"
-      },
-      // 46. Prednisolone
-      {
-        id: "prednisolone",
-        name: "Prednisolone",
-        category: "oral-general",
-        type: "oral",
-        strengths: [
-          { label: "5 mg / เม็ด (Tab)", mgPerUnit: 5, default: true }
-        ],
-        ruleType: "custom",
-        frequencyText: "วันละ 1 - 2 ครั้ง หลังอาหารเช้าทันที",
-        calculate: function(weight) {
-          const minMg = Math.min(weight * 1, 40);
-          const maxMg = Math.min(weight * 2, 40);
-          const minTabs = (minMg / 5).toFixed(1);
-          const maxTabs = (maxMg / 5).toFixed(1);
-          return {
-            doseText: `${minMg.toFixed(0)} - ${maxMg.toFixed(0)} mg (${minTabs} - ${maxTabs} เม็ด)`,
-            note: `1-2 MKD (Max 40 mg/day) x ${weight} kg = ${minMg}-${maxMg} mg/วัน`
-          };
-        },
-        instructions: "รับประทานหลังอาหารเช้าทันที ห้ามหยุดยาเองกะทันหัน",
-        notes: "1-2 MKD, Max 40 mg/Day"
+        id: 'salbutamol',
+        name: 'Salbutamol Syrup (Ventolin)',
+        category: 'symptomatic',
+        weightBasis: 'ABW',
+        weightNote: 'ใช้ ABW คำนวณ (Max 2 mg/dose)',
+        strengths: [{ label: '2 mg / 5 ml (0.4 mg/ml)', mgPerMl: 0.4 }],
+        selectedStrength: 0,
+        type: 'mkdose',
+        defaultDose: 0.1,
+        minDose: 0.1,
+        maxDose: 0.15,
+        doseUnit: 'mg/kg/dose',
+        frequency: 'tid',
+        freqText: 'วันละ 3 ครั้ง หลังอาหาร (หรือทุก 6 ชม.)',
+        maxSingleDose: 2,
+        instruction: 'อาจมีอาการใจสั่น มือสั่น หัวใจเต้นเร็ว'
       },
 
-      // 11. Ampicillin IV
+      // GI
       {
-        id: "ampicillin_iv",
-        name: "Ampicillin IV",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Vial IV", default: true }],
-        ruleType: "custom",
-        frequencyText: "ทุก 6 ชั่วโมง (q 6 hr)",
-        calculate: function(weight) {
-          const totalMin = Math.min(weight * 100, 12000);
-          const totalMax = Math.min(weight * 200, 12000);
-          const doseMin = (totalMin / 4).toFixed(0);
-          const doseMax = (totalMax / 4).toFixed(0);
-          return {
-            doseText: `${doseMin} - ${doseMax} mg / dose (IV q 6 hr)`,
-            note: `100-200 MKD (q 6 hr) รวม ${totalMin.toFixed(0)}-${totalMax.toFixed(0)} mg/วัน (Max 12 g/24 hr)`
-          };
-        },
-        instructions: "ฉีดเข้าหลอดเลือดดำช้าๆ ทุก 6 ชม.",
-        notes: "100-200 MKD (q 6 hr), Max 12 g/24 hr"
+        id: 'domperidone',
+        name: 'Domperidone (Motilium)',
+        category: 'gi',
+        weightBasis: 'ABW',
+        weightNote: 'ใช้ ABW คำนวณ (Max 10 mg/dose, 30 mg/day)',
+        strengths: [{ label: '5 mg / 5 ml (1 mg/ml)', mgPerMl: 1 }],
+        selectedStrength: 0,
+        type: 'mkdose',
+        defaultDose: 0.25,
+        minDose: 0.2,
+        maxDose: 0.4,
+        doseUnit: 'mg/kg/dose',
+        frequency: 'tid',
+        freqText: 'วันละ 3 ครั้ง ก่อนอาหาร 15-30 นาที',
+        maxSingleDose: 10,
+        instruction: 'รับประทานก่อนอาหาร ไม่แนะนำให้ใช้ต่อเนื่องระยะยาว'
       },
-      // 12. Amikacin IV
+
+      // INJECTIONS & NARROW THERAPEUTIC INDEX (IV)
       {
-        id: "amikacin_iv",
-        name: "Amikacin IV",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Vial IV", default: true }],
-        ruleType: "custom",
-        frequencyText: "ทุก 8 หรือ 24 ชั่วโมง",
-        calculate: function(weight) {
-          const doseMg = Math.min(weight * 15, 1500);
-          return {
-            doseText: `${doseMg.toFixed(0)} mg / วัน`,
-            note: `15 MKD (Max 1.5 g/24 hr) ตาราง: 15 MKD (q 8 hr / single daily dose)`
-          };
-        },
-        instructions: "Drip IV ในเวลา 30-60 นาที",
-        notes: "15 MKD (q 8 hr), Max 1.5 g/24 hr"
+        id: 'gentamicin_iv',
+        name: 'Gentamicin IV (Aminoglycoside)',
+        category: 'iv',
+        weightBasis: 'ADJBW_IF_OBESE', // Aminoglycoside: Use AdjBW if obese (>120% IBW)
+        weightNote: 'Hydrophilic: หากเด็กอ้วน (>120% IBW) ให้ใช้ AdjBW ป้องกันไตวาย',
+        strengths: [{ label: '80 mg / 2 ml (40 mg/ml)', mgPerMl: 40 }],
+        selectedStrength: 0,
+        type: 'mkdose',
+        defaultDose: 7.5,
+        minDose: 5,
+        maxDose: 7.5,
+        doseUnit: 'mg/kg/day (OD dose)',
+        frequency: 'od',
+        freqText: 'วันละ 1 ครั้ง หยดทางหลอดเลือดดำ (IV drip 30-60 นาที)',
+        instruction: 'Narrow Therapeutic Index ติดตาม TDM และการทำงานของไตอย่างสม่ำเสมอ'
       },
-      // 13. Augmentin IV
       {
-        id: "augmentin_iv",
-        name: "Augmentin IV",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Vial IV", default: true }],
-        ruleType: "custom",
-        frequencyText: "ทุก 8 ชั่วโมง (q 8 hr)",
-        calculate: function(weight) {
-          const doseMg = weight * 30;
-          return {
-            doseText: `${doseMg.toFixed(0)} mg / dose (IV q 8 hr)`,
-            note: `30 MKdose (q 8 hr) = ${doseMg.toFixed(0)} mg ต่อครั้ง`
-          };
-        },
-        instructions: "ฉีดหรือดริปเข้าหลอดเลือดดำช้าๆ ทุก 8 ชม.",
-        notes: "30 MKdose (q 8 hr)"
+        id: 'amikacin_iv',
+        name: 'Amikacin IV (Aminoglycoside)',
+        category: 'iv',
+        weightBasis: 'ADJBW_IF_OBESE',
+        weightNote: 'Hydrophilic: หากเด็กอ้วน (>120% IBW) ใช้ AdjBW ป้องกันพิษต่อไต/หู',
+        strengths: [{ label: '500 mg / 2 ml (250 mg/ml)', mgPerMl: 250 }],
+        selectedStrength: 0,
+        type: 'mkdose',
+        defaultDose: 15,
+        minDose: 15,
+        maxDose: 20,
+        doseUnit: 'mg/kg/day (OD dose)',
+        frequency: 'od',
+        freqText: 'วันละ 1 ครั้ง หยดทางหลอดเลือดดำ 30-60 นาที',
+        instruction: 'Narrow Therapeutic Index แนะนำติดตาม trough level'
       },
-      // 14. Cefazolin IV
       {
-        id: "cefazolin_iv",
-        name: "Cefazolin IV",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Vial IV", default: true }],
-        ruleType: "custom",
-        frequencyText: "ทุก 8 ชั่วโมง (q 8 hr)",
-        calculate: function(weight) {
-          const totalMg = Math.min(weight * 100, 6000);
-          const doseMg = (totalMg / 3).toFixed(0);
-          return {
-            doseText: `${doseMg} mg / dose (IV q 8 hr)`,
-            note: `100 MKD (q 8 hr) รวม ${totalMg.toFixed(0)} mg/วัน (Max 6 g/24 hr)`
-          };
-        },
-        instructions: "IV ช้าๆ ทุก 8 ชม.",
-        notes: "100 MKD (q 8 hr), Max 6 g/24 hr"
+        id: 'vancomycin_iv',
+        name: 'Vancomycin IV',
+        category: 'iv',
+        weightBasis: 'ADJBW_IF_OBESE',
+        weightNote: 'Loading dose ใช้ ABW | Maintenance dose ใช้ AdjBW ในเด็กอ้วน',
+        strengths: [{ label: '500 mg / vial (ผสมเป็น 50 mg/ml)', mgPerMl: 50 }],
+        selectedStrength: 0,
+        type: 'mkd',
+        defaultDose: 45,
+        minDose: 40,
+        maxDose: 60,
+        doseUnit: 'mg/kg/day',
+        frequency: 'tid',
+        freqText: 'แบ่งให้ทุก 6 - 8 ชม. (Drip ช้าๆ > 60 นาที)',
+        instruction: 'ต้อง Drip ช้าๆ เพื่อป้องกัน Red Man Syndrome และติดตาม TDM'
       },
-      // 15. Cefotaxime IV
       {
-        id: "cefotaxime_iv",
-        name: "Cefotaxime IV",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Vial IV", default: true }],
-        ruleType: "custom",
-        frequencyText: "ทุก 6 ชั่วโมง (q 6 hr)",
-        calculate: function(weight) {
-          const totalMin = Math.min(weight * 100, 12000);
-          const totalMax = Math.min(weight * 200, 12000);
-          const meninMin = Math.min(weight * 200, 12000);
-          const meninMax = Math.min(weight * 300, 12000);
-          return {
-            doseText: `${(totalMin/4).toFixed(0)} - ${(totalMax/4).toFixed(0)} mg / dose (q 6 hr)`,
-            note: `ทั่วไป 100-200 MKD | เยื่อหุ้มสมองอักเสบ 200-300 MKD (Max 12 g/24 hr)`
-          };
-        },
-        instructions: "IV ช้าๆ หรือดริป ทุก 6 ชม.",
-        notes: "100-200 MKD (q 6 hr) / 200-300 MKD, Max 12 g/24 hr"
+        id: 'aminophylline_iv',
+        name: 'Aminophylline IV',
+        category: 'iv',
+        weightBasis: 'IBW', // Poor fat distribution: Always use IBW
+        weightNote: 'Hydrophilic/Low fat: ต้องใช้ IBW คำนวณเสมอ ป้องกันหัวใจเต้นผิดจังหวะ/ชัก',
+        strengths: [{ label: '250 mg / 10 ml (25 mg/ml)', mgPerMl: 25 }],
+        selectedStrength: 0,
+        type: 'mkdose',
+        defaultDose: 5,
+        minDose: 5,
+        maxDose: 6,
+        doseUnit: 'mg/kg (Loading dose)',
+        frequency: 'prn',
+        freqText: 'Loading dose หยดเข้าเส้นเลือดช้าๆ 20-30 นาที',
+        instruction: 'ห้ามฉีดเร็วเด็ดขาด ต้องติดตามอัตราการเต้นของหัวใจ'
       },
-      // 16. Ceftazidime IV
       {
-        id: "ceftazidime_iv",
-        name: "Ceftazidime IV",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Vial IV", default: true }],
-        ruleType: "custom",
-        frequencyText: "ทุก 8 ชั่วโมง (q 8 hr)",
-        calculate: function(weight) {
-          const totalMin = Math.min(weight * 100, 6000);
-          const totalMax = Math.min(weight * 150, 6000);
-          return {
-            doseText: `${(totalMin/3).toFixed(0)} - ${(totalMax/3).toFixed(0)} mg / dose (q 8 hr)`,
-            note: `100-150 MKD (q 8 hr) (Max 6 g/24 hr)`
-          };
-        },
-        instructions: "IV ช้าๆ หรือดริป ทุก 8 ชม.",
-        notes: "100-150 MKD (q 8 hr), Max 6 g/24 hr"
+        id: 'ceftriaxone_iv',
+        name: 'Ceftriaxone IV',
+        category: 'iv',
+        weightBasis: 'ABW',
+        weightNote: 'ใช้ ABW คำนวณ (Max 2 g/day สำหรับติดเชื้อทั่วไป, 4 g/day สำหรับเยื่อหุ้มสมองอักเสบ)',
+        strengths: [{ label: '1 g / vial (ผสม 10 ml = 100 mg/ml)', mgPerMl: 100 }],
+        selectedStrength: 0,
+        type: 'mkd',
+        defaultDose: 50,
+        minDose: 50,
+        maxDose: 75,
+        doseUnit: 'mg/kg/day',
+        frequency: 'od',
+        freqText: 'วันละ 1 ครั้ง (Meningitis 100 MKD q 12h)',
+        maxDailyDose: 2000,
+        instruction: 'ห้ามผสมหรือให้ร่วมกับแคลเซียมเด็ดขาด'
       },
-      // 17. Ceftriaxone IV
       {
-        id: "ceftriaxone_iv",
-        name: "Ceftriaxone IV",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Vial IV", default: true }],
-        ruleType: "custom",
-        frequencyText: "ทุก 12 - 24 ชั่วโมง",
-        calculate: function(weight) {
-          const totalGenMin = Math.min(weight * 50, 4000);
-          const totalGenMax = Math.min(weight * 75, 4000);
-          const totalMenin = Math.min(weight * 100, 4000);
-          return {
-            doseText: `${totalGenMin.toFixed(0)} - ${totalGenMax.toFixed(0)} mg / วัน (q 12-24 hr)`,
-            note: `ทั่วไป 50-75 MKD (q 12-24 hr) | เยื่อหุ้มสมองอักเสบ 100 MKD (q 12 hr = ${(totalMenin/2).toFixed(0)} mg q 12h)`
-          };
-        },
-        instructions: "ดริป IV ในเวลา 30 นาที",
-        notes: "50-75 MKD (q 12-24 hr) / 100 MKD (q 12 hr)"
-      },
-      // 18. Clindamycin IV
-      {
-        id: "clindamycin_iv",
-        name: "Clindamycin IV",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Ampoule IV", default: true }],
-        ruleType: "custom",
-        frequencyText: "ทุก 8 ชั่วโมง (q 8 hr)",
-        calculate: function(weight) {
-          const totalMin = Math.min(weight * 25, 4800);
-          const totalMax = Math.min(weight * 40, 4800);
-          return {
-            doseText: `${(totalMin/3).toFixed(0)} - ${(totalMax/3).toFixed(0)} mg / dose (q 8 hr)`,
-            note: `25-40 MKD (q 8 hr) (Max 4.8 g/24 hr)`
-          };
-        },
-        instructions: "เจือจางแล้วหยดเข้าหลอดเลือดดำช้าๆ ทุก 8 ชม.",
-        notes: "25-40 MKD (q 8 hr), Max 4.8 g/24 hr"
-      },
-      // 19. Cloxacillin IV
-      {
-        id: "cloxacillin_iv",
-        name: "Cloxacillin IV",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Vial IV", default: true }],
-        ruleType: "custom",
-        frequencyText: "ทุก 6 ชั่วโมง (q 6 hr)",
-        calculate: function(weight) {
-          const totalMin = weight * 100;
-          const totalMax = weight * 200;
-          return {
-            doseText: `${(totalMin/4).toFixed(0)} - ${(totalMax/4).toFixed(0)} mg / dose (q 6 hr)`,
-            note: `100-200 MKD (q 6 hr)`
-          };
-        },
-        instructions: "ฉีดหรือดริปเข้าหลอดเลือดดำช้าๆ ทุก 6 ชม.",
-        notes: "100-200 MKD (q 6 hr)"
-      },
-      // 20. Meropenem IV
-      {
-        id: "meropenem_iv",
-        name: "Meropenem IV",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Vial IV", default: true }],
-        ruleType: "custom",
-        frequencyText: "ทุก 8 ชั่วโมง (q 8 hr)",
-        calculate: function(weight) {
-          const doseMin = Math.min(weight * 20, 2000);
-          const doseMax = Math.min(weight * 40, 2000);
-          return {
-            doseText: `${doseMin.toFixed(0)} - ${doseMax.toFixed(0)} mg / dose (q 8 hr)`,
-            note: `20-40 MKdose (q 8 hr) (Max 6 g/24 hr)`
-          };
-        },
-        instructions: "หยดเข้าหลอดเลือดดำใน 30 นาที ทุก 8 ชม.",
-        notes: "20-40 MKdose (q 8 hr), Max 6 g/24 hr"
-      },
-      // 21. Metronidazole IV
-      {
-        id: "metronidazole_iv",
-        name: "Metronidazole IV",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Bottle IV (500mg/100ml)", default: true }],
-        ruleType: "custom",
-        frequencyText: "ทุก 6 หรือ 8 ชั่วโมง",
-        calculate: function(weight) {
-          const total = Math.min(weight * 30, 4000);
-          return {
-            doseText: `${(total/4).toFixed(0)} mg / dose (q 6 hr) หรือ ${(total/3).toFixed(0)} mg (q 8 hr)`,
-            note: `30 MKD (q 6 hr) รวม ${total.toFixed(0)} mg/วัน (Max 4 g/24 hr)`
-          };
-        },
-        instructions: "Drip IV ช้าๆ ใน 30-60 นาที",
-        notes: "30 MKD (q 6 hr), Max 4 g/24 hr"
-      },
-      // 22. Tazocin IV
-      {
-        id: "tazocin_iv",
-        name: "Tazocin (Pip/Tazo) IV",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Vial IV", default: true }],
-        ruleType: "custom",
-        frequencyText: "ทุก 8 ชั่วโมง (q 8 hr)",
-        calculate: function(weight) {
-          const pipDose = weight * 100;
-          return {
-            doseText: `${pipDose.toFixed(0)} mg Piperacillin / dose (q 8 hr)`,
-            note: `100 MKdose of Piperacillin (q 8 hr)`
-          };
-        },
-        instructions: "หยดเข้าหลอดเลือดดำช้าๆ ในเวลา 30 นาที",
-        notes: "100 MKdose of Piperacillin (q 8 hr)"
-      },
-      // 32. Omeprazole (Losec) IV
-      {
-        id: "omeprazole_iv",
-        name: "Omeprazole (Losec) IV",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Vial IV 40 mg", default: true }],
-        ruleType: "custom",
-        frequencyText: "วันละ 1 ครั้ง (q 24 hr)",
-        calculate: function(weight) {
-          const dose = Math.min(weight * 1, 40);
-          return {
-            doseText: `${dose.toFixed(1)} mg / dose (IV q 24 hr)`,
-            note: `1 mg/kg/dose (q 24 hr) = ${dose.toFixed(1)} mg`
-          };
-        },
-        instructions: "IV push ช้าๆ หรือดริป",
-        notes: "1 mg/kg/dose (q 24 hr)"
-      },
-      // 33. Ondansetron IV
-      {
-        id: "ondansetron_iv",
-        name: "Ondansetron IV",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Ampoule IV (2 mg/mL)", default: true }],
-        ruleType: "custom",
-        frequencyText: "ทุก 8 ชั่วโมง เมื่อมีอาการคลื่นไส้อาเจียน",
-        calculate: function(weight) {
-          const doseMg = Math.min(weight * 0.15, 8);
-          const doseMl = (doseMg / 2).toFixed(2);
-          return {
-            doseText: `${doseMl} mL (${doseMg.toFixed(2)} mg)`,
-            note: `0.15 MKdose = ${doseMg.toFixed(2)} mg (ความแรง 2 mg/ml)`
-          };
-        },
-        instructions: "IV ช้าๆ อย่างน้อย 2-5 นาที",
-        notes: "0.15 MKdose"
-      },
-      // 34. Metoclopramide (Plasil) IV
-      {
-        id: "plasil_iv",
-        name: "Metoclopramide (Plasil) IV",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Ampoule 10 mg / 2 mL", default: true }],
-        ruleType: "custom",
-        frequencyText: "ทุก 8 ชั่วโมง เมื่อคลื่นไส้",
-        calculate: function(weight) {
-          const minMg = weight * 0.1;
-          const maxMg = weight * 0.2;
-          return {
-            doseText: `${minMg.toFixed(2)} - ${maxMg.toFixed(2)} mg / dose`,
-            note: `0.1 - 0.2 mg/kg/dose IV ช้าๆ (ระวังอาการ Extrapyramidal ในเด็ก)`
-          };
-        },
-        instructions: "IV ช้าๆ อย่างน้อย 3 นาที",
-        notes: "0.1-0.2 mg/kg/dose"
-      },
-      // 35. Dimenhydrinate IV
-      {
-        id: "dimen_iv",
-        name: "Dimenhydrinate IV",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Ampoule 50 mg / 1 mL", default: true }],
-        ruleType: "custom",
-        frequencyText: "ทุก 6 ชั่วโมง (q 6 hr)",
-        calculate: function(weight) {
-          const totalMg = weight * 5;
-          const doseMg = totalMg / 4;
-          const doseMl = (doseMg / 50).toFixed(2);
-          return {
-            doseText: `${doseMl} mL (${doseMg.toFixed(1)} mg) q 6 hr`,
-            note: `5 MKD (q 6 hr) รวม ${totalMg.toFixed(1)} mg/วัน`
-          };
-        },
-        instructions: "เจือจาง IV push ช้าๆ",
-        notes: "5 MKD (q 6 hr)"
-      },
-      // 41. Berodual Nebulizer
-      {
-        id: "berodual_nb",
-        name: "Berodual (พ่น Nebulizer)",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Respules / Solution (500 mcg/4 ml)", default: true }],
-        ruleType: "custom",
-        frequencyText: "พ่นทุก 4 - 6 ชม. หรือตามแพทย์สั่ง",
-        calculate: function(weight) {
-          if (weight < 20) {
-            return { doseText: "1/2 NB (ครึ่งหลอด / 2 mL)", note: "BW < 20 kg: ใช้ ½ NB ผสม NSS หรือพ่นตรง" };
-          } else {
-            return { doseText: "1 NB (1 หลอดเต็ม / 4 mL)", note: "BW >= 20 kg: ใช้ 1 NB เต็มหลอด" };
-          }
-        },
-        instructions: "พ่นละอองฝอยผ่านหน้ากาก Nebulizer",
-        notes: "BW < 20 kg: ½ NB | BW >= 20 kg: 1 NB"
-      },
-      // 42. Terbutaline (Bricanyl) SC
-      {
-        id: "bricanyl_sc",
-        name: "Terbutaline (Bricanyl) SC",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Ampoule 0.5 mg / 1 mL", default: true }],
-        ruleType: "custom",
-        frequencyText: "ฉีดใต้ผิวหนัง (SC) เมื่อหอบรุนแรง",
-        calculate: function(weight) {
-          const doseMg = Math.min(weight * 0.01, 0.4);
-          const doseMl = (doseMg / 0.5).toFixed(2);
-          return {
-            doseText: `${doseMl} mL (${(doseMg*1000).toFixed(0)} mcg / ${doseMg.toFixed(2)} mg)`,
-            note: `0.01 MKdose (Max 0.4 mg/dose) ฉีด SC`
-          };
-        },
-        instructions: "ฉีดเข้าใต้ผิวหนัง (Subcutaneous)",
-        notes: "0.01 MKdose, Max 0.4 mg/dose"
-      },
-      // 47. Hydrocortisone IV
-      {
-        id: "hydrocortisone_iv",
-        name: "Hydrocortisone IV",
-        category: "iv",
-        type: "iv",
-        strengths: [{ label: "Vial 100 mg", default: true }],
-        ruleType: "custom",
-        frequencyText: "ทุก 6 ชั่วโมง (q 6 hr)",
-        calculate: function(weight) {
-          const doseMg = Math.min(weight * 5, 250);
-          return {
-            doseText: `${doseMg.toFixed(1)} mg / dose (IV q 6 hr)`,
-            note: `5 MKdose (q 6 hr) (Max 250 mg/dose)`
-          };
-        },
-        instructions: "ฉีดหรือดริปเข้าหลอดเลือดดำทุก 6 ชม.",
-        notes: "5 MKdose (q 6 hr), Max 250 mg/dose"
+        id: 'hydrocortisone_iv',
+        name: 'Hydrocortisone IV',
+        category: 'iv',
+        weightBasis: 'ABW',
+        weightNote: 'ใช้ ABW คำนวณ (Max 250 mg/dose)',
+        strengths: [{ label: '100 mg / vial (ผสม 2 ml = 50 mg/ml)', mgPerMl: 50 }],
+        selectedStrength: 0,
+        type: 'mkdose',
+        defaultDose: 5,
+        minDose: 2,
+        maxDose: 5,
+        doseUnit: 'mg/kg/dose',
+        frequency: 'q6h',
+        freqText: 'ฉีดเข้าทางหลอดเลือดดำ ทุก 6 ชม.',
+        maxSingleDose: 250,
+        instruction: 'ใช้ใน Status asthmaticus / Adrenal crisis'
       }
     ];
 
-    let currentWeight = 10;
-    let currentAge = 1;
     let currentCategory = 'all';
     let searchQuery = '';
-    let selectedStrengths = {};
 
-    // Initialize default strengths
-    DRUG_DATABASE.forEach(drug => {
-      if (drug.strengths && drug.strengths.length > 0) {
-        const defIdx = drug.strengths.findIndex(s => s.default);
-        selectedStrengths[drug.id] = defIdx !== -1 ? defIdx : 0;
-      }
-    });
-
-    function formatMlToTsp(ml) {
-      if (isNaN(ml) || ml <= 0) return "";
-      const tsp = ml / 5;
-      if (Math.abs(tsp - 0.5) < 0.08) return "(~½ ช้อนชา)";
-      if (Math.abs(tsp - 1.0) < 0.08) return "(~1 ช้อนชา)";
-      if (Math.abs(tsp - 1.5) < 0.08) return "(~1½ ช้อนชา)";
-      if (Math.abs(tsp - 2.0) < 0.08) return "(~2 ช้อนชา)";
-      if (Math.abs(tsp - 3.0) < 0.08) return "(~3 ช้อนชา)";
-      return `(~${tsp.toFixed(1)} ช้อนชา)`;
-    }
-
-    function calculateDrugDose(drug, weight, age) {
-      const strengthIdx = selectedStrengths[drug.id] || 0;
-      const strength = drug.strengths ? drug.strengths[strengthIdx] : null;
-
-      if (drug.ruleType === "custom" || drug.ruleType === "age_fixed") {
-        return drug.calculate(weight, age);
-      }
-
-      if (drug.ruleType === "range_mkd") {
-        const minDailyMg = weight * drug.minMkd;
-        const maxDailyMg = weight * drug.maxMkd;
-        const minDoseMg = minDailyMg / drug.dosesPerDay;
-        const maxDoseMg = maxDailyMg / drug.dosesPerDay;
-
-        if (strength && strength.mgPerMl) {
-          const minMl = minDoseMg / strength.mgPerMl;
-          const maxMl = maxDoseMg / strength.mgPerMl;
-          return {
-            doseText: `${minMl.toFixed(1)} - ${maxMl.toFixed(1)} mL`,
-            subText: `${formatMlToTsp((minMl + maxMl)/2)} (${minDoseMg.toFixed(1)} - ${maxDoseMg.toFixed(1)} mg)`,
-            note: `${drug.minMkd}-${drug.maxMkd} MKD แบ่งให้ ${drug.dosesPerDay} ครั้ง = วันละ ${minDailyMg.toFixed(0)}-${maxDailyMg.toFixed(0)} mg`
-          };
-        } else if (strength && strength.mgPerUnit) {
-          const minUnit = minDoseMg / strength.mgPerUnit;
-          const maxUnit = maxDoseMg / strength.mgPerUnit;
-          return {
-            doseText: `${minDoseMg.toFixed(0)} - ${maxDoseMg.toFixed(0)} mg`,
-            subText: `(${minUnit.toFixed(1)} - ${maxUnit.toFixed(1)} เม็ด)`,
-            note: `${drug.minMkd}-${drug.maxMkd} MKD แบ่งให้ ${drug.dosesPerDay} ครั้ง`
-          };
-        }
-      }
-
-      if (drug.ruleType === "fixed_mkd") {
-        const dailyMg = weight * drug.mkd;
-        const doseMg = dailyMg / (drug.dosesPerDay || 1);
-
-        if (strength && strength.mgPerMl) {
-          const doseMl = doseMg / strength.mgPerMl;
-          return {
-            doseText: `${doseMl.toFixed(1)} mL`,
-            subText: `${formatMlToTsp(doseMl)} (${doseMg.toFixed(1)} mg)`,
-            note: `${drug.mkd} MKD แบ่งให้ ${drug.dosesPerDay} ครั้ง = วันละ ${dailyMg.toFixed(0)} mg`
-          };
-        } else if (strength && strength.mgPerUnit) {
-          const unit = doseMg / strength.mgPerUnit;
-          return {
-            doseText: `${doseMg.toFixed(1)} mg`,
-            subText: `(${unit.toFixed(1)} เม็ด)`,
-            note: `${drug.mkd} MKD แบ่งให้ ${drug.dosesPerDay} ครั้ง`
-          };
-        }
-      }
-
-      if (drug.ruleType === "range_mkdose") {
-        const minDoseMg = weight * drug.minMkd;
-        const maxDoseMg = weight * drug.maxMkd;
-
-        if (strength && strength.mgPerMl) {
-          const minMl = minDoseMg / strength.mgPerMl;
-          const maxMl = maxDoseMg / strength.mgPerMl;
-          return {
-            doseText: `${minMl.toFixed(1)} - ${maxMl.toFixed(1)} mL`,
-            subText: `${formatMlToTsp((minMl + maxMl)/2)} (${minDoseMg.toFixed(0)} - ${maxDoseMg.toFixed(0)} mg)`,
-            note: `${drug.minMkd}-${drug.maxMkd} MKdose = ครั้งละ ${minDoseMg.toFixed(0)}-${maxDoseMg.toFixed(0)} mg`
-          };
-        }
-      }
-
-      if (drug.ruleType === "fixed_mkdose") {
-        const doseMg = weight * drug.mkdose;
-        if (strength && strength.mgPerMl) {
-          const doseMl = doseMg / strength.mgPerMl;
-          return {
-            doseText: `${doseMl.toFixed(1)} mL`,
-            subText: `${formatMlToTsp(doseMl)} (${doseMg.toFixed(1)} mg)`,
-            note: `${drug.mkdose} MKdose = ${doseMg.toFixed(1)} mg ต่อครั้ง`
-          };
-        }
-      }
-
-      if (drug.ruleType === "fixed_range_dose") {
-        return {
-          doseText: drug.doseRangeText,
-          note: drug.notes
-        };
-      }
-
-      return { doseText: "-", note: "" };
-    }
-
-    function renderDrugCard(drug) {
-      const strengthIdx = selectedStrengths[drug.id] || 0;
-      const res = calculateDrugDose(drug, currentWeight, currentAge);
-      const isOral = drug.category.startsWith("oral");
-
-      let categoryBadge = "";
-      if (drug.category === "oral-anti") {
-        categoryBadge = `<span class="badge-pill bg-purple-100 text-purple-700 border border-purple-200">ยาฆ่าเชื้อชนิดกิน</span>`;
-      } else if (drug.category === "oral-general") {
-        categoryBadge = `<span class="badge-pill bg-emerald-100 text-emerald-700 border border-emerald-200">ยาสามัญ/อาการทั่วไป</span>`;
+    // Calculate Ideal Body Weight (IBW) via Weech's Formula
+    function calculateIBW(ageYears) {
+      if (ageYears < 1) {
+        const months = Math.max(3, Math.round(ageYears * 12));
+        return Number(((months + 9) / 2).toFixed(1));
+      } else if (ageYears <= 6) {
+        return Number(((ageYears * 2) + 8).toFixed(1));
       } else {
-        categoryBadge = `<span class="badge-pill bg-amber-100 text-amber-800 border border-amber-200">ยาฉีด / ยาพ่น</span>`;
+        return Number((((ageYears * 7) - 5) / 2).toFixed(1));
       }
-
-      // Strength selector buttons if multiple
-      let strengthSelectorHtml = "";
-      if (drug.strengths && drug.strengths.length > 1) {
-        strengthSelectorHtml = `
-          <div class="mt-2.5 pt-2.5 border-t border-slate-100 flex flex-wrap items-center gap-1.5 text-xs">
-            <span class="text-slate-400 font-medium mr-1 text-[11px]">เลือกความแรง:</span>
-            ${drug.strengths.map((st, idx) => `
-              <button 
-                onclick="changeStrength('${drug.id}', ${idx})" 
-                class="px-2 py-1 rounded-lg transition text-xs font-semibold ${idx === strengthIdx ? 'bg-sky-600 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}"
-              >
-                ${st.label}
-              </button>
-            `).join('')}
-          </div>
-        `;
-      } else if (drug.strengths && drug.strengths.length === 1) {
-        strengthSelectorHtml = `
-          <div class="mt-2 pt-2 border-t border-slate-100 text-[11px] text-slate-500 font-medium">
-            ความแรง: <span class="font-semibold text-slate-700">${drug.strengths[0].label}</span>
-          </div>
-        `;
-      }
-
-      return `
-        <div class="bg-white rounded-2xl border border-slate-200 hover:border-sky-300 p-4 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
-          <div>
-            <!-- Header -->
-            <div class="flex items-start justify-between gap-2">
-              <div>
-                <h3 class="font-bold text-slate-800 text-base group-hover:text-sky-700 transition">${drug.name}</h3>
-                <div class="mt-1 flex items-center gap-1.5 flex-wrap">
-                  ${categoryBadge}
-                </div>
-              </div>
-              <button onclick="copyDrugSummary('${drug.id}')" title="คัดลอกวิธีใช้ยา" class="text-slate-400 hover:text-sky-600 p-1 rounded-lg hover:bg-slate-100 transition">
-                <i class="fa-regular fa-copy text-sm"></i>
-              </button>
-            </div>
-
-            <!-- Strength toggle -->
-            ${strengthSelectorHtml}
-
-            <!-- Dose Big Display -->
-            <div class="mt-3 bg-gradient-to-r from-sky-50 to-indigo-50/60 rounded-xl p-3 border border-sky-100/70">
-              <div class="text-[11px] font-semibold text-sky-800 uppercase tracking-wide">
-                ${isOral ? 'ขนาดยาที่ต้องรับประทาน' : 'ขนาดการให้ยา (Dose)'}
-              </div>
-              <div class="text-xl sm:text-2xl font-extrabold text-sky-900 mt-0.5 leading-snug">
-                ${res.doseText}
-              </div>
-              ${res.subText ? `<div class="text-xs font-semibold text-indigo-700 mt-0.5">${res.subText}</div>` : ''}
-              <div class="text-xs text-slate-600 mt-1 flex items-center gap-1 font-medium">
-                <i class="fa-regular fa-clock text-sky-500"></i>
-                <span>${drug.frequencyText}</span>
-              </div>
-            </div>
-
-            <!-- Instruction & Caution -->
-            <div class="mt-3 text-xs space-y-1 text-slate-600">
-              <div class="flex items-start gap-1.5">
-                <i class="fa-solid fa-circle-info text-sky-500 mt-0.5 text-[11px] shrink-0"></i>
-                <span><strong>คำแนะนำ:</strong> ${drug.instructions}</span>
-              </div>
-              ${res.note ? `
-                <div class="flex items-start gap-1.5 text-slate-500 text-[11px] bg-slate-50 p-2 rounded-lg mt-1.5">
-                  <i class="fa-solid fa-calculator text-slate-400 mt-0.5 shrink-0"></i>
-                  <span>${res.note}</span>
-                </div>
-              ` : ''}
-            </div>
-          </div>
-
-          <!-- Bottom Footer -->
-          <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
-            <span>เกณฑ์: ${drug.notes}</span>
-            <span class="font-medium text-slate-500">เด็ก ${currentWeight} kg</span>
-          </div>
-        </div>
-      `;
     }
 
-    function filterDrugs() {
-      const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
-      searchQuery = q;
+    // Calculate Adjusted Body Weight (AdjBW)
+    function calculateAdjBW(abw, ibw) {
+      if (abw > ibw) {
+        return Number((ibw + 0.4 * (abw - ibw)).toFixed(1));
+      }
+      return abw;
+    }
 
-      const filtered = DRUG_DATABASE.filter(drug => {
-        // Category filter
-        if (currentCategory !== 'all' && drug.category !== currentCategory) {
-          return false;
-        }
-        // Text filter
-        if (searchQuery) {
-          const nameMatch = drug.name.toLowerCase().includes(searchQuery);
-          const notesMatch = drug.notes.toLowerCase().includes(searchQuery);
-          return nameMatch || notesMatch;
-        }
-        return true;
+    function setWeight(w) {
+      document.getElementById('weight-input').value = w;
+      handleInputsChange();
+    }
+
+    function handleInputsChange() {
+      updateWeightMetrics();
+      renderDrugCards();
+    }
+
+    function updateWeightMetrics() {
+      const abw = parseFloat(document.getElementById('weight-input').value) || 0;
+      const age = parseFloat(document.getElementById('age-input').value) || 1;
+      const ibw = calculateIBW(age);
+      const adjbw = calculateAdjBW(abw, ibw);
+      const ratio = ibw > 0 ? (abw / ibw) * 100 : 100;
+
+      document.getElementById('metric-abw').innerText = abw.toFixed(1);
+      document.getElementById('metric-ibw').innerText = ibw.toFixed(1);
+      document.getElementById('metric-adjbw').innerText = adjbw.toFixed(1);
+
+      const badge = document.getElementById('obese-status-badge');
+      const ratioTxt = document.getElementById('weight-ratio-text');
+
+      ratioTxt.innerText = `ABW คิดเป็น ${ratio.toFixed(0)}% ของ IBW`;
+
+      if (ratio > 120) {
+        badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-800';
+        badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i>น้ำหนักเกิน (>120% IBW)';
+      } else if (ratio < 80) {
+        badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800';
+        badge.innerHTML = 'น้ำหนักน้อยกว่าเกณฑ์ (<80%)';
+      } else {
+        badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800';
+        badge.innerHTML = 'น้ำหนักตามเกณฑ์สมส่วน';
+      }
+    }
+
+    function toggleModal(id) {
+      document.getElementById(id).classList.toggle('hidden');
+    }
+
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(b => {
+        b.className = 'cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200';
       });
+      document.getElementById(`btn-cat-${cat}`).className = 'cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-sm';
+      renderDrugCards();
+    }
 
-      const grid = document.getElementById('drugGrid');
-      const empty = document.getElementById('emptyState');
+    function handleSearch() {
+      searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+      renderDrugCards();
+    }
+
+    function updateBadgeCounts() {
+      document.getElementById('count-all').innerText = DRUG_DATABASE.length;
+      document.getElementById('count-anti').innerText = DRUG_DATABASE.filter(d => d.category === 'antibiotic').length;
+      document.getElementById('count-symp').innerText = DRUG_DATABASE.filter(d => d.category === 'symptomatic').length;
+      document.getElementById('count-gi').innerText = DRUG_DATABASE.filter(d => d.category === 'gi').length;
+      document.getElementById('count-iv').innerText = DRUG_DATABASE.filter(d => d.category === 'iv').length;
+    }
+
+    function formatTeaspoons(ml) {
+      if (ml <= 0) return '';
+      const tsp = ml / 5;
+      if (Math.abs(tsp - 0.25) < 0.08) return ` (~¼ ช้อนชา)`;
+      if (Math.abs(tsp - 0.5) < 0.1) return ` (~½ ช้อนชา)`;
+      if (Math.abs(tsp - 0.75) < 0.1) return ` (~¾ ช้อนชา)`;
+      if (Math.abs(tsp - 1.0) < 0.15) return ` (~1 ช้อนชา)`;
+      if (Math.abs(tsp - 1.5) < 0.15) return ` (~1½ ช้อนชา)`;
+      if (Math.abs(tsp - 2.0) < 0.15) return ` (~2 ช้อนชา)`;
+      return ` (~${tsp.toFixed(1)} ช้อนชา)`;
+    }
+
+    function changeStrength(drugId, strengthIndex) {
+      const drug = DRUG_DATABASE.find(d => d.id === drugId);
+      if (drug) {
+        drug.selectedStrength = parseInt(strengthIndex);
+        renderDrugCards();
+      }
+    }
+
+    function renderDrugCards() {
+      const abw = parseFloat(document.getElementById('weight-input').value) || 0;
+      const age = parseFloat(document.getElementById('age-input').value) || 1;
+      const ibw = calculateIBW(age);
+      const adjbw = calculateAdjBW(abw, ibw);
+      const isObese = (ibw > 0) && ((abw / ibw) > 1.2);
+      const grid = document.getElementById('drug-grid');
+      
+      const filtered = DRUG_DATABASE.filter(drug => {
+        const matchCat = (currentCategory === 'all') || (drug.category === currentCategory);
+        const matchSearch = drug.name.toLowerCase().includes(searchQuery) || drug.instruction.toLowerCase().includes(searchQuery);
+        return matchCat && matchSearch;
+      });
 
       if (filtered.length === 0) {
-        grid.innerHTML = '';
-        empty.classList.remove('hidden');
-      } else {
-        empty.classList.add('hidden');
-        grid.innerHTML = filtered.map(renderDrugCard).join('');
+        grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400">ไม่พบรายการยาที่ค้นหา</div>`;
+        return;
       }
 
-      updateCategoryCounts();
-    }
+      grid.innerHTML = filtered.map(drug => {
+        const curStrength = drug.strengths[drug.selectedStrength || 0];
+        
+        // Determine Weight used for calculation
+        let calcWeight = abw;
+        let weightTypeLabel = 'ABW';
+        let weightBadgeColor = 'bg-slate-100 text-slate-700 border-slate-300';
 
-    function updateCategoryCounts() {
-      document.getElementById('count-all').textContent = DRUG_DATABASE.length;
-    }
-
-    function setCategory(cat) {
-      currentCategory = cat;
-      document.querySelectorAll('.cat-btn').forEach(btn => {
-        btn.classList.remove('bg-sky-600', 'text-white', 'shadow-sm');
-        btn.classList.add('bg-slate-100', 'text-slate-600');
-      });
-      const activeBtn = document.getElementById(`btn-cat-${cat}`);
-      if (activeBtn) {
-        activeBtn.classList.remove('bg-slate-100', 'text-slate-600');
-        activeBtn.classList.add('bg-sky-600', 'text-white', 'shadow-sm');
-      }
-      filterDrugs();
-    }
-
-    function onWeightChange(val) {
-      const parsed = parseFloat(val);
-      if (!isNaN(parsed) && parsed > 0) {
-        currentWeight = parsed;
-        filterDrugs();
-      }
-    }
-
-    function adjustWeight(delta) {
-      let next = currentWeight + delta;
-      if (next < 0.5) next = 0.5;
-      next = Math.round(next * 10) / 10;
-      currentWeight = next;
-      document.getElementById('weightInput').value = next;
-      filterDrugs();
-    }
-
-    function setWeight(val) {
-      currentWeight = val;
-      document.getElementById('weightInput').value = val;
-      filterDrugs();
-    }
-
-    function onAgeChange(val) {
-      currentAge = parseFloat(val) || 1;
-      filterDrugs();
-    }
-
-    function changeStrength(drugId, idx) {
-      selectedStrengths[drugId] = idx;
-      filterDrugs();
-    }
-
-    function copyDrugSummary(drugId) {
-      const drug = DRUG_DATABASE.find(d => d.id === drugId);
-      if (!drug) return;
-
-      const res = calculateDrugDose(drug, currentWeight, currentAge);
-      const strIdx = selectedStrengths[drug.id] || 0;
-      const strLabel = drug.strengths && drug.strengths[strIdx] ? drug.strengths[strIdx].label : '';
-
-      const text = `${drug.name} (เด็ก ${currentWeight} kg)
-ความแรง: ${strLabel}
-ขนาดยา: ${res.doseText} ${res.subText || ''}
-ความถี่: ${drug.frequencyText}
-คำแนะนำ: ${drug.instructions}`;
-
-      // Copy using execCommand for iframe compatibility
-      const tempArea = document.createElement("textarea");
-      tempArea.value = text;
-      document.body.appendChild(tempArea);
-      tempArea.select();
-      try {
-        document.execCommand('copy');
-        showToast(`คัดลอก ${drug.name} เรียบร้อย`);
-      } catch (err) {
-        showToast("ไม่สามารถคัดลอกได้");
-      }
-      document.body.removeChild(tempArea);
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      const toastMsg = document.getElementById('toastMsg');
-      toastMsg.textContent = msg;
-      toast.classList.remove('translate-y-20', 'opacity-0');
-      setTimeout(() => {
-        toast.classList.add('translate-y-20', 'opacity-0');
-      }, 2500);
-    }
-
-    function toggleEquipmentModal() {
-      const modal = document.getElementById('equipmentModal');
-      modal.classList.toggle('hidden');
-    }
-
-    function toggleGithubModal() {
-      const modal = document.getElementById('githubModal');
-      modal.classList.toggle('hidden');
-    }
-
-    // Close modal on escape
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        const eqModal = document.getElementById('equipmentModal');
-        if (eqModal && !eqModal.classList.contains('hidden')) {
-          eqModal.classList.add('hidden');
+        if (drug.weightBasis === 'IBW') {
+          calcWeight = ibw;
+          weightTypeLabel = 'IBW';
+          weightBadgeColor = 'bg-teal-50 text-teal-800 border-teal-300 font-bold';
+        } else if (drug.weightBasis === 'ADJBW_IF_OBESE') {
+          if (isObese) {
+            calcWeight = adjbw;
+            weightTypeLabel = 'AdjBW';
+            weightBadgeColor = 'bg-indigo-100 text-indigo-800 border-indigo-300 font-black';
+          } else {
+            calcWeight = abw;
+            weightTypeLabel = 'ABW';
+            weightBadgeColor = 'bg-slate-100 text-slate-700 border-slate-300';
+          }
+        } else if (drug.weightBasis === 'ABW_OR_IBW') {
+          if (isObese) {
+            calcWeight = ibw;
+            weightTypeLabel = 'IBW (แนะนำเพราะเด็กอ้วน)';
+            weightBadgeColor = 'bg-amber-100 text-amber-800 border-amber-300 font-bold';
+          } else {
+            calcWeight = abw;
+            weightTypeLabel = 'ABW';
+            weightBadgeColor = 'bg-slate-100 text-slate-700 border-slate-300';
+          }
+        } else if (drug.weightBasis === 'AGE') {
+          weightTypeLabel = 'Age-based';
+          weightBadgeColor = 'bg-purple-100 text-purple-800 border-purple-300';
         }
-        const ghModal = document.getElementById('githubModal');
-        if (ghModal && !ghModal.classList.contains('hidden')) {
-          ghModal.classList.add('hidden');
-        }
-      }
-    });
 
+        let doseMgPerDose = 0;
+        let doseMlPerDose = 0;
+        let tspDesc = '';
+        let formulaDesc = '';
+        let warningBadge = '';
+
+        // Calculations
+        if (drug.type === 'mkd') {
+          const dailyMg = calcWeight * drug.defaultDose;
+          const dosesPerDay = (drug.frequency === 'bid') ? 2 : (drug.frequency === 'tid') ? 3 : (drug.frequency === 'qid') ? 4 : 1;
+          doseMgPerDose = dailyMg / dosesPerDay;
+          doseMlPerDose = doseMgPerDose / curStrength.mgPerMl;
+          formulaDesc = `${drug.defaultDose} mg/kg/day × ${calcWeight.toFixed(1)} kg (${weightTypeLabel}) ÷ ${dosesPerDay} มื้อ = ${doseMgPerDose.toFixed(1)} mg`;
+          tspDesc = formatTeaspoons(doseMlPerDose);
+
+        } else if (drug.type === 'mkdose') {
+          doseMgPerDose = calcWeight * drug.defaultDose;
+          if (drug.maxSingleDose && doseMgPerDose > drug.maxSingleDose) {
+            doseMgPerDose = drug.maxSingleDose;
+            warningBadge += `<div class="mt-1 text-[11px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded font-medium">จำกัดขนาดยาสูงสุด ${drug.maxSingleDose} mg/dose</div>`;
+          }
+          doseMlPerDose = doseMgPerDose / curStrength.mgPerMl;
+          formulaDesc = `${drug.defaultDose} mg/kg × ${calcWeight.toFixed(1)} kg (${weightTypeLabel}) = ${doseMgPerDose.toFixed(1)} mg`;
+          tspDesc = formatTeaspoons(doseMlPerDose);
+
+        } else if (drug.type === 'age_based') {
+          const res = drug.calcByAge(age, abw);
+          formulaDesc = res.text;
+          doseMlPerDose = res.ml;
+          tspDesc = (doseMlPerDose > 0 && doseMlPerDose <= 15) ? formatTeaspoons(doseMlPerDose) : '';
+        }
+
+        // Strength Selectors HTML
+        let strengthOptionsHtml = '';
+        if (drug.strengths.length > 1) {
+          strengthOptionsHtml = `
+            <div class="mt-2 flex flex-wrap gap-1 items-center">
+              <span class="text-[10px] text-slate-400 font-semibold mr-1">ความแรง:</span>
+              ${drug.strengths.map((s, idx) => `
+                <button 
+                  onclick="changeStrength('${drug.id}',${idx})" 
+                  class="px-2 py-0.5 rounded text-[11px] font-semibold border ${idx === drug.selectedStrength ? 'bg-blue-600 text-white border-blue-600' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'}">
+                  ${s.label}
+                </button>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        return `
+          <div class="bg-white rounded-xl border border-slate-200 shadow-xs hover:shadow-md transition-shadow p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start gap-2">
+                <div>
+                  <h3 class="font-bold text-slate-800 text-sm md:text-base">${drug.name}</h3>
+                  <span class="text-xs text-blue-600 font-medium">${curStrength.label}</span>
+                </div>
+                <div class="flex flex-col items-end gap-1">
+                  <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
+                    drug.category === 'antibiotic' ? 'bg-amber-100 text-amber-800' :
+                    drug.category === 'symptomatic' ? 'bg-indigo-100 text-indigo-800' :
+                    drug.category === 'gi' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                  }">
+                    ${drug.category}
+                  </span>
+                  <!-- Weight Basis Pill -->
+                  <span class="text-[10px] px-2 py-0.5 rounded border ${weightBadgeColor}">
+                    คำนวณจาก: <strong>${weightTypeLabel} (${calcWeight.toFixed(1)} kg)</strong>
+                  </span>
+                </div>
+              </div>
+
+              ${strengthOptionsHtml}
+
+              <!-- Calculated Result Box -->
+              <div class="mt-3 bg-slate-50 rounded-lg p-2.5 border border-slate-200/70">
+                <div class="flex items-baseline justify-between">
+                  <span class="text-xs font-bold text-slate-500">ขนาดยาต่อมื้อ:</span>
+                  <div class="text-right">
+                    ${doseMlPerDose > 0 ? `
+                      <span class="text-xl font-black text-blue-700">${doseMlPerDose.toFixed(1)}</span>
+                      <span class="text-xs font-bold text-blue-700">ml / ซีซี</span>
+                      <span class="text-xs font-semibold text-slate-600 ml-1">${tspDesc}</span>
+                    ` : `
+                      <span class="text-xs font-bold text-slate-700">ดูวิธีใช้ด้านล่าง</span>
+                    `}
+                  </div>
+                </div>
+
+                <div class="mt-1 text-[11px] text-slate-500 flex items-center justify-between border-t border-slate-200/60 pt-1">
+                  <span>ความถี่: <strong>${drug.freqText || '-'}</strong></span>
+                </div>
+                <div class="text-[10px] text-slate-400 mt-0.5">
+                  สูตร: ${formulaDesc}
+                </div>
+              </div>
+
+              ${warningBadge}
+            </div>
+
+            <div class="mt-3 pt-2 text-[11px] text-slate-500 border-t border-slate-100 space-y-1">
+              <div class="flex items-start gap-1.5 text-slate-600">
+                <i class="fa-solid fa-scale-balanced text-teal-600 mt-0.5 text-xs"></i>
+                <span class="font-medium">เกณฑ์น้ำหนัก: ${drug.weightNote}</span>
+              </div>
+              <div class="flex items-start gap-1.5">
+                <i class="fa-solid fa-circle-info text-blue-400 mt-0.5 text-xs"></i>
+                <span>${drug.instruction}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Initialize
     window.addEventListener('DOMContentLoaded', () => {
-      filterDrugs();
+      updateBadgeCounts();
+      handleInputsChange();
     });
   </script>
 </body>
