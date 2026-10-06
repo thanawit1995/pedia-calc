@@ -1281,7 +1281,9 @@
         scopes: ['opd'],
         diseases: ['uri'],
         weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ',
+        weightNote: '25–50 mg/kg/day แบ่ง qid ac (Max 2,000 mg/day)',
+        maxDailyDose: 2000,
+        maxSingleDose: 500,
         bottleVolume: 60,
         defaultDays: 10,
         strengths: [{ label: '125 mg / 5 ml (60 ml/ขวด)', mgPerMl: 25 }],
@@ -1399,6 +1401,8 @@
         diseases: ['skin'],
         weightBasis: 'ABW',
         weightNote: 'ใช้ ABW คำนวณ (Max 2,000 mg/day)',
+        maxDailyDose: 2000,
+        maxSingleDose: 500,
         bottleVolume: 60,
         defaultDays: 7,
         strengths: [{ label: '62.5 mg / 5 ml (60 ml/ขวด)', mgPerMl: 12.5 }],
@@ -1487,11 +1491,11 @@
         scopes: ['opd', 'adolescent'],
         diseases: ['covid'],
         weightBasis: 'ABW',
-        weightNote: 'D1: 70 MKD แบ่ง bid | D2-5: 30 MKD แบ่ง bid (บดละลายน้ำได้)',
+        weightNote: 'D1: 70 MKD แบ่ง bid (Max 1,800 mg/มื้อ = 9 เม็ด) | D2-5: 30 MKD แบ่ง bid (Max 800 mg/มื้อ = 4 เม็ด)',
         strengths: [{ label: '200 mg / เม็ด', mgPerTab: 200 }],
         selectedStrength: 0,
         type: 'custom_favi',
-        instruction: 'Day 1: ทานทุก 12 ชม. (2 มื้อ) | Day 2 - 5: ทานทุก 12 ชม. (8 มื้อ รวม 5 วัน)'
+        instruction: 'Day 1: ทานทุก 12 ชม. (2 มื้อ) สูงสุด 9 เม็ด/มื้อ | Day 2 - 5: ทานทุก 12 ชม. (8 มื้อ รวม 5 วัน) สูงสุด 4 เม็ด/มื้อ (ผู้ใหญ่ นน.≥90 kg: D1 12 เม็ด bid, D2-5 5 เม็ด bid)'
       },
       {
         id: 'oseltamivir',
@@ -1572,7 +1576,9 @@
         scopes: ['opd'],
         diseases: ['uri'],
         weightBasis: 'ABW',
-        weightNote: 'ใช้ ABW คำนวณ',
+        weightNote: '0.35 mg/kg/day แบ่ง tid-qid (Max 12 mg/day)',
+        maxDailyDose: 12,
+        maxSingleDose: 4,
         bottleVolume: 60,
         defaultDays: 5,
         strengths: [{ label: '2 mg / 5 ml (60 ml/ขวด)', mgPerMl: 0.4, vol: 60 }],
@@ -1685,6 +1691,8 @@
         diseases: ['asthma', 'uri'],
         weightBasis: 'ABW',
         weightNote: '1.25 mcg/kg/dose bid (Max 25 mcg/dose)',
+        maxSingleDose: 0.025,
+        maxDailyDose: 0.05,
         bottleVolume: 60,
         defaultDays: 5,
         strengths: [{ label: '5 mcg / ml (60 ml/ขวด)', mgPerMl: 0.005, vol: 60 }],
@@ -2617,7 +2625,9 @@
         scopes: ['ipd_er'],
         diseases: [],
         weightBasis: 'ABW',
-        weightNote: '240–300 mg/kg/day of Piperacillin (80-100 MKdose) แบ่ง q 6-8 hr',
+        weightNote: '240–300 mg/kg/day of Piperacillin (80-100 MKdose) แบ่ง q 6-8 hr (Max 16 g/day)',
+        maxDailyDose: 16000,
+        maxSingleDose: 4500,
         strengths: [{ label: '4.5 g / vial (Pip 4 g + Tazo 0.5 g) ผสม 20 ml', mgPerMl: 200 }],
         selectedStrength: 0,
         type: 'mkdose',
@@ -3111,17 +3121,33 @@
           warningBadge += `<div class="mt-1 text-[11px] bg-rose-50 text-rose-700 px-2 py-0.5 rounded-md border border-rose-200 font-bold flex items-center gap-1">
             <i class="fa-solid fa-triangle-exclamation"></i> ข้อควรระวัง: ไม่แนะนำให้ใช้ในเด็กอายุต่ำกว่า ${drug.minAge} ปี
           </div>`;
-        }if (drug.type === 'mkd') {
-          const dailyMg = calcWeight * drug.defaultDose;
+        } else if (drug.type === 'mkd') {
+          let dailyMg = calcWeight * drug.defaultDose;
+          let isDailyCapped = false;
+          if (drug.maxDailyDose && dailyMg > drug.maxDailyDose) {
+            dailyMg = drug.maxDailyDose;
+            isDailyCapped = true;
+          }
           const dosesPerDay = drug.dosesPerDay || 3;
           let mgPerDose = dailyMg / dosesPerDay;
+          let isSingleCapped = false;
           if (drug.maxSingleDose && mgPerDose > drug.maxSingleDose) {
             mgPerDose = drug.maxSingleDose;
+            isSingleCapped = true;
           }
+
+          if (isDailyCapped) {
+            warningBadge += `<div class="mt-1 text-[11px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded font-bold border border-amber-200 flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-amber-600"></i>จำกัดขนาดยาสูงสุด ${drug.maxDailyDose} mg/วัน (ไม่เกินผู้ใหญ่)</div>`;
+          } else if (isSingleCapped) {
+            warningBadge += `<div class="mt-1 text-[11px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded font-bold border border-amber-200 flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-amber-600"></i>จำกัดขนาดยาสูงสุด ${drug.maxSingleDose} mg/มื้อ (ไม่เกินผู้ใหญ่)</div>`;
+          }
+
           if (curStrength.mgPerMl) {
             rawMl = mgPerDose / curStrength.mgPerMl;
             suggestedMl = roundToPracticalMl(rawMl);
-            formulaDesc = `${drug.defaultDose} mg/kg/day × ${calcWeight.toFixed(1)} kg ÷ ${dosesPerDay} มื้อ = ${mgPerDose.toFixed(1)} mg (${rawMl.toFixed(2)} ml)`;
+            formulaDesc = isDailyCapped ? 
+              `จำกัดขนาดยาสูงสุด ${drug.maxDailyDose} mg/วัน ÷ ${dosesPerDay} มื้อ = ${mgPerDose.toFixed(1)} mg (${rawMl.toFixed(2)} ml)` :
+              `${drug.defaultDose} mg/kg/day × ${calcWeight.toFixed(1)} kg ÷ ${dosesPerDay} มื้อ = ${mgPerDose.toFixed(1)} mg (${rawMl.toFixed(2)} ml)`;
             tspDesc = formatVolumeUnit(suggestedMl, curStrength, drug);
           } else if (curStrength.mgPerTab) {
             const rawTab = mgPerDose / curStrength.mgPerTab;
@@ -3135,7 +3161,9 @@
                 </div>
               </div>
             `;
-            formulaDesc = `${drug.defaultDose} mg/kg/day × ${calcWeight.toFixed(1)} kg ÷ ${dosesPerDay} มื้อ = ${mgPerDose.toFixed(1)} mg (${rawTab.toFixed(2)} เม็ด)`;
+            formulaDesc = isDailyCapped ? 
+              `จำกัดขนาดยาสูงสุด ${drug.maxDailyDose} mg/วัน ÷ ${dosesPerDay} มื้อ = ${mgPerDose.toFixed(1)} mg (${rawTab.toFixed(2)} เม็ด)` :
+              `${drug.defaultDose} mg/kg/day × ${calcWeight.toFixed(1)} kg ÷ ${dosesPerDay} มื้อ = ${mgPerDose.toFixed(1)} mg (${rawTab.toFixed(2)} เม็ด)`;
             
             if (drug.defaultDays) {
               const totalTabs = Math.ceil(suggTab * dosesPerDay * drug.defaultDays);
@@ -3175,9 +3203,22 @@
 
         } else if (drug.type === 'mkdose') {
           let mgPerDose = calcWeight * drug.defaultDose;
+          let isSingleCapped = false;
+          let isDailyCapped = false;
           if (drug.maxSingleDose && mgPerDose > drug.maxSingleDose) {
             mgPerDose = drug.maxSingleDose;
-            warningBadge += `<div class="mt-1 text-[11px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded font-medium">จำกัดขนาดยาสูงสุด ${drug.maxSingleDose} mg/dose</div>`;
+            isSingleCapped = true;
+          }
+          const dosesPerDay = drug.dosesPerDay || 1;
+          if (drug.maxDailyDose && (mgPerDose * dosesPerDay) > drug.maxDailyDose) {
+            mgPerDose = drug.maxDailyDose / dosesPerDay;
+            isDailyCapped = true;
+          }
+
+          if (isSingleCapped) {
+            warningBadge += `<div class="mt-1 text-[11px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded font-bold border border-amber-200 flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-amber-600"></i>จำกัดขนาดยาสูงสุด ${drug.maxSingleDose} mg/มื้อ (ไม่เกินผู้ใหญ่)</div>`;
+          } else if (isDailyCapped) {
+            warningBadge += `<div class="mt-1 text-[11px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded font-bold border border-amber-200 flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-amber-600"></i>จำกัดขนาดยาสูงสุด ${drug.maxDailyDose} mg/วัน (ไม่เกินผู้ใหญ่)</div>`;
           }
           if (curStrength.mgPerMl) {
             rawMl = mgPerDose / curStrength.mgPerMl;
@@ -3297,18 +3338,47 @@
           `;
 
         } else if (drug.type === 'custom_favi') {
-          const d1DailyMg = calcWeight * 70;
-          const d1RawTabPerDose = (d1DailyMg / 2) / 200;
+          // Standard Thai CPG COVID-19 Pediatric Dosing & Adult Max Caps:
+          // Day 1: 70 mg/kg/day div q 12 hr (35 mg/kg/dose)
+          // Day 2-5: 30 mg/kg/day div q 12 hr (15 mg/kg/dose)
+          // Adult Max (BW < 90 kg): D1: 1,800 mg bid (9 tabs bid), D2-5: 800 mg bid (4 tabs bid)
+          // Adult Max (BW >= 90 kg): D1: 2,400 mg bid (12 tabs bid), D2-5: 1,000 mg bid (5 tabs bid)
+          
+          let d1DoseMg = (calcWeight * 70) / 2;
+          let maintDoseMg = (calcWeight * 30) / 2;
+
+          const maxD1Mg = calcWeight >= 90 ? 2400 : 1800;
+          const maxMaintMg = calcWeight >= 90 ? 1000 : 800;
+
+          let isD1Capped = false;
+          let isMaintCapped = false;
+
+          if (d1DoseMg > maxD1Mg) {
+            d1DoseMg = maxD1Mg;
+            isD1Capped = true;
+          }
+          if (maintDoseMg > maxMaintMg) {
+            maintDoseMg = maxMaintMg;
+            isMaintCapped = true;
+          }
+
+          const d1RawTabPerDose = d1DoseMg / 200;
           const d1SuggTab = roundToPracticalTab(d1RawTabPerDose);
 
-          const maintDailyMg = calcWeight * 30;
-          const maintRawTabPerDose = (maintDailyMg / 2) / 200;
+          const maintRawTabPerDose = maintDoseMg / 200;
           const maintSuggTab = roundToPracticalTab(maintRawTabPerDose);
 
           const d1TotalTabs = d1SuggTab * 2;
           const maintTotalTabs = maintSuggTab * 2 * 4;
           const exactTotal = d1TotalTabs + maintTotalTabs;
           const roundedTotal = Math.ceil(exactTotal);
+
+          const maxBadgeHtml = (isD1Capped || isMaintCapped) ? `
+            <div class="mt-1.5 text-[11px] bg-amber-50 text-amber-900 p-2 rounded-lg border border-amber-200 font-medium">
+              <i class="fa-solid fa-triangle-exclamation text-amber-600 mr-1"></i>
+              <strong>จำกัดขนาดยาสูงสุดเท่าผู้ใหญ่:</strong> Day 1 สูงสุด ${maxD1Mg} mg/มื้อ (${maxD1Mg/200} เม็ด), Day 2–5 สูงสุด ${maxMaintMg} mg/มื้อ (${maxMaintMg/200} เม็ด)
+            </div>
+          ` : '';
 
           customDoseDisplay = `
             <div class="space-y-2 mt-2">
@@ -3317,7 +3387,7 @@
                   <span class="font-bold text-indigo-900">Day 1 (Loading dose):</span>
                   <span class="font-black text-sm text-indigo-700">${formatTabletFraction(d1SuggTab)} po q 12 hr</span>
                 </div>
-                <div class="text-[11px] text-slate-500">70 mg/kg/day = ${(d1DailyMg/2).toFixed(0)} mg/มื้อ (คำนวณเป๊ะ: ${d1RawTabPerDose.toFixed(2)} เม็ด)</div>
+                <div class="text-[11px] text-slate-500">${isD1Capped ? 'จำกัดสูงสุดเท่าผู้ใหญ่:' : '70 mg/kg/day ='} ${d1DoseMg.toFixed(0)} mg/มื้อ (คำนวณเป๊ะ: ${d1RawTabPerDose.toFixed(2)} เม็ด)</div>
               </div>
 
               <div class="bg-indigo-50/60 border border-indigo-200 rounded-lg p-2.5 text-xs">
@@ -3325,8 +3395,9 @@
                   <span class="font-bold text-indigo-900">Day 2 – 5 (Maintenance):</span>
                   <span class="font-black text-sm text-indigo-700">${formatTabletFraction(maintSuggTab)} po q 12 hr</span>
                 </div>
-                <div class="text-[11px] text-slate-500">30 mg/kg/day = ${(maintDailyMg/2).toFixed(0)} mg/มื้อ (คำนวณเป๊ะ: ${maintRawTabPerDose.toFixed(2)} เม็ด)</div>
+                <div class="text-[11px] text-slate-500">${isMaintCapped ? 'จำกัดสูงสุดเท่าผู้ใหญ่:' : '30 mg/kg/day ='} ${maintDoseMg.toFixed(0)} mg/มื้อ (คำนวณเป๊ะ: ${maintRawTabPerDose.toFixed(2)} เม็ด)</div>
               </div>
+              ${maxBadgeHtml}
             </div>
           `;
 
