@@ -1494,6 +1494,24 @@
         instruction: 'Day 1: ทานทุก 12 ชม. (2 มื้อ) | Day 2 - 5: ทานทุก 12 ชม. (8 มื้อ รวม 5 วัน)'
       },
       {
+        id: 'oseltamivir',
+        name: 'Oseltamivir (Tamiflu) เม็ด/แคปซูล',
+        category: 'antibiotic',
+        scopes: ['opd', 'adolescent'],
+        diseases: ['uri', 'covid'],
+        weightBasis: 'ABW',
+        weightNote: 'วันละ 2 ครั้ง (q 12 hr) นาน 5 วัน คำนวณตามเกณฑ์น้ำหนัก/อายุ (ตาราง Tamiflu)',
+        defaultDays: 5,
+        strengths: [
+          { label: '30 mg / เม็ด (แคปซูล)', mgPerTab: 30, isTab: true },
+          { label: '75 mg / เม็ด (แคปซูล)', mgPerTab: 75, isTab: true }
+        ],
+        selectedStrength: 0,
+        type: 'custom_oseltamivir',
+        freqText: 'วันละ 2 ครั้ง หลังอาหาร เช้า-เย็น (ทุก 12 ชม.) นาน 5 วัน',
+        instruction: 'ยาต้านไวรัสไข้หวัดใหญ่ (Influenza A & B) ทานติดต่อกัน 5 วัน ควรเริ่มยาภายใน 48 ชั่วโมงแรกหลังเริ่มมีอาการ'
+      },
+      {
         id: 'paracetamol',
         name: 'Paracetamol (พาราเซตามอลยาน้ำ/หยด/เม็ด)',
         category: 'symptomatic',
@@ -3324,6 +3342,145 @@
               </div>
             </div>
           `;
+
+        } else if (drug.type === 'custom_oseltamivir') {
+          let targetMg = 30;
+          let tierDesc = '';
+          let isInfant = false;
+
+          if (age < 0.25) { // < 3 months
+            targetMg = 12;
+            tierDesc = 'ทารก < 3 เดือน (12 mg bid)';
+            isInfant = true;
+          } else if (age < 0.5) { // 3 - 5 months
+            targetMg = 20;
+            tierDesc = 'ทารก 3–5 เดือน (20 mg bid)';
+            isInfant = true;
+          } else if (age < 1.0) { // 6 - 11 months
+            targetMg = 25;
+            tierDesc = 'ทารก 6–11 เดือน (25 mg bid)';
+            isInfant = true;
+          } else {
+            // >= 1 year old or weight-based
+            if (calcWeight <= 15) {
+              targetMg = 30;
+              tierDesc = 'อายุ > 1 ปี, นน. ≤ 15 กก. (30 mg bid)';
+            } else if (calcWeight <= 23) {
+              targetMg = 45;
+              tierDesc = 'นน. > 15–23 กก. (45 mg bid)';
+            } else if (calcWeight <= 40) {
+              targetMg = 60;
+              tierDesc = 'นน. > 23–40 กก. (60 mg bid)';
+            } else {
+              targetMg = 75;
+              tierDesc = 'นน. > 40 กก. หรือผู้ใหญ่ (75 mg bid)';
+            }
+          }
+
+          const tabStrengthMg = (curStrength && curStrength.mgPerTab) ? curStrength.mgPerTab : 30;
+
+          if (isInfant) {
+            let mixDesc = '';
+            if (targetMg === 12) {
+              mixDesc = 'แกะแคปซูล 30 mg ผสมน้ำหวานหรือน้ำสะอาด 5 mL (ได้ความเข้มข้น 6 mg/mL) แล้วดูดทานมื้อละ <b>2.0 mL</b>';
+            } else if (targetMg === 20) {
+              mixDesc = 'แกะแคปซูล 30 mg ผสมน้ำหวานหรือน้ำสะอาด 5 mL (ได้ความเข้มข้น 6 mg/mL) แล้วดูดทานมื้อละ <b>3.3 mL</b>';
+            } else if (targetMg === 25) {
+              mixDesc = 'แกะแคปซูล 30 mg ผสมน้ำหวานหรือน้ำสะอาด 6 mL (ได้ความเข้มข้น 5 mg/mL) แล้วดูดทานมื้อละ <b>5.0 mL</b>';
+            }
+
+            customDoseDisplay = `
+              <div class="space-y-2 mt-2">
+                <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-2.5 text-xs">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="font-bold text-indigo-900">ขนาดยาต่อมื้อ:</span>
+                    <span class="font-black text-sm text-indigo-700">${targetMg} mg po q 12 hr</span>
+                  </div>
+                  <div class="text-[11px] text-slate-600 font-semibold mb-1">${tierDesc} × วันละ 2 ครั้ง (ทาน 5 วัน)</div>
+                  <div class="p-2 rounded bg-amber-50 border border-amber-200 text-amber-900 text-[11px] leading-relaxed">
+                    <i class="fa-solid fa-mortar-pestle text-amber-700 mr-1"></i><strong>วิธีผสมยาน้ำสำหรับทารก (Extemporaneous):</strong><br>
+                    ${mixDesc} (ผสมทานมื้อต่อมื้อ หรือเก็บตู้เย็นไม่เกิน 24 ชม.)
+                  </div>
+                </div>
+              </div>
+            `;
+
+            formulaDesc = `เกณฑ์ ${tierDesc}: ขนาดยา ${targetMg} mg po bid x 5 วัน`;
+
+            dispensingBanner = `
+              <div class="mt-2 bg-emerald-50 border border-emerald-300 rounded-xl p-2.5 text-xs flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-pills text-emerald-600 text-lg"></i>
+                  <div>
+                    <span class="font-bold text-emerald-950">แนะนำสั่งจ่าย: </span>
+                    <span class="text-sm font-black text-emerald-700">10 แคปซูล (ขนาด 30 mg)</span>
+                    <span class="text-[11px] text-emerald-800 block">สำหรับแกะผสมน้ำทาน 5 วัน (วันละ 2 แคปซูล เช้า-เย็น)</span>
+                  </div>
+                </div>
+              </div>
+            `;
+
+          } else {
+            const rawTabs = targetMg / tabStrengthMg;
+            let tabFractionText = '';
+            let altStrengthHint = '';
+
+            if (tabStrengthMg === 30) {
+              if (targetMg === 30) tabFractionText = '1 เม็ด (แคปซูล)';
+              else if (targetMg === 45) tabFractionText = '1½ เม็ด (แคปซูล)';
+              else if (targetMg === 60) tabFractionText = '2 เม็ด (แคปซูล)';
+              else if (targetMg === 75) {
+                tabFractionText = '2½ เม็ด (แคปซูล)';
+                altStrengthHint = '<div class="mt-1 text-[11px] text-blue-700 font-semibold"><i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i>แนะนำ: สามารถเลือกใช้ขนาด <b>75 mg</b> ทานครั้งละ <b>1 เม็ด</b> จะสะดวกกว่า</div>';
+              }
+            } else if (tabStrengthMg === 75) {
+              if (targetMg === 75) tabFractionText = '1 เม็ด (แคปซูล)';
+              else if (targetMg === 60) {
+                tabFractionText = `${rawTabs.toFixed(2)} เม็ด (~⅘ เม็ด)`;
+                altStrengthHint = '<div class="mt-1 text-[11px] text-amber-800 bg-amber-50 p-1.5 rounded border border-amber-200 font-medium"><i class="fa-solid fa-circle-info text-blue-600 mr-1"></i>แนะนำ: ควรเปลี่ยนไปใช้ขนาด <b>30 mg</b> ทานครั้งละ <b>2 เม็ด</b> เพื่อให้หักขนาดยาได้ง่ายและแม่นยำ</div>';
+              } else if (targetMg === 45) {
+                tabFractionText = `${rawTabs.toFixed(2)} เม็ด (~½ เม็ด)`;
+                altStrengthHint = '<div class="mt-1 text-[11px] text-amber-800 bg-amber-50 p-1.5 rounded border border-amber-200 font-medium"><i class="fa-solid fa-circle-info text-blue-600 mr-1"></i>แนะนำ: ควรเปลี่ยนไปใช้ขนาด <b>30 mg</b> ทานครั้งละ <b>1½ เม็ด</b> เพื่อให้ขนาดยาแม่นยำ</div>';
+              } else if (targetMg === 30) {
+                tabFractionText = `${rawTabs.toFixed(2)} เม็ด (~⅓ เม็ด)`;
+                altStrengthHint = '<div class="mt-1 text-[11px] text-amber-800 bg-amber-50 p-1.5 rounded border border-amber-200 font-medium"><i class="fa-solid fa-circle-info text-blue-600 mr-1"></i>แนะนำ: ควรเปลี่ยนไปใช้ขนาด <b>30 mg</b> ทานครั้งละ <b>1 เม็ด</b> สะดวกและแม่นยำกว่า</div>';
+              }
+            }
+
+            const totalTabsExact = rawTabs * 2 * 5;
+            const totalTabsToDispense = Math.ceil(totalTabsExact);
+
+            customDoseDisplay = `
+              <div class="space-y-2 mt-2">
+                <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-2.5 text-xs">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="font-bold text-indigo-900">ขนาดยาต่อมื้อ:</span>
+                    <div class="text-right">
+                      <span class="text-xl font-black text-indigo-700">${tabFractionText}</span>
+                      <span class="text-xs text-slate-500 block">(${targetMg} mg po q 12 hr)</span>
+                    </div>
+                  </div>
+                  <div class="text-[11px] text-slate-600 font-semibold">${tierDesc} × วันละ 2 ครั้ง เช้า-เย็น (นาน 5 วัน)</div>
+                  ${altStrengthHint}
+                </div>
+              </div>
+            `;
+
+            formulaDesc = `เกณฑ์ ${tierDesc}: ครั้งละ ${targetMg} mg (${rawTabs.toFixed(2)} เม็ดของขนาด ${tabStrengthMg} mg) วันละ 2 ครั้ง pc นาน 5 วัน`;
+
+            dispensingBanner = `
+              <div class="mt-2 bg-emerald-50 border border-emerald-300 rounded-xl p-2.5 text-xs flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-pills text-emerald-600 text-lg"></i>
+                  <div>
+                    <span class="font-bold text-emerald-950">จำนวนเวชภัณฑ์ที่ต้องจ่าย: </span>
+                    <span class="text-sm font-black text-emerald-700">${totalTabsToDispense} เม็ด (${tabStrengthMg} mg)</span>
+                    <span class="text-[11px] text-emerald-800 block">สำหรับทาน 5 วัน (วันละ 2 มื้อ มื้อละ ${tabFractionText})</span>
+                  </div>
+                </div>
+              </div>
+            `;
+          }
 
         } else if (drug.type === 'custom_nb') {
           let ml = calcWeight * 0.03;
